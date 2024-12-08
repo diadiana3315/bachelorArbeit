@@ -14,7 +14,7 @@ export class AppComponent implements OnInit{
   title = 'finalbachelor';
   user: any;
 
-  @ViewChild('snav') sidenav: MatSidenav | undefined;
+  @ViewChild('sidenav') sidenav: MatSidenav | undefined;
 
   constructor(private afAuth: AngularFireAuth, private router: Router) {
     this.afAuth.authState.subscribe(user => {
