@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import {MatSidenav} from '@angular/material/sidenav';
+
 
 @Component({
   selector: 'app-navbar',
@@ -6,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  @Output() toggleSidenav = new EventEmitter<void>();
 
+  toggleSidebar() {
+    this.toggleSidenav.emit();
+  }
 }

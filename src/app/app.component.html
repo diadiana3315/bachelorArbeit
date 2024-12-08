@@ -1,1 +1,14 @@
-<router-outlet />
+<!-- Layout with Navbar and Sidenav -->
+<body>
+  <div *ngIf="shouldDisplayLayout()">
+    <app-navbar (toggleSidenav)="sidenav.toggleSidenav()"></app-navbar>
+    <app-sidenav #sidenav>
+      <router-outlet></router-outlet>
+    </app-sidenav>
+  </div>
+
+  <!-- Simple Layout for Login/Register -->
+  <div *ngIf="!shouldDisplayLayout()">
+    <router-outlet></router-outlet>
+  </div>
+</body>
