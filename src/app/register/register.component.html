@@ -1,0 +1,26 @@
+<body>
+<div class="register-container">
+  <div class="register-form">
+  <h2>Register</h2>
+  <form (ngSubmit)="register()">
+    <div class="form-group">
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label>Password:</label>
+      <input type="password" [(ngModel)]="password" name="password" required>
+    </div>
+    <div class="form-group">
+      <label>Confirm Password:</label>
+      <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    <button type="submit" [disabled]="!isValid()">Register</button>
+  </form>
+  <p>Already have an account? <a (click)="goToLogin()" class="login-link">Login</a></p>
+  </div>
+</div>
+</body>
