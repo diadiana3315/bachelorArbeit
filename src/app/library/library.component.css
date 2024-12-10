@@ -1,0 +1,12 @@
+/*!* library.component.css *!*/
+/*.library-container {*/
+/*  position: relative;  !* Position relative so we can position the button inside it *!*/
+/*  padding: 16px;*/
+/*}*/
+
+/*app-add-button {*/
+/*  position: absolute;*/
+/*  bottom: 16px;  !* Adjust bottom margin if you want it at the bottom *!*/
+/*  right: 16px;   !* Adjust right margin if you want it in the right corner *!*/
+/*  z-index: 10;   !* Ensure it appears above other elements *!*/
+/*}*/
