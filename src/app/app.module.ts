@@ -24,6 +24,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { LibraryComponent } from './library/library.component';
 import { AddButtonComponent } from './add-button/add-button.component';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import {MatMenuModule} from '@angular/material/menu';
     SidenavComponent,
     ProfileComponent,
     LibraryComponent,
-    AddButtonComponent
+    AddButtonComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +58,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatListModule,
     MatButtonModule,
     BrowserAnimationsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,66 +1,182 @@
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px; /* Adjust padding to move content away from edges */
-  height: 64px; /* Set a consistent height for the navbar */
-  box-sizing: border-box;
+/*.toolbar {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: space-between;*/
+/*  padding: 0 16px; !* Adjust padding to move content away from edges *!*/
+/*  height: 64px; !* Set a consistent height for the navbar *!*/
+/*  box-sizing: border-box;*/
+/*  background: #3f51b5; !* Example background color *!*/
+/*}*/
+
+
+/*!* Spacer to push elements to the right *!*/
+/*.spacer {*/
+/*  flex: 1;*/
+/*}*/
+
+/*!* Style the search container for alignment and positioning *!*/
+/*.search-container {*/
+/*  display: flex;               !* Use flexbox for alignment *!*/
+/*  align-items: center;         !* Vertically center the mat-form-field *!*/
+/*  justify-content: flex-start; !* Align to the left (default) *!*/
+/*  flex: 2;                     !* Adjust width relative to other elements in the toolbar *!*/
+/*  !*margin: 0 16px;              !* Add horizontal margins for spacing *!*!*/
+/*  height: 100%;                !* Ensure it takes up the full height of the toolbar *!*/
+/*}*/
+
+/*!* Ensure mat-form-field styling remains unaffected *!*/
+/*.search-field {*/
+/*  width: 100%;                 !* Search field should fill the container's width *!*/
+/*  height: 50px;*/
+/*  max-width: 400px;            !* Set a max width to prevent it from being too large *!*/
+/*  background: #f1f1f1;         !* Light background for the field *!*/
+/*  !*border-radius: 25px;         !* Rounded corners for the field *!*!*/
+/*  !*overflow: hidden;            !* Prevent overflow for the rounded corners *!*!*/
+/*}*/
+
+/*!* Adjust padding for mat-form-field to make input vertically aligned *!*/
+/*.mat-form-field-wrapper {*/
+/*  padding: 0 12px;             !* Inner padding for input text and icons *!*/
+/*}*/
+
+/*!* Adjust height and alignment of the search field *!*/
+/*.mat-form-field {*/
+/*  height: 20px;                !* Set a consistent height for the field *!*/
+/*  display: flex;               !* Ensures the field aligns with container *!*/
+/*  align-items: center;         !* Centers input text vertically *!*/
+/*}*/
+
+/*!* Optional: Style the input placeholder and text *!*/
+/*.mat-input-element {*/
+/*  font-size: 14px;             !* Adjust font size for readability *!*/
+/*  line-height: 36px;           !* Match the height to ensure vertical alignment *!*/
+/*  !*padding: 0 8px;*!*/
+/*}*/
+
+/*!* Style the search button (suffix) *!*/
+/*.mat-icon-button {*/
+/*  border-radius: 50%;          !* Make the search button fully circular *!*/
+/*  padding: 6px;                !* Ensure button has padding and is not too large *!*/
+/*  font-size: 18px;             !* Adjust icon size *!*/
+/*}*/
+
+/*!* Profile Menu Styles *!*/
+/*.profile-menu-content {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  padding: 16px;*/
+/*  width: 200px; !* Fixed width for consistency *!*/
+/*}*/
+
+/*.profile-picture {*/
+/*  width: 48px;*/
+/*  height: 48px;*/
+/*  border-radius: 50%;*/
+/*  margin-bottom: 12px;*/
+/*}*/
+
+/*.username {*/
+/*  font-size: 14px;*/
+/*  font-weight: bold;*/
+/*  margin-bottom: 16px;*/
+/*  text-align: center;*/
+/*}*/
+
+/*button {*/
+/*  width: 100%;*/
+/*  margin: 4px 0;*/
+/*}*/
+/* General Toolbar Styles */
+body {
+  padding-top: 64px; /* Add padding equal to the height of the navbar */
 }
 
+.toolbar {
+  position: fixed; /* Fix the navbar at the top */
+  top: 0; /* Align it to the very top of the page */
+  left: 0; /* Stretch to the left edge */
+  width: 100%; /* Ensure the navbar spans the full width of the page */
+  z-index: 1000; /* Keep it above other elements */
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  height: 64px;
+  background: #3f51b5; /* Background color */
+  box-sizing: border-box;
+}
 
 /* Spacer to push elements to the right */
 .spacer {
   flex: 1;
 }
-
-/* Style the search container for alignment and positioning */
-.search-container {
-  display: flex;               /* Use flexbox for alignment */
-  align-items: center;         /* Vertically center the mat-form-field */
-  justify-content: flex-start; /* Align to the left (default) */
-  flex: 2;                     /* Adjust width relative to other elements in the toolbar */
-  margin: 0 16px;              /* Add horizontal margins for spacing */
-  height: 100%;                /* Ensure it takes up the full height of the toolbar */
+/* Search Form */
+.search-form {
+  display: flex;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: white;
+  margin-right: auto;
+  margin-left: 16px; /* Add space between the title and the search bar */
 }
 
-/* Ensure mat-form-field styling remains unaffected */
-.search-field {
-  width: 100%;                 /* Search field should fill the container's width */
-  max-width: 400px;            /* Set a max width to prevent it from being too large */
-  background: #f1f1f1;         /* Light background for the field */
-  border-radius: 25px;         /* Rounded corners for the field */
-  overflow: hidden;            /* Prevent overflow for the rounded corners */
+.search-input {
+  border: none;
+  padding: 4px 8px;
+  outline: none;
+  flex: 1;
 }
 
-/* Adjust padding for mat-form-field to make input vertically aligned */
-.mat-form-field-wrapper {
-  padding: 0 12px;             /* Inner padding for input text and icons */
+.search-button {
+  background-color: transparent; /* Transparent background to match the navbar */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+.search-button mat-icon {
+  color: #3f51b5; /* Adjust icon color */
+  font-size: 20px;
 }
 
-/* Adjust height and alignment of the search field */
-.mat-form-field {
-  height: 20px;                /* Set a consistent height for the field */
-  display: flex;               /* Ensures the field aligns with container */
-  align-items: center;         /* Centers input text vertically */
-}
-
-/* Optional: Style the input placeholder and text */
-.mat-input-element {
-  font-size: 14px;             /* Adjust font size for readability */
-  line-height: 36px;           /* Match the height to ensure vertical alignment */
-  padding: 0 8px;
-}
-
-/* Style the search button (suffix) */
-.mat-icon-button {
-  border-radius: 50%;          /* Make the search button fully circular */
-  padding: 6px;                /* Ensure button has padding and is not too large */
-  font-size: 18px;             /* Adjust icon size */
+.search-button:hover mat-icon {
+  color: #283593; /* Change color on hover */
 }
 
 
-/* Account icon styling */
-.navbar-icon {
-  margin-left: auto;
+/* Profile Menu Content */
+.profile-menu-content {
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  align-items: center; /* Center align items */
+  padding: 16px; /* Add padding for spacing */
+  width: 200px; /* Fixed width for consistency */
 }
 
+/* Profile Picture Styling */
+.profile-picture {
+  width: 48px; /* Fixed width */
+  height: 48px; /* Fixed height */
+  border-radius: 50%; /* Circular profile picture */
+  margin-bottom: 12px; /* Space below the picture */
+}
+
+/* Username Styling */
+.username {
+  font-size: 14px; /* Text size for username */
+  font-weight: bold; /* Bold for emphasis */
+  margin-bottom: 16px; /* Add spacing below username */
+  text-align: center; /* Center-align text */
+}
+
+/* Profile Menu Buttons */
+button {
+  width: 100%; /* Full width buttons */
+  margin: 4px 0; /* Spacing between buttons */
+}
