@@ -20,4 +20,10 @@ export class SidenavComponent{
   onSidenavToggle(opened: boolean) {
     this.isSidenavOpen = opened;
   }
+
+  closeSidenav() {
+    if (this.sidenav) {
+      this.sidenav.close();
+    }
+  }
 }

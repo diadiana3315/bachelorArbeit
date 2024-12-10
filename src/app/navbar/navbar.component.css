@@ -1,0 +1,66 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px; /* Adjust padding to move content away from edges */
+  height: 64px; /* Set a consistent height for the navbar */
+  box-sizing: border-box;
+}
+
+
+/* Spacer to push elements to the right */
+.spacer {
+  flex: 1;
+}
+
+/* Style the search container for alignment and positioning */
+.search-container {
+  display: flex;               /* Use flexbox for alignment */
+  align-items: center;         /* Vertically center the mat-form-field */
+  justify-content: flex-start; /* Align to the left (default) */
+  flex: 2;                     /* Adjust width relative to other elements in the toolbar */
+  margin: 0 16px;              /* Add horizontal margins for spacing */
+  height: 100%;                /* Ensure it takes up the full height of the toolbar */
+}
+
+/* Ensure mat-form-field styling remains unaffected */
+.search-field {
+  width: 100%;                 /* Search field should fill the container's width */
+  max-width: 400px;            /* Set a max width to prevent it from being too large */
+  background: #f1f1f1;         /* Light background for the field */
+  border-radius: 25px;         /* Rounded corners for the field */
+  overflow: hidden;            /* Prevent overflow for the rounded corners */
+}
+
+/* Adjust padding for mat-form-field to make input vertically aligned */
+.mat-form-field-wrapper {
+  padding: 0 12px;             /* Inner padding for input text and icons */
+}
+
+/* Adjust height and alignment of the search field */
+.mat-form-field {
+  height: 20px;                /* Set a consistent height for the field */
+  display: flex;               /* Ensures the field aligns with container */
+  align-items: center;         /* Centers input text vertically */
+}
+
+/* Optional: Style the input placeholder and text */
+.mat-input-element {
+  font-size: 14px;             /* Adjust font size for readability */
+  line-height: 36px;           /* Match the height to ensure vertical alignment */
+  padding: 0 8px;
+}
+
+/* Style the search button (suffix) */
+.mat-icon-button {
+  border-radius: 50%;          /* Make the search button fully circular */
+  padding: 6px;                /* Ensure button has padding and is not too large */
+  font-size: 18px;             /* Adjust icon size */
+}
+
+
+/* Account icon styling */
+.navbar-icon {
+  margin-left: auto;
+}
+

@@ -20,6 +20,10 @@ import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProfileComponent } from './profile/profile.component';
+import { LibraryComponent } from './library/library.component';
+import { AddButtonComponent } from './add-button/add-button.component';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RegisterComponent,
     HomepageComponent,
     NavbarComponent,
-    SidenavComponent
+    SidenavComponent,
+    ProfileComponent,
+    LibraryComponent,
+    AddButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +56,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]
