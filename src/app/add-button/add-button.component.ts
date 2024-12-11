@@ -1,42 +1,57 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {AngularFireStorage} from '@angular/fire/compat/storage';
-import {FirestoreService} from '../services/firestore.service';
+// Corrected code with .then() approach
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { FirestoreService } from '../services/firestore.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-add-button',
   templateUrl: './add-button.component.html',
-  styleUrl: './add-button.component.css'
+  styleUrls: ['./add-button.component.css']
 })
 export class AddButtonComponent {
-  @Input() currentFolder: any = null;  // Folder context for creating a folder
-  @Output() folderCreated = new EventEmitter<any>();  // Event when a folder is created
-  @Output() fileUploaded = new EventEmitter<any>();  // Event when a file is uploaded
+  @Input() currentFolder: any = null;
+  @Output() folderCreated = new EventEmitter<any>();
+  @Output() fileUploaded = new EventEmitter<any>();
 
   @ViewChild('fileInput') fileInput: any;
   @ViewChild('imageInput') imageInput: any;
 
   constructor(
-    private firestoreService: FirestoreService,  // Custom service for Firestore operations
-    private storage: AngularFireStorage         // Firebase Storage service
+    private firestoreService: FirestoreService,
+    private storage: AngularFireStorage,
+    private afAuth: AngularFireAuth
   ) {}
 
+  // Get the current user ID using .then()
+  private getCurrentUserId(): string {
+    let userId = '';
+    this.afAuth.currentUser.then(user => {
+      userId = user ? user.uid : ''; // If user exists, get uid
+    });
+    return userId;
+  }
 
   // Create Folder action
   createFolder() {
     const folderName = prompt("Enter folder name:");
     if (folderName) {
-      const newFolder = {
-        name: folderName,
-        folders: [],  // Add subfolder support
-        files: []  // Empty file array initially
-      };
-      if (this.currentFolder) {
-        // If inside a folder, create the folder as a child
-        this.currentFolder.folders.push(newFolder);
-      } else {
-        // Otherwise, create it at the root level
-        this.folderCreated.emit(newFolder);
-      }
+      this.afAuth.currentUser.then(user => {
+        const userId = user ? user.uid : '';  // Get user ID
+        const newFolder = {
+          name: folderName,
+          folders: [],
+          files: [],
+          parentFolderId: this.currentFolder ? this.currentFolder.id : null,
+          userId: userId
+        };
+        if (this.currentFolder) {
+          this.currentFolder.folders.push(newFolder);
+        } else {
+          this.folderCreated.emit(newFolder);
+        }
+        this.firestoreService.saveFolder(newFolder);
+      });
     }
   }
 
@@ -54,7 +69,7 @@ export class AddButtonComponent {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadToFirebaseStorage(file, 'pdf');  // Specify the file type (e.g., 'pdf')
+      this.uploadToFirebaseStorage(file, 'pdf');
     }
   }
 
@@ -62,35 +77,35 @@ export class AddButtonComponent {
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadToFirebaseStorage(file, 'jpg');  // Specify the file type (e.g., 'image')
+      this.uploadToFirebaseStorage(file, 'jpg');
     }
   }
 
   // Upload file to Firebase Storage and save URL to Firestore
   private uploadToFirebaseStorage(file: File, fileType: string) {
-    const filePath = `uploads/${fileType}/${Date.now()}_${file.name}`; // Generate a unique path
+    const filePath = `uploads/${fileType}/${Date.now()}_${file.name}`;
     const fileRef = this.storage.ref(filePath);
-
-    // Upload the file to Firebase Storage
     const uploadTask = this.storage.upload(filePath, file);
 
-    // Get the URL of the uploaded file once it's completed
     uploadTask.snapshotChanges().toPromise().then(() => {
       fileRef.getDownloadURL().toPromise().then((downloadURL) => {
-        this.saveFileMetadataToFirestore(downloadURL, file.name, fileType); // Save file metadata to Firestore
+        this.saveFileMetadataToFirestore(downloadURL, file.name, fileType);
       });
     });
   }
 
-  // Save file metadata (URL, file name) to Firestore
   private saveFileMetadataToFirestore(fileURL: string, fileName: string, fileType: string) {
-    const fileMetadata = {
-      fileURL,
-      fileName,
-      fileType,
-      folderId: this.currentFolder ? this.currentFolder.id : null // If in a folder, associate with folderId
-    };
-
-    this.fileUploaded.emit(fileMetadata);
+    this.afAuth.currentUser.then(user => {
+      const userId = user ? user.uid : '';
+      const fileMetadata = {
+        fileURL,
+        fileName,
+        fileType,
+        parentFolderId: this.currentFolder ? this.currentFolder.id : null,
+        userId
+      };
+      this.fileUploaded.emit(fileMetadata);
+      this.firestoreService.saveFileMetadata(fileMetadata);
+    });
   }
 }

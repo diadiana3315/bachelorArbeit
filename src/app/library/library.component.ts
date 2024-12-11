@@ -1,21 +1,32 @@
-import {Component, OnInit} from '@angular/core';
-import {FirestoreService} from '../services/firestore.service';
+import { Component, OnInit } from '@angular/core';
+import { FirestoreService } from '../services/firestore.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-library',
   templateUrl: './library.component.html',
-  styleUrl: './library.component.css'
+  styleUrls: ['./library.component.css']
 })
-export class LibraryComponent implements OnInit{
+export class LibraryComponent implements OnInit {
   currentFolder: any = null;  // Root folder context for library
   folders: any[] = [];  // Example folder data
-  files: any[] = []; // Array of files in the current context
+  files: any[] = [];  // Array of files in the current context
+  userId: string = ''; // Initialize with an empty string or a default value
 
-  constructor(private firestoreService: FirestoreService) {}
 
-  ngOnInit() {
-    // Fetch folders and files from Firestore on initialization
-    this.loadFoldersAndFiles();
+  constructor(
+    private firestoreService: FirestoreService,
+    private afAuth: AngularFireAuth
+  ) {}
+
+  async ngOnInit() {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      this.userId = user.uid;  // Get the current user's ID
+      this.loadFoldersAndFiles(); // Load folders and files after the user is authenticated
+    } else {
+      console.error('No user logged in');
+    }
   }
 
   onFolderCreated(newFolder: any) {
@@ -40,29 +51,30 @@ export class LibraryComponent implements OnInit{
   }
 
   private loadFoldersAndFiles() {
-    const parentFolderId = this.currentFolder ? this.currentFolder.id : null;
-    this.firestoreService.getFoldersAndFiles(parentFolderId).subscribe((data: any) => {
-      this.folders = data.folders;
-      this.files = data.files;
-    });
+    if (this.userId) {
+      // Subscribe to the observable
+      this.firestoreService.getFoldersAndFiles(this.userId).subscribe(data => {
+        this.folders = data.folders;
+        this.files = data.files;
+      }, error => {
+        console.error('Error loading folders and files', error);
+      });
+    }
   }
 
   private saveFolderToFirestore(folder: any) {
     const folderData = {
       name: folder.name,
       parentFolderId: this.currentFolder ? this.currentFolder.id : null, // Link to parent
+      userId: this.userId // Save under the user's ID
     };
 
-    this.firestoreService.addFolderMetadata(folderData).then((docRef) => {
-      folder.id = docRef.id; // Set the ID for future updates
-      console.log('Folder metadata saved to Firestore');
-    });
+    this.firestoreService.saveFolder(folderData);
   }
 
   navigateToFolder(folder: any) {
     this.currentFolder = folder;
-    this.folders = folder.folders || [];
-    this.files = folder.files || [];
+    this.loadFoldersAndFiles();  // Reload the folder content
   }
 
   navigateToRoot() {

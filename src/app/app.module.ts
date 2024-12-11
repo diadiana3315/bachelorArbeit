@@ -25,6 +25,7 @@ import { LibraryComponent } from './library/library.component';
 import { AddButtonComponent } from './add-button/add-button.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
+import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatButtonModule,
     BrowserAnimationsModule,
     MatMenuModule,
-    MatDialogModule
+    MatDialogModule,
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]

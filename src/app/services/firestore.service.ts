@@ -1,56 +1,51 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import {combineLatest, map} from 'rxjs';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
-  constructor(private firestore: AngularFirestore) {
+  constructor(private firestore: AngularFirestore){
   }
 
-  // Add file metadata to Firestore
-  addFileMetadata(fileMetadata: any) {
-    return this.firestore.collection('files').add(fileMetadata);
+  saveFolder(folder: any) {
+    const folderRef = this.firestore.collection('users').doc(folder.userId).collection('folders');
+    folderRef.add(folder);
   }
 
-  // Add folder metadata to Firestore
-  addFolderMetadata(folderMetadata: any) {
-    return this.firestore.collection('folders').add(folderMetadata);
+  saveFileMetadata(fileMetadata: any) {
+    const fileRef = this.firestore.collection('users').doc(fileMetadata.userId).collection('files');
+    fileRef.add(fileMetadata);
   }
+
 
   // Fetch all folders and files
-  getFoldersAndFiles(parentFolderId: string | null = null) {
-    const folderQuery = this.firestore
-      .collection('folders', (ref) =>
-        parentFolderId ? ref.where('parentFolderId', '==', parentFolderId) : ref
-      )
-      .snapshotChanges()
-      .pipe(
-        map((folders: any) =>
-          folders.map((folder: any) => ({
-            id: folder.payload.doc.id,
-            ...folder.payload.doc.data(),
-          }))
-        )
-      );
+  getFoldersAndFiles(userId: string): Observable<any> {
+    // Firestore query to get folders and files as an observable
+    const foldersObservable = this.firestore
+      .collection('users')
+      .doc(userId)
+      .collection('folders')
+      .snapshotChanges();  // snapshotChanges gives an observable
 
-    const fileQuery = this.firestore
-      .collection('files', (ref) =>
-        parentFolderId ? ref.where('folderId', '==', parentFolderId) : ref
-      )
-      .snapshotChanges()
-      .pipe(
-        map((files: any) =>
-          files.map((file: any) => ({
-            id: file.payload.doc.id,
-            ...file.payload.doc.data(),
-          }))
-        )
-      );
+    const filesObservable = this.firestore
+      .collection('users')
+      .doc(userId)
+      .collection('files')
+      .snapshotChanges();  // snapshotChanges gives an observable
 
-    return combineLatest([folderQuery, fileQuery]).pipe(
-      map(([folders, files]) => ({folders, files}))
-    );
+    // Combine both observables into one object and return it as an observable
+    return new Observable(observer => {
+      foldersObservable.subscribe(foldersSnapshot => {
+        filesObservable.subscribe(filesSnapshot => {
+          const folders = foldersSnapshot.map(doc => doc.payload.doc.data());
+          const files = filesSnapshot.map(doc => doc.payload.doc.data());
+
+          observer.next({ folders, files });
+          observer.complete();
+        });
+      });
+    });
   }
 }
