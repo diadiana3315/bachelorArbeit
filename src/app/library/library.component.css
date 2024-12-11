@@ -10,3 +10,32 @@
 /*  right: 16px;   !* Adjust right margin if you want it in the right corner *!*/
 /*  z-index: 10;   !* Ensure it appears above other elements *!*/
 /*}*/
+
+.library-container {
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  height: 100%;
+}
+
+.folder-section, .file-section {
+  margin-top: 20px;
+}
+
+.folder, .file {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+}
+
+.folder:hover, .file:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.add-button-container {
+  position: absolute;
+  bottom: 16px; /* Adjust this value to control the vertical distance from the bottom */
+  left: 16px;  /* Adjust this value to control the horizontal distance from the left */
+}

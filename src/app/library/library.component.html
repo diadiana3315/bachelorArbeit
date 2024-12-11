@@ -15,3 +15,30 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--</div>-->
+
+<div class="library-container">
+  <h2>Library</h2>
+
+  <button *ngIf="currentFolder" (click)="navigateToRoot()">Back to Root</button>
+
+  <!-- Add Button Component -->
+  <app-add-button
+    [currentFolder]="currentFolder"
+    (folderCreated)="onFolderCreated($event)"
+    (fileUploaded)="onFileUploaded($event)">
+  </app-add-button>
+
+  <div *ngFor="let folder of folders">
+    <h3 (click)="navigateToFolder(folder)" style="cursor: pointer;">{{ folder.name }}</h3>
+<!--    <div *ngIf="folder.files.length > 0">-->
+<!--      <p *ngFor="let file of folder.files">{{ file.fileName }}</p>-->
+<!--    </div>-->
+  </div>
+
+  <!-- Files -->
+  <div>
+    <h3>Files</h3>
+    <p *ngFor="let file of files" (click)="openFile(file)" style="cursor: pointer;">{{ file.fileName }}</p>
+  </div>
+
+</div>

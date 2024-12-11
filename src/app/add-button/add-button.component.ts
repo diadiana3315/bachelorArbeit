@@ -20,8 +20,6 @@ export class AddButtonComponent {
     private storage: AngularFireStorage         // Firebase Storage service
   ) {}
 
-  // Open the menu (already handled by mat-menu)
-  openMenu(event: MouseEvent) {}
 
   // Create Folder action
   createFolder() {
@@ -29,11 +27,12 @@ export class AddButtonComponent {
     if (folderName) {
       const newFolder = {
         name: folderName,
+        folders: [],  // Add subfolder support
         files: []  // Empty file array initially
       };
       if (this.currentFolder) {
         // If inside a folder, create the folder as a child
-        this.currentFolder.files.push(newFolder);
+        this.currentFolder.folders.push(newFolder);
       } else {
         // Otherwise, create it at the root level
         this.folderCreated.emit(newFolder);
@@ -63,7 +62,7 @@ export class AddButtonComponent {
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadToFirebaseStorage(file, 'image');  // Specify the file type (e.g., 'image')
+      this.uploadToFirebaseStorage(file, 'jpg');  // Specify the file type (e.g., 'image')
     }
   }
 
@@ -92,10 +91,6 @@ export class AddButtonComponent {
       folderId: this.currentFolder ? this.currentFolder.id : null // If in a folder, associate with folderId
     };
 
-    // Save file metadata to Firestore
-    this.firestoreService.addFileMetadata(fileMetadata).then(() => {
-      console.log('File metadata saved to Firestore');
-      this.fileUploaded.emit(fileMetadata);  // Emit event to notify file is uploaded
-    });
+    this.fileUploaded.emit(fileMetadata);
   }
 }

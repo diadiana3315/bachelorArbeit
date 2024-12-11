@@ -67,7 +67,7 @@
   <mat-menu #profileMenu="matMenu" class="profile-menu">
     <div class="profile-menu-content">
       <img [src]="profilePictureUrl" alt="Profile Picture" class="profile-picture" />
-      <span class="username">{{ username }}</span>
+      <span class="username">{{ email }}</span>
       <button mat-menu-item (click)="navigateToProfile()">Manage Profile</button>
       <button mat-menu-item color="warn" (click)="logout()">Logout</button>
     </div>

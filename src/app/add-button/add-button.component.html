@@ -1,5 +1,4 @@
 <!-- Add button with options -->
-<body>
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="createFolder()">Create Folder</button>
   <button mat-menu-item (click)="uploadPDF()">Upload PDF</button>
@@ -7,11 +6,13 @@
 </mat-menu>
 
 <!-- Add Button, triggering the menu -->
-<button mat-fab [matMenuTriggerFor]="menu" aria-label="Add Button">
-  <mat-icon>add</mat-icon>
-</button>
+<div class="add-button-container">
+  <button mat-fab [matMenuTriggerFor]="menu" aria-label="Add Button">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
 
 <!-- Hidden input elements for file upload -->
 <input type="file" #fileInput (change)="onFileSelected($event)" style="display:none" />
 <input type="file" #imageInput (change)="onImageSelected($event)" style="display:none" />
-</body>
+

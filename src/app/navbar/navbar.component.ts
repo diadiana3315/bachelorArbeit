@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import {signOut} from '@angular/fire/auth';  // New import for Firebase Auth
+import {signOut} from '@angular/fire/auth';
+import {UserService} from '../services/user.service';  // New import for Firebase Auth
 
 @Component({
   selector: 'app-navbar',
@@ -12,30 +13,56 @@ export class NavbarComponent {
   @Output() toggleSidenav = new EventEmitter<void>();
 
   profilePictureUrl: string = 'https://via.placeholder.com/64'; // Default profile picture
-  username: string = 'User'; // Default username
+  email: string = 'User'; // Default username
+  userId: string | null = null; // To store the user's UID
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private userService: UserService // Inject the UserService
+  ) {
     const auth = getAuth(); // Get Firebase Auth instance
 
-    // Subscribe to the Firebase authentication state changes
+    // Subscribe to Firebase authentication state changes
     onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
-        this.username = user.displayName || 'Anonymous User';  // Set username
-        this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64';  // Set profile picture URL
+        this.userId = user.uid; // Store the UID
+        this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64'; // Set profile picture URL
+        this.email = user.email || 'No Email'; // Set email from Firebase Auth
+
       } else {
-        this.username = 'Anonymous User';  // Default for no user logged in
-        this.profilePictureUrl = 'https://via.placeholder.com/64';  // Default for no profile picture
+        this.userId = null; // Clear UID when no user is logged in
+        this.email = 'Anonymous User'; // Reset username
+        this.profilePictureUrl = 'https://via.placeholder.com/64'; // Reset profile picture
       }
     });
   }
+
 
   toggleSidebar() {
     this.toggleSidenav.emit();
   }
 
+  // loadUserData() {
+  //   if (this.userId) {
+  //     this.userService.getUser(this.userId).subscribe((doc) => {
+  //       if (doc.exists) {
+  //         const userData = doc.data();
+  //         this.email = userData?.username || 'Anonymous User'; // Update username
+  //       } else {
+  //         console.error('User not found in Firestore');
+  //       }
+  //     });
+  //   }
+  // }
+
   // Navigate to Profile Page
   navigateToProfile() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/profile'], {
+      queryParams: {
+        username: this.email,
+        profilePictureUrl: this.profilePictureUrl
+      }
+    });
   }
 
   // Logout
