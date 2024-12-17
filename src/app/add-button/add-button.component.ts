@@ -40,17 +40,10 @@ export class AddButtonComponent {
         const userId = user ? user.uid : '';  // Get user ID
         const newFolder = {
           name: folderName,
-          folders: [],
-          files: [],
           parentFolderId: this.currentFolder ? this.currentFolder.id : null,
           userId: userId
         };
-        if (this.currentFolder) {
-          this.currentFolder.folders.push(newFolder);
-        } else {
-          this.folderCreated.emit(newFolder);
-        }
-        this.firestoreService.saveFolder(newFolder);
+        this.folderCreated.emit(newFolder);
       });
     }
   }
@@ -104,6 +97,7 @@ export class AddButtonComponent {
         parentFolderId: this.currentFolder ? this.currentFolder.id : null,
         userId
       };
+      console.log('Saving file metadata:', fileMetadata);
       this.fileUploaded.emit(fileMetadata);
       this.firestoreService.saveFileMetadata(fileMetadata);
     });

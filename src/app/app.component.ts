@@ -24,6 +24,13 @@ export class AppComponent implements OnInit{
     // Initialize Firebase App
     initializeApp(environment.firebaseConfig); // Initialize Firebase with your config
 
+    // Set Firebase auth persistence to 'local'
+    this.afAuth.setPersistence('local').then(() => {
+      console.log('Auth persistence set to local storage.');
+    }).catch((error) => {
+      console.error('Error setting auth persistence:', error);
+    });
+
     // Listen to Firebase auth state changes
     this.afAuth.authState.subscribe(user => {
       if (!user) {
@@ -39,11 +46,11 @@ export class AppComponent implements OnInit{
         this.shouldDisplayLayout();
       });
   }
-  toggleSidenav() {
-    if (this.sidenav) {
-      this.sidenav.toggle();
-    }
-  }
+  // toggleSidenav() {
+  //   if (this.sidenav) {
+  //     this.sidenav.toggle();
+  //   }
+  // }
 
   shouldDisplayLayout(): boolean {
     // List of routes where Navbar and Sidenav should NOT appear
