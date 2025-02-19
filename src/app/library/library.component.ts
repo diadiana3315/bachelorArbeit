@@ -1,177 +1,17 @@
-// import { Component, OnInit } from '@angular/core';
-// import { FirestoreService } from '../services/firestore.service';
-// import { AngularFireAuth } from '@angular/fire/compat/auth';
-//
-// @Component({
-//   selector: 'app-library',
-//   templateUrl: './library.component.html',
-//   styleUrls: ['./library.component.css']
-// })
-// export class LibraryComponent implements OnInit {
-//   currentFolder: any = null;  // Root folder context for library
-//   folders: any[] = [];  // Example folder data
-//   files: any[] = [];  // Array of files in the current context
-//   userId: string = ''; // Initialize with an empty string or a default value
-//   draggedFile: any = null;
-//
-//
-//   constructor(
-//     private firestoreService: FirestoreService,
-//     private afAuth: AngularFireAuth
-//   ) {}
-//
-//   async ngOnInit() {
-//     await this.afAuth.onAuthStateChanged((user) => {
-//       if (user) {
-//         this.userId = user.uid; // Set the user's ID
-//         console.log('User logged in:', user.uid);
-//         this.loadFoldersAndFiles(); // Load data after ensuring the user is logged in
-//       } else {
-//         console.error('No user logged in.');
-//         this.userId = ''; // Clear userId
-//       }
-//     });
-//   }
-//
-//   onFolderCreated(newFolder: any) {
-//     if (this.currentFolder) {
-//       // If a folder is selected, add the new folder as a subfolder
-//       this.currentFolder.files.push(newFolder);
-//     } else {
-//       // Otherwise, add it at the root level
-//       this.folders.push(newFolder);
-//     }
-//     this.saveFolderToFirestore(newFolder);
-//   }
-//
-//   onFileUploaded(fileMetadata: any) {
-//     if (this.currentFolder) {
-//       // Add the file to the current folder
-//       this.currentFolder.files.push(fileMetadata);
-//     } else {
-//       // Add it to the root context
-//       this.files.push(fileMetadata);
-//     }
-//   }
-//
-//   private loadFoldersAndFiles() {
-//     if (this.userId) {
-//       let query;
-//
-//       if (this.currentFolder && this.currentFolder.id) {
-//         // Load files and folders within the current folder
-//         query = this.firestoreService.getFoldersAndFilesByParentId(this.userId, this.currentFolder.id);
-//       } else {
-//         // Load files and folders in the root
-//         query = this.firestoreService.getFoldersAndFiles(this.userId);
-//       }
-//
-//       query.subscribe(data => {
-//         this.folders = data.folders;
-//         this.files = data.files;
-//
-//         this.groupFilesUnderFolders();
-//       }, error => {
-//         console.error('Error loading folders and files:', error);
-//       });
-//     }
-//   }
-//
-//   private groupFilesUnderFolders() {
-//     this.folders.forEach(folder => {
-//       folder.files = this.files.filter(file => file.parentFolderId === folder.id);
-//     });
-//
-//     // If there is a current folder, attach its files
-//     if (this.currentFolder) {
-//       this.currentFolder.files = this.files.filter(file => file.parentFolderId === this.currentFolder.id);
-//     }
-//   }
-//
-//   // When a file starts being dragged, store it temporarily
-//   onDragStartFile(event: DragEvent, file: any) {
-//     this.draggedFile = file; // Store dragged file temporarily
-//     event.dataTransfer?.setData('text/plain', file.id);  // Optional: Set data for use later
-//   }
-//
-//   // Allow the folder to accept the dragged file
-//   onDragOverFolder(event: DragEvent) {
-//     event.preventDefault();  // Allow the drop
-//     event.stopPropagation();
-//   }
-//
-//   // When a file is dropped into a folder
-//   onDropFile(event: DragEvent, folder: any) {
-//     event.preventDefault();
-//     event.stopPropagation();
-//
-//     if (this.draggedFile) {
-//       if (this.currentFolder) {
-//         this.currentFolder.files = this.currentFolder.files.filter(
-//           (file) => file.id !== this.draggedFile.id
-//         );
-//       }
-//
-//       // Update Firestore to reflect the new folder for the dragged file
-//       this.updateFileParentFolder(this.draggedFile, folder.id);
-//
-//       // After successfully updating the file, update the UI to reflect the changes
-//       folder.files.push(this.draggedFile);  // Add file to the new folder
-//     }
-//   }
-//
-//   // Update Firestore with the new parent folder for the dragged file
-//   private updateFileParentFolder(file: any, newParentFolderId: string) {
-//     file.parentFolderId = newParentFolderId;
-//
-//     this.firestoreService.saveFileMetadata(file).then(() => {
-//       console.log(`File moved to folder ${newParentFolderId}`);
-//       this.loadFoldersAndFiles(); // Reload files and folders to reflect changes
-//     }).catch(error => {
-//       console.error('Error updating file parent folder:', error);
-//     });
-//   }
-//
-//   private saveFolderToFirestore(folder: any) {
-//     const folderData = {
-//       name: folder.name,
-//       parentFolderId: this.currentFolder ? this.currentFolder.id : null, // Link to parent
-//       userId: this.userId // Save under the user's ID
-//     };
-//
-//     this.firestoreService.saveFolder(folderData);
-//   }
-//
-//   navigateToFolder(folder: any) {
-//     console.log('Navigating to folder:', folder); // Check if folder is valid
-//
-//     if (folder && folder.id) {
-//       this.currentFolder = { ...folder, files: folder.files || [] };
-//       this.loadFoldersAndFiles();
-//     } else {
-//       console.error('Invalid folder:', folder);
-//     }
-//   }
-//
-//   navigateToRoot() {
-//     this.currentFolder = null;
-//     this.loadFoldersAndFiles(); // Reload root folders and files
-//   }
-//
-//   openFile(file: any) {
-//     if (file.fileType === 'pdf') {
-//       window.open(file.fileURL, '_blank'); // Open in a new tab
-//     } else {
-//       alert('Unsupported file type!');
-//     }
-//   }
-// }
-
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '../services/firestore.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { FileMetadata } from '../models/file-metadata'; // Import the interface
+import { FileMetadata } from '../models/file-metadata';
+import {DomSanitizer} from '@angular/platform-browser';
+import {FirebaseStorageService} from '../services/firebase-storage.service';
 
+
+/**
+ * LibraryComponent is responsible for managing folders, files, and user interactions
+ * with files in the Firebase Storage and Firestore.
+ * It allows the user to upload files, organize them into folders, view them,
+ * and delete them from both the UI and Firestore.
+ */
 @Component({
   selector: 'app-library',
   templateUrl: './library.component.html',
@@ -180,15 +20,22 @@ import { FileMetadata } from '../models/file-metadata'; // Import the interface
 export class LibraryComponent implements OnInit {
   currentFolder: any = null;
   folders: any[] = [];
-  files: FileMetadata[] = [];  // Use the FileMetadata type here
+  files: FileMetadata[] = [];
   userId: string = '';
-  draggedFile: FileMetadata | null = null;  // Use the FileMetadata type
+  draggedFile: FileMetadata | null = null;
+  selectedPdfUrl: string | null = null; // Store the currently selected PDF URL
 
   constructor(
     private firestoreService: FirestoreService,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private firebaseStorageService: FirebaseStorageService,
+    private sanitizer: DomSanitizer
   ) {}
 
+  /**
+   * Lifecycle hook that is called when the component is initialized.
+   * It checks for an authenticated user and loads the user's folders and files.
+   */
   async ngOnInit() {
     await this.afAuth.onAuthStateChanged((user) => {
       if (user) {
@@ -202,15 +49,24 @@ export class LibraryComponent implements OnInit {
     });
   }
 
+  /**
+   * Adds a newly created folder to the current folder or to the global list of folders.
+   * It also saves the folder to Firestore.
+   * @param newFolder The folder object to be added.
+   */
   onFolderCreated(newFolder: any) {
-    if (this.currentFolder) {
-      this.currentFolder.files.push(newFolder);
-    } else {
-      this.folders.push(newFolder);
-    }
-    this.saveFolderToFirestore(newFolder);
+    // Add new folder to Firestore
+    this.firestoreService.createFolder(newFolder).then(() => {
+      this.loadFoldersAndFiles(); // Reload folders and files
+    }).catch(error => {
+      console.error('Error creating folder:', error);
+    });
   }
 
+  /**
+   * Adds the uploaded file metadata to the UI (either to the current folder or the global list).
+   * @param fileMetadata The metadata of the uploaded file.
+   */
   onFileUploaded(fileMetadata: FileMetadata) {
     if (this.currentFolder) {
       this.currentFolder.files.push(fileMetadata);
@@ -219,27 +75,26 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  /**
+   * Loads folders and files for the current user.
+   * It uses the FirestoreService to retrieve folders and files.
+   */
   private loadFoldersAndFiles() {
     if (this.userId) {
-      let query;
-
-      if (this.currentFolder && this.currentFolder.id) {
-        query = this.firestoreService.getFoldersAndFilesByParentId(this.userId, this.currentFolder.id);
-      } else {
-        query = this.firestoreService.getFoldersAndFiles(this.userId);
-      }
-
-      query.subscribe(data => {
-        this.folders = data.folders;
-        this.files = data.files;
-
-        this.groupFilesUnderFolders();
-      }, error => {
-        console.error('Error loading folders and files:', error);
-      });
+      this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder ? this.currentFolder.id : null)
+        .subscribe(data => {
+          this.folders = data.folders;
+          this.files = data.files;
+          this.groupFilesUnderFolders();
+        }, error => {
+          console.error('Error loading folders and files:', error);
+        });
     }
   }
 
+  /**
+   * Groups files under the corresponding folders based on their parentFolderId.
+   */
   private groupFilesUnderFolders() {
     this.folders.forEach(folder => {
       folder.files = this.files.filter((file: FileMetadata) => file.parentFolderId === folder.id);
@@ -250,73 +105,120 @@ export class LibraryComponent implements OnInit {
     }
   }
 
-  // When a file starts being dragged, store it temporarily
+  /**
+   * Stores the file temporarily when it starts being dragged.
+   * @param event The drag event that contains the dragged file.
+   * @param file The file that is being dragged.
+   */
   onDragStartFile(event: DragEvent, file: FileMetadata) {
     this.draggedFile = file;
-    event.dataTransfer?.setData('text/plain', file.id);
   }
 
-  // Allow the folder to accept the dragged file
+  /**
+   * Allows the folder to accept a dragged file by preventing the default drag-over behavior.
+   * @param event The drag-over event.
+   */
   onDragOverFolder(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  // When a file is dropped into a folder
-// When a file is dropped into a folder
+  /**
+   * Moves a file into a new folder when it is dropped into the folder.
+   * It updates the parentFolderId and saves the changes to Firestore.
+   * @param event The drop event containing the folder where the file is dropped.
+   * @param folder The target folder to drop the file into.
+   */
   onDropFile(event: DragEvent, folder: any) {
     event.preventDefault();
     event.stopPropagation();
 
     if (this.draggedFile) {
-      // Remove the file from the current folder
-      if (this.currentFolder) {
-        // If current folder exists, remove dragged file from it
-        this.currentFolder.files = this.currentFolder.files.filter(
-          (file: FileMetadata) => file.id !== this.draggedFile?.id
-        );
-      }
-
-      // Update the parent folder ID in the dragged file
       this.draggedFile.parentFolderId = folder.id;
-
-      // Save the dragged file's new parent folder in Firestore
-      this.updateFileParentFolder(this.draggedFile, folder.id);
-
-      // After saving, push the file into the new folder
-      folder.files.push(this.draggedFile);
-
-      // Update Firestore with the new folder structure for the dragged file
       this.firestoreService.saveFileMetadata(this.draggedFile).then(() => {
-        console.log(`File moved to folder ${folder.id}`);
+        this.loadFoldersAndFiles(); // Reload after file move
       }).catch(error => {
-        console.error('Error saving moved file:', error);
+        console.error('Error moving file:', error);
       });
     }
   }
 
+  onRightClick(event: MouseEvent, item: any, type: 'file' | 'folder') {
+    event.preventDefault(); // Prevent the default right-click menu
 
-  private updateFileParentFolder(file: FileMetadata, newParentFolderId: string) {
-    file.parentFolderId = newParentFolderId;
+    if (confirm(`Are you sure you want to delete this ${type}?`)) {
+      if (type === 'file') {
+        this.deleteFile(item);
+      } else {
+        this.deleteFolder(item);
+      }
+    }
+  }
 
-    this.firestoreService.saveFileMetadata(file).then(() => {
-      console.log(`File moved to folder ${newParentFolderId}`);
-      this.loadFoldersAndFiles();
+  onSwipeLeft(item: any, type: 'file' | 'folder') {
+    if (confirm(`Are you sure you want to delete this ${type}?`)) {
+      if (type === 'file') {
+        this.deleteFile(item);
+      } else {
+        this.deleteFolder(item);
+      }
+    }
+  }
+
+  /**
+   * Opens a file for viewing. If the file is a PDF, it sanitizes and shows the PDF URL.
+   * @param file The file to open.
+   */
+  openFile(file: FileMetadata) {
+    console.log('Opening file:', file); // Debug log
+    if (['pdf', 'jpg', 'jpeg'].some(type => file.fileType.includes(type))) {
+      this.selectedPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(file.fileURL) as string;
+      console.log('Sanitized PDF URL:', this.selectedPdfUrl);
+
+    } else {
+      alert('Unsupported file type!');
+    }
+  }
+
+  /**
+   * Deletes a file from both the UI and Firestore.
+   * @param file The file metadata of the file to be deleted.
+   */
+  deleteFile(file: FileMetadata) {
+    // Check if file ID and user ID are defined before proceeding
+    if (!file.userId || !file.id) {
+      console.error('File userId or id is undefined');
+      return; // Exit if either the userId or fileId is not available
+    }
+
+    // Call the Firestore service to delete the file
+    this.firestoreService.deleteFile(file.userId, file.id).then(() => {
+      this.loadFoldersAndFiles(); // Reload after deletion
     }).catch(error => {
-      console.error('Error updating file parent folder:', error);
+      console.error('Error deleting file:', error);
     });
   }
 
-  private saveFolderToFirestore(folder: any) {
-    const folderData = {
-      name: folder.name,
-      parentFolderId: this.currentFolder ? this.currentFolder.id : null,
-      userId: this.userId
-    };
 
-    this.firestoreService.saveFolder(folderData);
+  deleteFolder(folder: any) {
+    if (!folder.id || !this.userId) {
+      console.error('Invalid folder or user ID');
+      return;
+    }
+
+    // Call Firestore service to delete the folder
+    this.firestoreService.deleteFolderRecursively(this.userId, folder.id).then(() => {
+      console.log(`Folder ${folder.id} deleted successfully`);
+      this.loadFoldersAndFiles(); // Refresh UI
+    }).catch(error => {
+      console.error('Error deleting folder:', error);
+    });
   }
 
+  /**
+   * Navigates to a specific folder, updating the current folder.
+   * @param folder The folder to navigate to.
+   */
   navigateToFolder(folder: any) {
     console.log('Navigating to folder:', folder);
 
@@ -328,35 +230,11 @@ export class LibraryComponent implements OnInit {
     }
   }
 
+  /**
+   * Navigates to the root folder.
+   */
   navigateToRoot() {
     this.currentFolder = null;
     this.loadFoldersAndFiles();
   }
-
-  openFile(file: FileMetadata) {
-    if (file.fileType === 'pdf') {
-      window.open(file.fileURL, '_blank');
-    } else {
-      alert('Unsupported file type!');
-    }
-  }
-
-  deleteFile(file: FileMetadata) {
-    // Remove file from current folder in the UI
-    if (this.currentFolder) {
-      this.currentFolder.files = this.currentFolder.files.filter(
-        (f: FileMetadata) => f.id !== file.id  // Specify the type of f
-      );
-    }
-
-    // Also remove file from Firestore
-    this.firestoreService.deleteFile(file).then(() => {
-      console.log(`File ${file.id} deleted successfully`);
-      this.loadFoldersAndFiles(); // Reload files and folders to reflect the change
-    }).catch(error => {
-      console.error('Error deleting file:', error);
-    });
-  }
-
-
 }

@@ -26,6 +26,10 @@ import { AddButtonComponent } from './add-button/add-button.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
 import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
+import {AngularFireStorageModule} from '@angular/fire/compat/storage';
+
+// import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
+// import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,7 @@ import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
     ProfileComponent,
     LibraryComponent,
     AddButtonComponent,
+    // PdfViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +50,7 @@ import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    AngularFireStorageModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -62,6 +68,7 @@ import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
     MatMenuModule,
     MatDialogModule,
     AngularFirestoreModule
+    // NgxExtendedPdfViewerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

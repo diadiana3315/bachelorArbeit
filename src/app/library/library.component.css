@@ -1,41 +1,193 @@
-/*!* library.component.css *!*/
+/*!*!* library.component.css *!*!*/
+/*!*.library-container {*!*/
+/*!*  position: relative;  !* Position relative so we can position the button inside it *!*!*/
+/*!*  padding: 16px;*!*/
+/*!*}*!*/
+
+/*!*app-add-button {*!*/
+/*!*  position: absolute;*!*/
+/*!*  bottom: 16px;  !* Adjust bottom margin if you want it at the bottom *!*!*/
+/*!*  right: 16px;   !* Adjust right margin if you want it in the right corner *!*!*/
+/*!*  z-index: 10;   !* Ensure it appears above other elements *!*!*/
+/*!*}*!*/
+
 /*.library-container {*/
-/*  position: relative;  !* Position relative so we can position the button inside it *!*/
 /*  padding: 16px;*/
+/*  font-family: Arial, sans-serif;*/
+/*  height: 100%;*/
 /*}*/
 
-/*app-add-button {*/
-/*  position: absolute;*/
-/*  bottom: 16px;  !* Adjust bottom margin if you want it at the bottom *!*/
-/*  right: 16px;   !* Adjust right margin if you want it in the right corner *!*/
-/*  z-index: 10;   !* Ensure it appears above other elements *!*/
+/*!*.folder-section, .file-section {*!*/
+/*!*  margin-top: 20px;*!*/
+/*!*}*!*/
+
+/*!*.folder, .file {*!*/
+/*!*  padding: 10px;*!*/
+/*!*  border: 1px solid #ddd;*!*/
+/*!*  border-radius: 4px;*!*/
+/*!*  margin-bottom: 8px;*!*/
+/*!*  background-color: #f9f9f9;*!*/
+/*!*}*!*/
+
+/*.folder:hover, .file:hover {*/
+/*  background-color: #f1f1f1;*/
+/*  cursor: pointer;*/
 /*}*/
+
+/*.add-button-container {*/
+/*  position: absolute;*/
+/*  bottom: 16px; !* Adjust this value to control the vertical distance from the bottom *!*/
+/*  left: 16px;  !* Adjust this value to control the horizontal distance from the left *!*/
+/*}*/
+
+/*.library-header {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  gap: 8px;*/
+/*}*/
+
+/*.library-header h2 {*/
+/*  margin: 0;*/
+/*}*/
+
+/*.folders-container {*/
+/*  display: grid;*/
+/*  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); !* Adjust folder width *!*/
+/*  gap: 10px; !* Space between items *!*/
+/*  margin-top: 10px;*/
+/*}*/
+
+/*.folder-item {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  padding: 16px;*/
+/*  text-align: center;*/
+/*  cursor: pointer;*/
+/*  transition: transform 0.2s ease; !* Add a hover effect *!*/
+/*}*/
+
+/*.folder-item {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  text-align: center;*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*.folder-item:hover .folder-icon {*/
+/*  color: #3f51b5; !* Highlight icon color on hover *!*/
+/*}*/
+
+/*.folder-icon {*/
+/*  font-size: 48px; !* Larger icon for folders *!*/
+/*  color: #3f51b5; !* Default folder color *!*/
+/*}*/
+
+/*.folder-item p {*/
+/*  margin-top: 8px;*/
+/*  font-size: 16px;*/
+/*  color: #333; !* Text color *!*/
+/*}*/
+
+/*@media (max-width: 600px) {*/
+/*  .folder-item {*/
+/*    font-size: 14px; !* Adjust font size for smaller screens *!*/
+/*  }*/
+/*}*/
+
+/*.folders-container {*/
+/*  display: grid;*/
+/*  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); !* Adjust folder width *!*/
+/*  gap: 10px; !* Space between items *!*/
+/*  margin-top: 10px;*/
+/*}*/
+
+/*.folder-item {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  text-align: center;*/
+/*  cursor: pointer;*/
+/*  transition: transform 0.2s ease; !* Add a hover effect *!*/
+/*  overflow: visible; !* Ensure icons are fully visible *!*/
+/*}*/
+
+/*.folder-icon {*/
+/*  font-size: 72px; !* Increase icon size *!*/
+/*  color: #3f51b5; !* Default folder color *!*/
+/*}*/
+
+/*.folder-item:hover .folder-icon {*/
+/*  color: #1e88e5; !* Highlight icon color on hover *!*/
+/*}*/
+
+/*.folder-item p {*/
+/*  margin-top: 8px;*/
+/*  font-size: 16px;*/
+/*  color: #333; !* Text color *!*/
+/*  !*overflow-wrap: break-word; !* Ensure long names wrap *!*!*/
+/*  !*word-wrap: break-word;*!*/
+/*  text-align: center;*/
+/*}*/
+
+/*@media (max-width: 600px) {*/
+/*  .folder-item {*/
+/*    font-size: 14px; !* Adjust font size for smaller screens *!*/
+/*  }*/
+/*}*/
+
 
 .library-container {
   padding: 16px;
   font-family: Arial, sans-serif;
   height: 100%;
+  box-sizing: border-box; /* Ensure padding doesn't affect layout */
 }
 
-.folder-section, .file-section {
-  margin-top: 20px;
-}
-
-.folder, .file {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  background-color: #f9f9f9;
-}
-
-.folder:hover, .file:hover {
-  background-color: #f1f1f1; 
+.folder-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   cursor: pointer;
+  transition: transform 0.2s ease;
+  overflow: visible; /* Ensure content isn't clipped */
+  width: 100%; /* Ensure folder item spans its grid cell */
+  height: auto; /* Allow flexible height based on content */
 }
 
-.add-button-container {
-  position: absolute;
-  bottom: 16px; /* Adjust this value to control the vertical distance from the bottom */
-  left: 16px;  /* Adjust this value to control the horizontal distance from the left */
+.folders-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid layout */
+  gap: 16px; /* Add spacing between grid items */
+  margin-top: 10px;
+}
+
+.folder-icon {
+  font-size: 96px; /* Larger icon size */
+  color: #3f51b5; /* Default folder icon color */
+  display: block; /* Ensure it takes up full space */
+  margin-right: 8px;
+}
+
+.folder-item:hover .folder-icon {
+  color: #1e88e5; /* Change icon color on hover */
+}
+
+.folder-item p {
+  margin-top: 8px;
+  font-size: 18px;
+  color: #333; /* Text color */
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .folder-item {
+    font-size: 14px;
+  }
 }

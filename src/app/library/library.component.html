@@ -58,11 +58,101 @@
 
 <!--</div>-->
 
-<div class="library-container">
-  <h2>Library</h2>
+<!--<body>-->
+<!--<div class="library-container">-->
+<!--  <div class="library-header">-->
+<!--    &lt;!&ndash; Back button only visible when inside a folder &ndash;&gt;-->
+<!--    <button *ngIf="currentFolder" mat-icon-button (click)="navigateToRoot()">-->
+<!--      <mat-icon>arrow_back</mat-icon>-->
+<!--    </button>-->
 
-  <!-- Show the "Back to Root" button when inside a folder -->
-  <button *ngIf="currentFolder" (click)="navigateToRoot()">Back</button>
+<!--    <h2>Library</h2>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Show the "Back to Root" button when inside a folder &ndash;&gt;-->
+<!--&lt;!&ndash;  <button *ngIf="currentFolder" (click)="navigateToRoot()">Back</button>&ndash;&gt;-->
+
+<!--  &lt;!&ndash; Add Button Component: Visible for all folders, including root &ndash;&gt;-->
+<!--  <app-add-button-->
+<!--    [currentFolder]="currentFolder"-->
+<!--    (folderCreated)="onFolderCreated($event)"-->
+<!--    (fileUploaded)="onFileUploaded($event)">-->
+<!--  </app-add-button>-->
+
+<!--&lt;!&ndash;  <app-pdf-viewer *ngIf="selectedPdfUrl" [pdfUrl]="selectedPdfUrl" (closeViewer)="selectedPdfUrl = null"></app-pdf-viewer>&ndash;&gt;-->
+
+<!--  &lt;!&ndash; Display Folders and Files &ndash;&gt;-->
+<!--  <div *ngIf="currentFolder === null">-->
+<!--    &lt;!&ndash; Root folder view &ndash;&gt;-->
+<!--    <div class="folders-container">-->
+<!--      <div-->
+<!--        class="folder-item"-->
+<!--        *ngFor="let folder of folders"-->
+<!--        (click)="navigateToFolder(folder)"-->
+<!--        (dragover)="onDragOverFolder($event)"-->
+<!--        (drop)="onDropFile($event, folder)">-->
+<!--&lt;!&ndash;        (dragleave)="onDragLeaveFolder($event)">&ndash;&gt;-->
+<!--        <mat-icon class="folder-icon">folder</mat-icon>-->
+<!--        <p>{{ folder.name }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Files at the root level &ndash;&gt;-->
+<!--    <div>-->
+<!--      <h3>Files</h3>-->
+<!--      <p *ngFor="let file of files"-->
+<!--         draggable="true"-->
+<!--         (click)="openFile(file)"-->
+<!--         (dragstart)="onDragStartFile($event, file)"-->
+<!--         style="cursor: pointer;">-->
+<!--        {{ file.fileName }}-->
+<!--      </p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div *ngIf="currentFolder !== null">-->
+<!--    &lt;!&ndash; Inside a folder view &ndash;&gt;-->
+
+<!--    &lt;!&ndash; Display subfolders of the current folder &ndash;&gt;-->
+<!--    <div class="folders-container">-->
+<!--      <div-->
+<!--        class="folder-item"-->
+<!--        *ngFor="let folder of currentFolder.subfolders"-->
+<!--        (click)="navigateToFolder(folder)"-->
+<!--        (dragover)="onDragOverFolder($event)"-->
+<!--        (drop)="onDropFile($event, folder)">-->
+<!--&lt;!&ndash;        (dragleave)="onDragLeaveFolder($event)">&ndash;&gt;-->
+<!--        <mat-icon class="folder-icon">folder</mat-icon>-->
+<!--        <p>{{ folder.name }}</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Files inside the current folder &ndash;&gt;-->
+<!--    <div>-->
+<!--      <h3>Files</h3>-->
+<!--      <p *ngFor="let file of currentFolder.files"-->
+<!--         draggable="true"-->
+<!--         (click)="openFile(file)"-->
+<!--         (dragstart)="onDragStartFile($event, file)"-->
+<!--         style="cursor: pointer;">-->
+<!--        {{ file.fileName }}-->
+<!--&lt;!&ndash;        <button (click)="deleteFile(file)">Delete</button> &lt;!&ndash; Add a delete button &ndash;&gt;&ndash;&gt;-->
+<!--      </p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--</div>-->
+<!--</body>-->
+
+<body>
+<div class="library-container">
+  <div class="library-header">
+    <!-- Back button only visible when inside a folder -->
+    <button *ngIf="currentFolder" mat-icon-button (click)="navigateToRoot()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Library</h2>
+  </div>
 
   <!-- Add Button Component: Visible for all folders, including root -->
   <app-add-button
@@ -71,64 +161,42 @@
     (fileUploaded)="onFileUploaded($event)">
   </app-add-button>
 
-  <!-- Display Folders and Files -->
-  <div *ngIf="currentFolder === null">
-    <!-- Root folder view -->
-    <div class="folders-container">
-      <div
-        class="folder-item"
-        *ngFor="let folder of folders"
-        (click)="navigateToFolder(folder)"
-        (dragover)="onDragOverFolder($event)"
-        (drop)="onDropFile($event, folder)">
-<!--        (dragleave)="onDragLeaveFolder($event)">-->
-        <mat-icon class="folder-icon">folder</mat-icon>
-        <p>{{ folder.name }}</p>
-      </div>
-    </div>
+  <!-- Display Folders -->
+  <div class="folders-container">
+    <div
+      class="folder-item"
+      *ngFor="let folder of folders"
+      (click)="navigateToFolder(folder)"
+      (contextmenu)="onRightClick($event, folder, 'folder')"
+      (swiperight)="onSwipeLeft(folder, 'folder')"
+      (dragover)="onDragOverFolder($event)"
+      (drop)="onDropFile($event, folder)">
 
-    <!-- Files at the root level -->
-    <div>
-      <h3>Files</h3>
-      <p *ngFor="let file of files"
-         draggable="true"
-         (click)="openFile(file)"
-         (dragstart)="onDragStartFile($event, file)"
-         style="cursor: pointer;">
-        {{ file.fileName }}
-      </p>
+      <mat-icon class="folder-icon">folder</mat-icon>
+      <p class="folder-name">{{ folder.name }}</p>
     </div>
   </div>
 
-  <div *ngIf="currentFolder !== null">
-    <!-- Inside a folder view -->
+  <!-- Display Files -->
+  <div class="files-container">
+    <h3>Files</h3>
+    <mat-icon class="file-icon">insert_drive_file</mat-icon>
 
-    <!-- Display subfolders of the current folder -->
-    <div class="folders-container">
-      <div
-        class="folder-item"
-        *ngFor="let folder of currentFolder.subfolders"
-        (click)="navigateToFolder(folder)"
-        (dragover)="onDragOverFolder($event)"
-        (drop)="onDropFile($event, folder)">
-<!--        (dragleave)="onDragLeaveFolder($event)">-->
-        <mat-icon class="folder-icon">folder</mat-icon>
-        <p>{{ folder.name }}</p>
-      </div>
-    </div>
-
-    <!-- Files inside the current folder -->
-    <div>
-      <h3>Files</h3>
-      <p *ngFor="let file of currentFolder.files"
-         draggable="true"
-         (click)="openFile(file)"
-         (dragstart)="onDragStartFile($event, file)"
-         style="cursor: pointer;">
-        {{ file.fileName }}
-        <button (click)="deleteFile(file)">Delete</button> <!-- Add a delete button -->
+    <p *ngFor="let file of files"
+       draggable="true"
+       (click)="openFile(file)"
+       (contextmenu)="onRightClick($event, file, 'file')"
+       (swipeleft)="onSwipeLeft(file, 'file')"
+       (dragstart)="onDragStartFile($event, file)"
+       style="cursor: pointer;">
+      {{ file.fileName }}
       </p>
-    </div>
+<!--      <p class="file-name">{{ file.fileName }}</p>-->
   </div>
 
+<!--  &lt;!&ndash; Context Menu for Right Click (Delete) &ndash;&gt;-->
+<!--  <div class="context-menu" *ngIf="contextMenuVisible" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">-->
+<!--    <button (click)="deleteItem(contextMenuItem)">Delete</button>-->
+<!--  </div>-->
 </div>
+</body>

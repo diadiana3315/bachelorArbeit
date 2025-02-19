@@ -1,8 +1,7 @@
-// Corrected code with .then() approach
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FirestoreService } from '../services/firestore.service';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import {FirebaseStorageService} from '../services/firebase-storage.service';
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-add-button',
@@ -19,87 +18,88 @@ export class AddButtonComponent {
 
   constructor(
     private firestoreService: FirestoreService,
-    private storage: AngularFireStorage,
-    private afAuth: AngularFireAuth
+    private firebaseStorageService: FirebaseStorageService,
+    private userService: UserService
   ) {}
 
-  // Get the current user ID using .then()
-  private getCurrentUserId(): string {
-    let userId = '';
-    this.afAuth.currentUser.then(user => {
-      userId = user ? user.uid : ''; // If user exists, get uid
-    });
-    return userId;
-  }
-
-  // Create Folder action
-  createFolder() {
+  /**
+   * Handle folder creation by prompting the user for a folder name.
+   * Once the user provides a name, it creates a folder object and emits an event for parent component to handle the creation.
+   */
+  async createFolder() {
     const folderName = prompt("Enter folder name:");
     if (folderName) {
-      this.afAuth.currentUser.then(user => {
-        const userId = user ? user.uid : '';  // Get user ID
-        const newFolder = {
-          name: folderName,
-          parentFolderId: this.currentFolder ? this.currentFolder.id : null,
-          userId: userId
-        };
-        this.folderCreated.emit(newFolder);
-      });
+      const userId = await this.userService.getCurrentUserId();
+      const newFolder = {
+        name: folderName,
+        parentFolderId: this.currentFolder ? this.currentFolder.id : null,
+        userId: userId
+      };
+
+      try {
+        await this.firestoreService.createFolder(newFolder); // Call the createFolder method from the service
+        console.log('Folder created successfully');
+      } catch (error) {
+        console.error('Error creating folder:', error); // Handle any errors
+      }
     }
   }
 
-  // Handle PDF Upload
+  /**
+   * Trigger the file input for PDF upload by simulating a click event on the file input element.
+   */
   uploadPDF() {
     this.fileInput.nativeElement.click();
   }
 
-  // Handle Image Upload
+  /**
+   * Trigger the image input for image upload by simulating a click event on the image input element.
+   */
   uploadPhoto() {
     this.imageInput.nativeElement.click();
   }
 
-  // On File Selected
-  onFileSelected(event: any) {
+  /**
+   * Handle the file selection event for PDF uploads.
+   * This method is triggered when a user selects a file for uploading.
+   * @param event The event containing the selected file.
+   */
+  async onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadToFirebaseStorage(file, 'pdf');
+      try {
+        const userId = await this.userService.getCurrentUserId();
+        const uploadedFile = await this.firestoreService.uploadAndSaveFile(
+          file,
+          this.currentFolder ? this.currentFolder.id : null,
+          userId
+        );
+
+        console.log('File uploaded successfully:', uploadedFile);
+        this.fileUploaded.emit(uploadedFile);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     }
   }
 
-  // On Image Selected
-  onImageSelected(event: any) {
+  /**
+   * Handle the image selection event for image uploads.
+   * This method is triggered when a user selects an image file for uploading.
+   * @param event The event containing the selected image file.
+   */
+  async onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.uploadToFirebaseStorage(file, 'jpg');
+      try {
+        const userId = await this.userService.getCurrentUserId();
+        const uploadedFile = await this.firestoreService.uploadAndSaveFile(file, this.currentFolder ? this.currentFolder.id : null, userId);
+        console.log('Image uploaded successfully:', uploadedFile);
+        this.fileUploaded.emit(uploadedFile);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
   }
 
-  // Upload file to Firebase Storage and save URL to Firestore
-  private uploadToFirebaseStorage(file: File, fileType: string) {
-    const filePath = `uploads/${fileType}/${Date.now()}_${file.name}`;
-    const fileRef = this.storage.ref(filePath);
-    const uploadTask = this.storage.upload(filePath, file);
-
-    uploadTask.snapshotChanges().toPromise().then(() => {
-      fileRef.getDownloadURL().toPromise().then((downloadURL) => {
-        this.saveFileMetadataToFirestore(downloadURL, file.name, fileType);
-      });
-    });
-  }
-
-  private saveFileMetadataToFirestore(fileURL: string, fileName: string, fileType: string) {
-    this.afAuth.currentUser.then(user => {
-      const userId = user ? user.uid : '';
-      const fileMetadata = {
-        fileURL,
-        fileName,
-        fileType,
-        parentFolderId: this.currentFolder ? this.currentFolder.id : null,
-        userId
-      };
-      console.log('Saving file metadata:', fileMetadata);
-      this.fileUploaded.emit(fileMetadata);
-      this.firestoreService.saveFileMetadata(fileMetadata);
-    });
-  }
 }
