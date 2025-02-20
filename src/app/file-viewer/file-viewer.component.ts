@@ -1,29 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DomSanitizer} from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-file-viewer',
   templateUrl: './file-viewer.component.html',
-  styleUrl: './file-viewer.component.css'
+  styleUrls: ['./file-viewer.component.css']
 })
-export class FileViewerComponent implements OnInit{
+export class FileViewerComponent implements OnInit {
   fileUrl: string | null = null;
+  browserLanguage: string = 'en-US'; // Default language
 
-  constructor(private sanitizer: DomSanitizer,
-              private router: Router,
-              private route: ActivatedRoute
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
       this.fileUrl = params['fileURL'];
-      console.log('File URL from query params:', this.fileUrl);
-
       if (!this.fileUrl) {
-        console.error('No file URL provided, redirecting to library');
         this.router.navigate(['/library']);
       }
     });
+
+    // Detect browser's default language
+    this.browserLanguage = navigator.language || 'en-US';
   }
 }

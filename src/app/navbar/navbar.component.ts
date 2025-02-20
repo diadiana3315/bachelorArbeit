@@ -18,7 +18,6 @@ export class NavbarComponent {
 
   constructor(
     private router: Router,
-    private userService: UserService // Inject the UserService
   ) {
     const auth = getAuth(); // Get Firebase Auth instance
 

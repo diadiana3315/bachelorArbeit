@@ -1,0 +1,33 @@
+<div id="toolbarViewer" class="custom-toolbar">
+  <!-- Left Section -->
+  <div id="toolbarViewerLeft">
+    <!-- Back Arrow Button -->
+    <button class="back-button" mat-icon-button (click)="goBackToLibrary()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <pdf-toggle-sidebar></pdf-toggle-sidebar>
+    <div class="toolbarButtonSpacer"></div>
+    <pdf-paging-area></pdf-paging-area>
+  </div>
+
+  <!-- Center Section -->
+  <pdf-zoom-toolbar></pdf-zoom-toolbar>
+
+  <!-- Right Section -->
+  <div id="toolbarViewerRight">
+    <pdf-rotate-page></pdf-rotate-page>
+    <pdf-download></pdf-download>
+    <pdf-print></pdf-print>
+    <pdf-highlight-editor></pdf-highlight-editor>
+    <pdf-text-editor></pdf-text-editor>
+    <pdf-draw-editor></pdf-draw-editor>
+    <pdf-vertical-scroll-mode></pdf-vertical-scroll-mode>
+    <pdf-horizontal-scroll></pdf-horizontal-scroll>
+    <pdf-no-spread></pdf-no-spread>
+    <pdf-even-spread></pdf-even-spread>
+    <pdf-odd-spread></pdf-odd-spread>
+    <div class="verticalToolbarSeparator hiddenSmallView"></div>
+    <pdf-toggle-secondary-toolbar></pdf-toggle-secondary-toolbar>
+  </div>
+</div>

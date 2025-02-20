@@ -54,7 +54,9 @@ export class AppComponent implements OnInit{
 
   shouldDisplayLayout(): boolean {
     // List of routes where Navbar and Sidenav should NOT appear
-    const excludedRoutes = ['/login', '/register'];
-    return !excludedRoutes.includes(this.router.url);
+    const excludedRoutes = ['/login', '/register', '/viewer'];
+    // return !excludedRoutes.includes(this.router.url);
+    return !excludedRoutes.some(route => this.router.url.startsWith(route));
+
   }
 }

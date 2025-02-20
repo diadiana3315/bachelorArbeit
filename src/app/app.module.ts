@@ -29,6 +29,8 @@ import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
 import {AngularFireStorageModule} from '@angular/fire/compat/storage';
 import { FileViewerComponent } from './file-viewer/file-viewer.component';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
+import { CustomToolbarComponent } from './custom-toolbar/custom-toolbar.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 // import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 // import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
@@ -45,6 +47,7 @@ import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
     LibraryComponent,
     AddButtonComponent,
     FileViewerComponent,
+    CustomToolbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +75,7 @@ import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
     AngularFirestoreModule,
     NgxExtendedPdfViewerModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow custom elements
   providers: [],
   bootstrap: [AppComponent]
 })
