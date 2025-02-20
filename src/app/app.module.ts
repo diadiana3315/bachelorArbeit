@@ -27,6 +27,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
 import {AngularFirestoreModule} from '@angular/fire/compat/firestore';
 import {AngularFireStorageModule} from '@angular/fire/compat/storage';
+import { FileViewerComponent } from './file-viewer/file-viewer.component';
+import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 
 // import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 // import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
@@ -42,7 +44,7 @@ import {AngularFireStorageModule} from '@angular/fire/compat/storage';
     ProfileComponent,
     LibraryComponent,
     AddButtonComponent,
-    // PdfViewerComponent,
+    FileViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,8 +69,8 @@ import {AngularFireStorageModule} from '@angular/fire/compat/storage';
     BrowserAnimationsModule,
     MatMenuModule,
     MatDialogModule,
-    AngularFirestoreModule
-    // NgxExtendedPdfViewerModule
+    AngularFirestoreModule,
+    NgxExtendedPdfViewerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,8 @@
+<div *ngIf="fileUrl">
+  <ngx-extended-pdf-viewer
+    [src]="fileUrl"
+    useBrowserLocale="true"
+    height="90vh"
+  ></ngx-extended-pdf-viewer>
+</div>
+<p *ngIf="!fileUrl">No file selected or unsupported file type.</p>

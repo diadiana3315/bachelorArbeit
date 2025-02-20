@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FileMetadata } from '../models/file-metadata';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
+import {Router} from '@angular/router';
 
 
 /**
@@ -23,13 +24,14 @@ export class LibraryComponent implements OnInit {
   files: FileMetadata[] = [];
   userId: string = '';
   draggedFile: FileMetadata | null = null;
-  selectedPdfUrl: string | null = null; // Store the currently selected PDF URL
+  selectedFile: FileMetadata | null = null; // Store the currently selected PDF URL
 
   constructor(
     private firestoreService: FirestoreService,
     private afAuth: AngularFireAuth,
     private firebaseStorageService: FirebaseStorageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {}
 
   /**
@@ -166,15 +168,17 @@ export class LibraryComponent implements OnInit {
   }
 
   /**
-   * Opens a file for viewing. If the file is a PDF, it sanitizes and shows the PDF URL.
+   * Opens a file for viewing.
    * @param file The file to open.
    */
   openFile(file: FileMetadata) {
-    console.log('Opening file:', file); // Debug log
-    if (['pdf', 'jpg', 'jpeg'].some(type => file.fileType.includes(type))) {
-      this.selectedPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(file.fileURL) as string;
-      console.log('Sanitized PDF URL:', this.selectedPdfUrl);
+    console.log('Opening file:', file);
 
+    if (['pdf', 'jpg', 'jpeg'].some(type => file.fileType.includes(type))) {
+
+      this.router.navigate(['/viewer'], {
+        queryParams: { fileURL: file.fileURL }, // Pass fileURL as a query parameter
+      });
     } else {
       alert('Unsupported file type!');
     }

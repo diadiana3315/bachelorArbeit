@@ -5,6 +5,7 @@ import {RegisterComponent} from './register/register.component';
 import {HomepageComponent} from './homepage/homepage.component';
 import {ProfileComponent} from './profile/profile.component';
 import {LibraryComponent} from './library/library.component';
+import {FileViewerComponent} from './file-viewer/file-viewer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'homepage', component: HomepageComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'library', component: LibraryComponent }
+  { path: 'library', component: LibraryComponent },
+  { path: 'viewer', component: FileViewerComponent }
 ];
 
 @NgModule({
