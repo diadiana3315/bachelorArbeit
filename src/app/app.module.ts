@@ -31,9 +31,9 @@ import { FileViewerComponent } from './file-viewer/file-viewer.component';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import { CustomToolbarComponent } from './custom-toolbar/custom-toolbar.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-// import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
-// import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
+import { StreakCalendarComponent } from './streak-calendar/streak-calendar.component';
+import {CalendarModule, DateAdapter} from 'angular-calendar';
+import {adapterFactory} from 'angular-calendar/date-adapters/moment';
 
 @NgModule({
   declarations: [
@@ -48,6 +48,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     AddButtonComponent,
     FileViewerComponent,
     CustomToolbarComponent,
+    StreakCalendarComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +75,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     MatDialogModule,
     AngularFirestoreModule,
     NgxExtendedPdfViewerModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow custom elements
   providers: [],

@@ -1,0 +1,44 @@
+<!--<div class="calendar-container">-->
+<!--  <h2>{{ currentMonth }} {{ currentYear }}</h2>-->
+
+<!--  &lt;!&ndash; Weekday Names Row &ndash;&gt;-->
+<!--  <div class="weekdays-row">-->
+<!--    <div class="day" *ngFor="let day of daysOfWeek">-->
+<!--      {{ day }}-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="calendar-grid">-->
+<!--    <div class="day" *ngFor="let day of daysInMonth">-->
+<!--      {{ day }}-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- streak-calendar.component.html -->
+
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button mat-icon-button (click)="changeMonth(-1)">
+      <mat-icon>arrow_back</mat-icon>  <!-- Left arrow icon -->
+    </button>
+
+    <h2>{{ currentMonth }} {{ currentYear }}</h2>
+
+    <button mat-icon-button (click)="changeMonth(1)">
+      <mat-icon>arrow_forward</mat-icon>  <!-- Right arrow icon -->
+    </button>
+  </div>
+
+  <!-- Days of the Week Row -->
+  <div class="weekdays">
+    <div *ngFor="let day of daysOfWeek" class="weekday">{{ day }}</div>
+  </div>
+
+  <!-- Calendar Days -->
+  <div class="cal-days">
+    <div *ngFor="let day of daysInMonth" class="cal-day" >
+      <span *ngIf="day">{{ day }}</span>
+    </div>
+  </div>
+</div>
