@@ -1,10 +1,6 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import {FileViewerComponent} from '../file-viewer/file-viewer.component';
-import {AngularFireStorage} from '@angular/fire/compat/storage';
-import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AngularFireAuth} from '@angular/fire/compat/auth';
-import {finalize} from 'rxjs';
 import {FileMetadata} from '../models/file-metadata';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {FirestoreService} from '../services/firestore.service';

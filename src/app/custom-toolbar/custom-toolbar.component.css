@@ -92,14 +92,16 @@ mat-icon {
 }
 
 
-/*pdf-shy-button {*/
-/*  !* Ensure consistent size and positioning *!*/
-/*  margin-left: 8px;*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*}*/
+pdf-shy-button {
+  /* Ensure consistent size and positioning */
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+}
 
-/*pdf-shy-button:hover {*/
-/*  !* Optional: Remove the default hover background if needed *!*/
-/*  background-color: transparent;*/
-/*}*/
+
+mat-icon {
+  font-size: 24px;
+  color: #000;
+}
+

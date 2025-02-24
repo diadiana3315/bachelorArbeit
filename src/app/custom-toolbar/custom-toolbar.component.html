@@ -17,16 +17,15 @@
   <!-- Right Section -->
   <div id="toolbarViewerRight">
     <pdf-shy-button
+      [cssClass]=" 'always-visible' | responsiveCSSClass "
       title="Save"
-      primaryToolbarId="save"
       l10nId="save_button"
       [action]="onClick"
       [order]="3400"
       [closeOnClick]="false"
-      image="<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'>
-           <path d='M...'/>
-         </svg>"
+      aria-label="Save"
     >
+      <mat-icon aria-label="Save">save</mat-icon>
     </pdf-shy-button>
 
 <!--    <pdf-download></pdf-download>-->
