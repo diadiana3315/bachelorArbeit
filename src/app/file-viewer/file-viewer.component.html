@@ -1,4 +1,4 @@
-<div *ngIf="fileUrl" class="file-viewer-container">
+<div *ngIf="fileUrl && fileMetadata" class="file-viewer-container">
   <ngx-extended-pdf-viewer
     [src]="fileUrl"
     [customToolbar]="customToolbarTemplate"
@@ -8,7 +8,8 @@
   ></ngx-extended-pdf-viewer>
     <!-- Custom Toolbar -->
     <ng-template #customToolbarTemplate>
-      <app-custom-toolbar></app-custom-toolbar>
+      <app-custom-toolbar [fileMetadata]="fileMetadata"></app-custom-toolbar>
     </ng-template>
 </div>
 <p *ngIf="!fileUrl">No file selected or unsupported file type.</p>
+<p *ngIf="!fileMetadata">Metadata not found.</p>

@@ -159,4 +159,35 @@ export class FirestoreService {
     await folderRef.delete();
   }
 
+  /**
+   * Retrieves file metadata by file URL.
+   * @param fileURL The file URL to search for in Firestore.
+   * @param userId The userId of the current user.
+   * @returns The file metadata if found.
+   */
+  async getFileMetadataByUrl(fileURL: string, userId: string): Promise<FileMetadata | null> {
+    try {
+      // Query Firestore to find the file metadata with the matching fileURL
+      const fileRef = this.firestore
+        .collection('users')
+        .doc(userId)
+        .collection('files', (ref) => ref.where('fileURL', '==', fileURL));
+
+      const snapshot = await fileRef.get().toPromise();
+
+      if (!(snapshot) || snapshot.empty) {
+        console.error('No file found with this URL.');
+        return null; // If no file is found, return null
+      }
+
+      // Assuming only one document will match the file URL
+      const fileDoc = snapshot.docs[0];
+
+      // Return the file metadata from the document
+      return { id: fileDoc.id, ...fileDoc.data() } as FileMetadata;
+    } catch (error) {
+      console.error('Error fetching file metadata by URL:', error);
+      return null;
+    }
+  }
 }

@@ -48,3 +48,58 @@ mat-icon {
   font-size: 14px;
   text-align: center;
 }
+
+#toolbarViewerRight {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Ensures all items in the right section are aligned to the right */
+}
+
+#toolbarViewerRight button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; /* Same size as other buttons */
+  height: 34px; /* Same size as other buttons */
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 2px; /* Adjust spacing between buttons */
+}
+
+/* Set icon size and color to match the others */
+#toolbarViewerRight mat-icon {
+  font-size: 24px;
+  color: #000;
+}
+
+#toolbarViewerRight .toolbarButtonSpacer {
+  display: none; /* Optional: Hide extra spacers that could misalign elements */
+}
+
+#toolbarViewerRight button,
+#toolbarViewerRight input {
+  height: 36px; /* Match the button size of other icons */
+  line-height: normal; /* Prevent input fields from stretching */
+  display: flex;
+  align-items: center;
+}
+
+#toolbarViewerRight input {
+  padding: 0 4px; /* Ensure the page input field is compact and aligned */
+  font-size: 14px;
+  text-align: center;
+}
+
+
+/*pdf-shy-button {*/
+/*  !* Ensure consistent size and positioning *!*/
+/*  margin-left: 8px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*}*/
+
+/*pdf-shy-button:hover {*/
+/*  !* Optional: Remove the default hover background if needed *!*/
+/*  background-color: transparent;*/
+/*}*/

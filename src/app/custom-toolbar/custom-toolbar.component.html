@@ -16,8 +16,20 @@
 
   <!-- Right Section -->
   <div id="toolbarViewerRight">
-    <pdf-rotate-page></pdf-rotate-page>
-    <pdf-download></pdf-download>
+    <pdf-shy-button
+      title="Save"
+      primaryToolbarId="save"
+      l10nId="save_button"
+      [action]="onClick"
+      [order]="3400"
+      [closeOnClick]="false"
+      image="<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 -960 960 960' width='24'>
+           <path d='M...'/>
+         </svg>"
+    >
+    </pdf-shy-button>
+
+<!--    <pdf-download></pdf-download>-->
     <pdf-print></pdf-print>
     <pdf-highlight-editor></pdf-highlight-editor>
     <pdf-text-editor></pdf-text-editor>
