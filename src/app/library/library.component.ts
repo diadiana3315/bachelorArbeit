@@ -275,5 +275,10 @@ export class LibraryComponent implements OnInit {
     this.loadFoldersAndFiles();
   }
 
+  clearSearch() {
+    this.searchActive = false;
+    this.filteredFiles = [];
+    this.filteredFolders = [];
+  }
 
 }
