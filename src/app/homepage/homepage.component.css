@@ -1,0 +1,57 @@
+/*!* Ensure the homepage container centers the content *!*/
+/*.homepage-container {*/
+/*  display: flex;*/
+/*  flex-direction: column; !* Stack elements on top of each other *!*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  height: 100vh; !* Full viewport height *!*/
+/*  gap: 20px; !* Add space between the two containers *!*/
+/*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); !* super fain*!*/
+/*  opacity: 0.1; !* Adjust transparency (0 = invisible, 1 = fully visible) *!*/
+/*  z-index: -1; !* Place it behind all content *!*/
+
+/*}*/
+.homepage-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 20px;
+  position: relative;
+}
+
+.homepage-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1; /* Adjust transparency */
+  z-index: -1; /* Send it behind content */
+}
+
+
+/* Style the calendar container */
+.streak-container, .calendar-container {
+  background: rgba(255, 255, 255, 0.6); /* Semi-transparent white background */
+  backdrop-filter: blur(10px); /* Optional: Adds a blur effect */
+  border-radius: 12px; /* Rounded corners */
+  padding: 20px; /* Inner spacing */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+  width: 30%; /* Adjust width as needed */
+  /*max-width: 600px; !* Limit max width *!*/
+  text-align: center; /* Center the text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.streak-container h2 {
+  color: #3b3494; /* Darker purple for contrast */
+  font-weight: bold;
+}

@@ -88,15 +88,19 @@
 /*  margin: 4px 0;*/
 /*}*/
 /* General Toolbar Styles */
-body {
-  padding-top: 64px; /* Add padding equal to the height of the navbar */
-}
+/*body {*/
+/*  padding-top: 64px; !* Add padding equal to the height of the navbar *!*/
+/*}*/
 
 .toolbar {
   position: fixed; /* Fix the navbar at the top */
-  top: 0; /* Align it to the very top of the page */
-  left: 0; /* Stretch to the left edge */
-  width: 100%; /* Ensure the navbar spans the full width of the page */
+  top: 10px; /* Align it to the very top of the page */
+  left: 50%; /* Stretch to the left edge */
+  transform: translateX(-50%); /* Center horizontally */
+
+  width: 97%; /* Ensure the navbar spans the full width of the page */
+  /*max-width: 1200px; !* Limit max width for better aesthetics *!*/
+
   z-index: 1000; /* Keep it above other elements */
   display: flex;
   flex-wrap: nowrap;
@@ -104,8 +108,12 @@ body {
   justify-content: space-between;
   padding: 8px 16px;
   height: 64px;
-  background: #3f51b5; /* Background color */
+  background: #f2e6fa; /* Background color */
+  border-radius: 12px; /* Rounded corners */
+
   box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
 }
 
 /* Spacer to push elements to the right */
@@ -117,7 +125,7 @@ body {
   display: flex;
   align-items: center;
   border: 1px solid white;
-  border-radius: 4px;
+  border-radius: 7px;
   overflow: hidden;
   background-color: white;
   margin-right: auto;
@@ -149,6 +157,15 @@ body {
   color: #283593; /* Change color on hover */
 }
 
+::ng-deep .mat-mdc-menu-panel {
+  background: #f2e6fa !important;
+  border-radius: 12px !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2) !important;
+  padding: 8px !important;
+  transform: translateY(23px) translateX(13px); /* Adjust value based on the navbar height */
+
+}
+
 
 /* Profile Menu Content */
 .profile-menu-content {
@@ -173,10 +190,47 @@ body {
   font-weight: bold; /* Bold for emphasis */
   margin-bottom: 16px; /* Add spacing below username */
   text-align: center; /* Center-align text */
+  color: #3b3494; /* A darker purple for contrast */
 }
 
-/* Profile Menu Buttons */
-button {
-  width: 100%; /* Full width buttons */
-  margin: 4px 0; /* Spacing between buttons */
+
+ /*Profile Menu Buttons */
+.manage-profile-btn {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: background-color 0.3s ease; /* Smooth color transition */
+  background-color: #dcb1fd; /* Apply the background color */
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+.logout-btn {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: background-color 0.3s ease; /* Smooth color transition */
+  background-color: #ee331e; /* Change to the second color on hover */
+  margin-top: 10px; /* Add padding for better button size */
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+/*!* Hover effect for buttons *!*/
+/*.mat-mdc-menu-item:hover {*/
+/*  background: rgba(240, 240, 240, 0.8) !important; !* Light hover effect *!*/
+/*  border-radius: 12px; !* Keep the rounded look *!*/
+/*}*/
+
+.manage-profile-btn:hover{
+  background: #c47cfd !important; /* Light hover effect */
+  border-radius: 12px; /* Keep the rounded look */
+}
+.logout-btn:hover{
+  background: #ca2412 !important; /* Light hover effect */
+  border-radius: 12px; /* Keep the rounded look */
 }

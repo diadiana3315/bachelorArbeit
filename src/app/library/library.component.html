@@ -5,6 +5,36 @@
     <button *ngIf="currentFolder" mat-icon-button (click)="navigateToRoot()">
       <mat-icon>arrow_back</mat-icon>
     </button>
+
+    <!-- Show search results if searchActive is true -->
+    <div *ngIf="searchActive">
+      <h2>Search Results</h2>
+
+      <!-- If files or folders are found, display them -->
+      <div *ngIf="filteredFiles.length > 0 || filteredFolders.length > 0">
+        <div class="folders-container">
+          <div class="folder-item" *ngFor="let folder of filteredFolders"  (click)="navigateToFolder(folder)">
+            <mat-icon class="folder-icon">folder</mat-icon>
+            <p class="folder-name">{{ folder.name }}</p>
+          </div>
+        </div>
+
+        <div class="files-container">
+          <h3>Files</h3>
+          <div *ngFor="let file of filteredFiles" class="file-item"    (click)="openFile(file)">
+            <mat-icon class="file-icon">insert_drive_file</mat-icon>
+            <p class="file-name">{{ file.fileName }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- If nothing is found, show message -->
+      <div *ngIf="filteredFiles.length === 0 && filteredFolders.length === 0">
+        <p>No results found.</p>
+      </div>
+    </div>
+
+    <div *ngIf="!searchActive">
     <h2>Library</h2>
   </div>
 
@@ -26,7 +56,7 @@
       (dragover)="onDragOverFolder($event)"
       (drop)="onDropFile($event, folder)">
 
-      <mat-icon class="folder-icon">folder</mat-icon>
+<!--      <mat-icon class="folder-icon">folder_open</mat-icon>-->
       <p class="folder-name">{{ folder.name }}</p>
     </div>
   </div>
@@ -34,18 +64,23 @@
   <!-- Display Files -->
   <div class="files-container">
     <h3>Files</h3>
-    <mat-icon class="file-icon">insert_drive_file</mat-icon>
+    <!-- Icon for Files Section (displayed once, you can remove this part if not needed anymore) -->
+    <!-- <mat-icon class="file-icon">insert_drive_file</mat-icon> -->
 
-    <p *ngFor="let file of files"
-       draggable="true"
-       (click)="openFile(file)"
-       (contextmenu)="onRightClick($event, file, 'file')"
-       (swipeleft)="onSwipeLeft(file, 'file')"
-       (dragstart)="onDragStartFile($event, file)"
-       style="cursor: pointer;">
-      {{ file.fileName }}
+    <!-- List of Files -->
+    <div *ngFor="let file of files" class="file-item">
+      <!-- File icon next to each file -->
+      <mat-icon class="file-icon">insert_drive_file</mat-icon>
+      <p
+        class="file-name"
+        draggable="true"
+        (click)="openFile(file)"
+        (contextmenu)="onRightClick($event, file, 'file')"
+        (swipeleft)="onSwipeLeft(file, 'file')"
+        (dragstart)="onDragStartFile($event, file)">
+        {{ file.fileName }}
       </p>
-<!--      <p class="file-name">{{ file.fileName }}</p>-->
+    </div>
   </div>
 
 <!--  &lt;!&ndash; Context Menu for Right Click (Delete) &ndash;&gt;-->
@@ -53,4 +88,6 @@
 <!--    <button (click)="deleteItem(contextMenuItem)">Delete</button>-->
 <!--  </div>-->
 </div>
+</div>
+
 </body>

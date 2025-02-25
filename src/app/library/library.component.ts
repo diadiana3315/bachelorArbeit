@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import { FirestoreService } from '../services/firestore.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FileMetadata } from '../models/file-metadata';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 /**
@@ -24,15 +24,41 @@ export class LibraryComponent implements OnInit {
   files: FileMetadata[] = [];
   userId: string = '';
   draggedFile: FileMetadata | null = null;
-  selectedFile: FileMetadata | null = null; // Store the currently selected PDF URL
+  filteredFiles: any[] = [];  // Search results
+  filteredFolders: any[] = [];
+  searchActive: boolean = false;  // Flag to track search mode
+  searchTerm: string = '';  // Store search query
+
 
   constructor(
     private firestoreService: FirestoreService,
     private afAuth: AngularFireAuth,
     private firebaseStorageService: FirebaseStorageService,
     private sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+
+  filterLibrary() {
+    const lowerQuery = this.searchTerm.toLowerCase().trim();
+
+    if (!lowerQuery) {
+      // If search is empty, return to default view
+      this.searchActive = false;
+      this.filteredFiles = [...this.files];
+      this.filteredFolders = [...this.folders];
+      return;
+    }
+
+    this.searchActive = true;
+    this.filteredFiles = this.files.filter(file =>
+      file.fileName.toLowerCase().includes(lowerQuery)
+    );
+    this.filteredFolders = this.folders.filter(folder =>
+      folder.name.toLowerCase().includes(lowerQuery)
+    );
+  }
 
   /**
    * Lifecycle hook that is called when the component is initialized.
@@ -47,6 +73,13 @@ export class LibraryComponent implements OnInit {
       } else {
         console.error('No user logged in.');
         this.userId = '';
+      }
+    });
+
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.searchTerm = params['search'];
+        this.filterLibrary();
       }
     });
   }
@@ -241,4 +274,6 @@ export class LibraryComponent implements OnInit {
     this.currentFolder = null;
     this.loadFoldersAndFiles();
   }
+
+
 }

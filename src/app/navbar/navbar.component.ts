@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import {signOut} from '@angular/fire/auth';
@@ -7,27 +7,26 @@ import {UserService} from '../services/user.service';  // New import for Firebas
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
+  // encapsulation: ViewEncapsulation.None // Disable encapsulation
 })
 export class NavbarComponent {
   @Output() toggleSidenav = new EventEmitter<void>();
+  @Output() searchQuery = new EventEmitter<string>();  // Emit search query
 
   profilePictureUrl: string = 'https://via.placeholder.com/64'; // Default profile picture
   email: string = 'User'; // Default username
   userId: string | null = null; // To store the user's UID
+  searchTerm: string = '';  // Store user input
 
-  constructor(
-    private router: Router,
-  ) {
+  constructor(private router: Router)
+  {
     const auth = getAuth(); // Get Firebase Auth instance
-
-    // Subscribe to Firebase authentication state changes
     onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
         this.userId = user.uid; // Store the UID
         this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64'; // Set profile picture URL
         this.email = user.email || 'No Email'; // Set email from Firebase Auth
-
       } else {
         this.userId = null; // Clear UID when no user is logged in
         this.email = 'Anonymous User'; // Reset username
@@ -73,6 +72,11 @@ export class NavbarComponent {
     }).catch((error) => {
       console.error('Logout failed:', error);
     });
+  }
+
+  emitSearch() {
+    if (event) event.preventDefault();  // Prevent page reload
+    this.searchQuery.emit(this.searchTerm.trim());  // Emit search term
   }
 
 }

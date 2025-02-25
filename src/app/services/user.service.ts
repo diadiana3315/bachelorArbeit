@@ -17,7 +17,10 @@ export class UserService {
    * @returns A promise indicating the success or failure of the save operation.
    */
   saveUser(userId: string, data: any) {
-    return this.firestore.collection('users').doc(userId).set(data);
+    return this.firestore.collection('users').doc(userId).set({
+      ...data,
+      lastLogin: new Date().toISOString() // Store last login during registration
+    }, { merge: true });
   }
 
   /**
@@ -37,5 +40,49 @@ export class UserService {
   async getCurrentUserId(): Promise<string> {
     const user = await this.afAuth.currentUser;
     return user ? user.uid : '';  // Return the user UID
+  }
+
+  /**
+   * Updates user data in Firestore.
+   * @param userId The unique user ID.
+   * @param data The new user data.
+   * @returns A promise indicating success or failure.
+   */
+  updateUser(userId: string, data: any) {
+    return this.firestore.collection('users').doc(userId).update(data);
+  }
+
+  /**
+   * Updates the user's email in Firebase Authentication.
+   * @param newEmail The new email address.
+   * @returns A promise indicating success or failure.
+   */
+  async updateEmail(newEmail: string): Promise<void> {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      await user.updateEmail(newEmail);
+    }
+  }
+
+  /**
+   * Updates the user's password in Firebase Authentication.
+   * @param newPassword The new password.
+   * @returns A promise indicating success or failure.
+   */
+  async updatePassword(newPassword: string): Promise<void> {
+    const user = await this.afAuth.currentUser;
+    if (user) {
+      await user.updatePassword(newPassword);
+    }
+  }
+
+  /**
+   * Updates the user's last login time in Firestore.
+   * This is called each time the user logs in.
+   */
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.firestore.collection('users').doc(userId).update({
+      lastLogin: new Date().toISOString()
+    });
   }
 }

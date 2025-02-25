@@ -1,4 +1,23 @@
 <div class="profile-container">
   <img [src]="profilePictureUrl" alt="Profile Picture" class="profile-picture" />
-  <h2 class="email">{{ email }}</h2>
+
+  <h2>{{ username }}</h2>
+  <p class="email">{{ email }}</p>
+  <p><strong>Last Login:</strong> {{ lastLogin }}</p>
+
+  <!-- Edit username -->
+  <label for="username">Username</label>
+  <input id="username" type="text" [(ngModel)]="username" />
+
+  <!-- Edit email -->
+  <label for="email">New Email</label>
+  <input id="email" type="email" [(ngModel)]="newEmail" />
+
+  <!-- Change password -->
+  <label for="password">New Password</label>
+  <input id="password" type="password" [(ngModel)]="newPassword" />
+
+  <button (click)="updateProfile()">Save Changes</button>
+
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
 </div>

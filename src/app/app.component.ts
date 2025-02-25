@@ -15,6 +15,7 @@ import {environment} from '../environments/environment';
 export class AppComponent implements OnInit{
   title = 'finalbachelor';
   user: any;
+  searchTerm: string = '';
 
   @ViewChild('sidenav') sidenav: MatSidenav | undefined;
 
@@ -57,6 +58,12 @@ export class AppComponent implements OnInit{
     const excludedRoutes = ['/login', '/register', '/viewer'];
     // return !excludedRoutes.includes(this.router.url);
     return !excludedRoutes.some(route => this.router.url.startsWith(route));
+
+  }
+
+  onSearch(query: string) {
+    this.searchTerm = query;
+    this.router.navigate(['/library'], { queryParams: { search: this.searchTerm } });
 
   }
 }

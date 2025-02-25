@@ -1,7 +1,8 @@
 <!-- Layout with Navbar and Sidenav -->
 <body>
   <div *ngIf="shouldDisplayLayout()">
-    <app-navbar (toggleSidenav)="sidenav.toggleSidenav()"></app-navbar>
+    <app-navbar (toggleSidenav)="sidenav.toggleSidenav()" (searchQuery)="onSearch($event)"></app-navbar>
+
     <app-sidenav #sidenav>
       <router-outlet></router-outlet>
     </app-sidenav>

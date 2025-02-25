@@ -3,11 +3,30 @@
 }
 
 mat-sidenav {
-  width: 250px; /* Width of the sidebar */
+  width: 200px; /* Sidebar width */
+  top: 78px; /* Align it to the very top of the page */
+  background: #f2e6fa; /* Soft pastel background */
+  border-radius: 12px; /* Rounded corners on the left */
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2); /* Floating shadow */
+  margin-top: 10px; /* Align with the floating navbar */
+  height: calc(100vh - 20px); /* Ensure it doesn't reach the very bottom */
+  overflow: hidden; /* Prevent content from overflowing */
+  position: absolute; /* Position it over the main content */
+  left:1.5%; /* Keep it aligned to the left */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth open/close effect */
+}
+
+mat-sidenav[mode="over"] {
+  transform: translateX(-100%);
+}
+
+/* When open, bring it into view */
+mat-sidenav[mode="over"].mat-drawer-open {
+  transform: translateX(0);
 }
 
 mat-sidenav-content.content-veiled {
-  background-color: rgba(0, 0, 0, 0.4); /* Dark transparent overlay */
+  background-color: rgba(0, 0, 0, 0.3); /* Dark transparent overlay */
   pointer-events: none; /* Disable interactions with the main content */
   transition: background-color 0.3s ease; /* Smooth transition effect */
 }
@@ -16,3 +35,4 @@ mat-sidenav-content.content-veiled {
 mat-sidenav-content {
   padding: 16px;
 }
+

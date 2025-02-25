@@ -17,7 +17,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/login-image.jpg");
+  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); /* super fain*/
   background-size: cover;
   background-position: center center; /* Center the background image */
   overflow: hidden; /* Prevent scrolling */
@@ -39,18 +39,19 @@ body {
 .register-form {
   background: rgba(255, 255, 255, 0.25);  /* Semi-transparent background */
   border-radius: 15px;
-  backdrop-filter: blur(5px);   /* Frosted glass effect */
+  backdrop-filter: blur(10px);   /* Frosted glass effect */
   padding: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;       /* Stack elements vertically */
   justify-content: center;      /* Vertically center form content */
   align-items: center;          /* Horizontally center form content */
-  width: 100%;                  /* Ensure it stretches inside the container */
+  width: 80%;                  /* Ensure it stretches inside the container */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .register-form h2 {
-  color: #f4eeee;
+  color: #f2e6fa;
   margin-bottom: 20px;
 }
 
@@ -74,15 +75,16 @@ body {
   padding: 10px;
   border: none;
   border-radius: 8px;
-  background: rgba(245, 240, 240, 0.15);
-  backdrop-filter: blur(11px);
-  color: #f7efef;
+  background: rgba(245, 240, 240, 0.4);
+  backdrop-filter: blur(13px);
+  color: #3b3494;
+  font-weight: bold;
 }
 
 .form-group input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.3);
-}
+  background: #ffffff; /* Make it even whiter on focus */
+  color: #3b3494; /* Ensure text remains visible */}
 
 button {
   width: 100%;
@@ -101,7 +103,7 @@ button:hover {
 }
 
 .login-link {
-  color: #8686e3;  /* Set your preferred color */
+  color: #6d6de8;  /* Set your preferred color */
   text-decoration: none;  /* Remove underline */
   font-weight: bold;  /* Make the text bold */
   cursor: pointer;
@@ -110,4 +112,11 @@ button:hover {
 .login-link:hover {
   text-decoration: underline;  /* Underline on hover */
   color: #3b3494;  /* Change color on hover */
+}
+
+input::placeholder {
+  color: #6a5b7c; /* Slightly darker purple for visibility */
+  opacity: 0.8; /* Adjust transparency */
+  font-size: 14px;
+  font-weight: normal;
 }

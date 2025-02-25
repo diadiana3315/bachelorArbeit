@@ -92,13 +92,14 @@ button:hover mat-icon {
 }
 
 .weekdays {
-  display: flex;
-  grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(7, 6vw);
   text-align: center;
   font-weight: bold;
   padding-bottom: 10px; /* Add padding below the days-of-week */
-  width: 330px;
-  margin-left: 40px;
+  width: 100%;
+  /*margin-left: 40px;*/
 }
 
 .weekday {
