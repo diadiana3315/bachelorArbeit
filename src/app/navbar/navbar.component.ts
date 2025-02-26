@@ -75,15 +75,11 @@ export class NavbarComponent {
     });
   }
 
-  emitSearch() {
-    if (event) event.preventDefault();  // Prevent page reload
-    this.searchQuery.emit(this.searchTerm.trim());  // Emit search term
-  }
-
   onSearch() {
     this.searchService.setSearchTerm(this.searchTerm); // Store search term globally
 
     // Redirect to Library with the search query
     this.router.navigate(['/library'], { queryParams: { search: this.searchTerm } });
+    this.searchTerm = '';  // Reset the search input field
   }
 }
