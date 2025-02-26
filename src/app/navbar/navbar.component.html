@@ -7,7 +7,7 @@
 
 
 
-  <form class="search-form" (submit)="emitSearch(); $event.preventDefault()">
+  <form class="search-form" (ngSubmit)="onSearch()">
     <input
       type="search"
       class="search-input"

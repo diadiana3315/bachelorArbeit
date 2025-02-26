@@ -5,6 +5,7 @@ import { FileMetadata } from '../models/file-metadata';
 import {DomSanitizer} from '@angular/platform-browser';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SearchService} from '../services/search.service';
 
 
 /**
@@ -36,7 +37,9 @@ export class LibraryComponent implements OnInit {
     private firebaseStorageService: FirebaseStorageService,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private searchService: SearchService
+
   ) {}
 
 
@@ -52,12 +55,15 @@ export class LibraryComponent implements OnInit {
     }
 
     this.searchActive = true;
-    this.filteredFiles = this.files.filter(file =>
-      file.fileName.toLowerCase().includes(lowerQuery)
-    );
-    this.filteredFolders = this.folders.filter(folder =>
-      folder.name.toLowerCase().includes(lowerQuery)
-    );
+    // Search globally, not just the current folder
+    this.firestoreService.getAllFilesAndFolders(this.userId).subscribe(data => {
+      this.filteredFiles = data.files.filter(file =>
+        file.fileName.toLowerCase().includes(lowerQuery)
+      );
+      this.filteredFolders = this.folders.filter((folder: { name: string }) =>
+        folder.name.toLowerCase().includes(lowerQuery)
+      );
+    });
   }
 
   /**
@@ -74,6 +80,12 @@ export class LibraryComponent implements OnInit {
         console.error('No user logged in.');
         this.userId = '';
       }
+    });
+
+    // Listen for search term updates from the global search service
+    this.searchService.searchTerm$.subscribe(term => {
+      this.searchTerm = term;
+      this.filterLibrary();
     });
 
     this.route.queryParams.subscribe(params => {

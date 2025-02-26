@@ -190,4 +190,20 @@ export class FirestoreService {
       return null;
     }
   }
+
+  getAllFilesAndFolders(userId: string) {
+    return this.firestore.collection(`users/${userId}/files`).valueChanges().pipe(
+      map(files => {
+        return {
+          files: files as FileMetadata[],
+          folders: this.getAllFolders(userId) // Fetch all folders
+        };
+      })
+    );
+  }
+
+  getAllFolders(userId: string) {
+    return this.firestore.collection(`users/${userId}/folders`).valueChanges();
+  }
+
 }

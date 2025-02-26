@@ -2,7 +2,8 @@ import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core'
 import { Router } from '@angular/router';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import {signOut} from '@angular/fire/auth';
-import {UserService} from '../services/user.service';  // New import for Firebase Auth
+import {UserService} from '../services/user.service';
+import {SearchService} from '../services/search.service';  // New import for Firebase Auth
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +20,7 @@ export class NavbarComponent {
   userId: string | null = null; // To store the user's UID
   searchTerm: string = '';  // Store user input
 
-  constructor(private router: Router)
+  constructor(private router: Router, private searchService: SearchService)
   {
     const auth = getAuth(); // Get Firebase Auth instance
     onAuthStateChanged(auth, (user: User | null) => {
@@ -79,4 +80,10 @@ export class NavbarComponent {
     this.searchQuery.emit(this.searchTerm.trim());  // Emit search term
   }
 
+  onSearch() {
+    this.searchService.setSearchTerm(this.searchTerm); // Store search term globally
+
+    // Redirect to Library with the search query
+    this.router.navigate(['/library'], { queryParams: { search: this.searchTerm } });
+  }
 }
