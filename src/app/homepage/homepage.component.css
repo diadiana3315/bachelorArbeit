@@ -19,6 +19,7 @@
   height: 100vh;
   gap: 20px;
   position: relative;
+  width: 100%;
 }
 
 .homepage-container::before {
@@ -43,8 +44,8 @@
   border-radius: 12px; /* Rounded corners */
   padding: 20px; /* Inner spacing */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
-  width: 30%; /* Adjust width as needed */
-  /*max-width: 600px; !* Limit max width *!*/
+  width: 100%; /* Adjust width as needed */
+  max-width: 450px; /* Limit max width */
   text-align: center; /* Center the text */
   display: flex;
   justify-content: center;
