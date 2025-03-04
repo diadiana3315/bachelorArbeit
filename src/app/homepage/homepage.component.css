@@ -1,16 +1,195 @@
-/*!* Ensure the homepage container centers the content *!*/
+/*!*!* Ensure the homepage container centers the content *!*!*/
+/*!*.homepage-container {*!*/
+/*!*  display: flex;*!*/
+/*!*  flex-direction: column; !* Stack elements on top of each other *!*!*/
+/*!*  justify-content: center;*!*/
+/*!*  align-items: center;*!*/
+/*!*  height: 100vh; !* Full viewport height *!*!*/
+/*!*  gap: 20px; !* Add space between the two containers *!*!*/
+/*!*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); !* super fain*!*!*/
+/*!*  opacity: 0.1; !* Adjust transparency (0 = invisible, 1 = fully visible) *!*!*/
+/*!*  z-index: -1; !* Place it behind all content *!*!*/
+
+/*!*}*!*/
 /*.homepage-container {*/
 /*  display: flex;*/
-/*  flex-direction: column; !* Stack elements on top of each other *!*/
+/*  flex-direction: column;*/
 /*  justify-content: center;*/
 /*  align-items: center;*/
-/*  height: 100vh; !* Full viewport height *!*/
-/*  gap: 20px; !* Add space between the two containers *!*/
-/*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); !* super fain*!*/
-/*  opacity: 0.1; !* Adjust transparency (0 = invisible, 1 = fully visible) *!*/
-/*  z-index: -1; !* Place it behind all content *!*/
-
+/*  height: 100vh;*/
+/*  gap: 20px;*/
+/*  position: relative;*/
+/*  width: 100%;*/
 /*}*/
+
+/*.homepage-container::before {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg");*/
+/*  background-size: cover;*/
+/*  background-position: center;*/
+/*  opacity: 0.1; !* Adjust transparency *!*/
+/*  z-index: -1; !* Send it behind content *!*/
+/*}*/
+
+
+/*!* Style the calendar container *!*/
+/*.streak-container, .calendar-container {*/
+/*  background: rgba(255, 255, 255, 0.6); !* Semi-transparent white background *!*/
+/*  backdrop-filter: blur(10px); !* Optional: Adds a blur effect *!*/
+/*  border-radius: 12px; !* Rounded corners *!*/
+/*  padding: 20px; !* Inner spacing *!*/
+/*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); !* Subtle shadow effect *!*/
+/*  width: 100%; !* Adjust width as needed *!*/
+/*  max-width: 450px; !* Limit max width *!*/
+/*  text-align: center; !* Center the text *!*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*}*/
+
+/*.streak-container h2 {*/
+/*  color: #3b3494; !* Darker purple for contrast *!*/
+/*  font-weight: bold;*/
+/*}*/
+
+/*.left-section {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  gap: 20px;*/
+/*}*/
+
+/*.recent-files-container {*/
+/*  background: rgba(255, 255, 255, 0.6);*/
+/*  backdrop-filter: blur(10px);*/
+/*  padding: 20px;*/
+/*  border-radius: 12px;*/
+/*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);*/
+/*  text-align: center;*/
+/*}*/
+
+/*.recent-file {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  padding: 10px;*/
+/*  gap: 10px;*/
+/*  cursor: pointer;*/
+/*  transition: background 0.3s ease;*/
+/*}*/
+
+/*.recent-file:hover {*/
+/*  background: #f3f3f3;*/
+/*}*/
+
+/*.file-icon {*/
+/*  font-size: 24px;*/
+/*  color: #3f51b5;*/
+/*}*/
+/*!* Title Styling *!*/
+/*h3 {*/
+/*  color: #3b3494;*/
+/*  font-weight: bold;*/
+/*  margin-bottom: 10px;*/
+/*}*/
+
+/*!* Input fields styling *!*/
+/*.goal-input {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  margin-bottom: 20px; !* Add spacing between each question *!*/
+/*  gap: 15px; !* Add gap between label and input *!}*/
+
+/*.goal-input label {*/
+/*  font-weight: 600;*/
+/*  margin-bottom: 5px;*/
+/*  font-size: 16px;*/
+/*  color: #3b3494;*/
+/*}*/
+
+/*.goal-input input {*/
+/*  padding: 10px;*/
+/*  font-size: 16px;*/
+/*  border: 2px solid #3b3494;*/
+/*  border-radius: 5px;*/
+/*  text-align: center;*/
+/*  margin-top: 5px; !* Add a small margin on top of input for better spacing *!*/
+/*  width: 100%; !* Ensure input takes full width *!*/
+/*  box-sizing: border-box; !* Avoid input field overflowing *!*/
+/*}*/
+
+/*!* Day selection styling *!*/
+/*.day-selection {*/
+/*  margin-bottom: 5px; !* Increase margin below the day selection *!*/
+/*}*/
+
+/*.checkbox-group {*/
+/*  display: flex;*/
+/*  flex-wrap: wrap;*/
+/*  justify-content: center;*/
+/*  !*gap: 5px;*!*/
+/*}*/
+
+/*!* Custom Checkbox Design *!*/
+/*.checkbox-label {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  position: relative;*/
+/*  font-size: 16px;*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*.checkbox-label input {*/
+/*  position: absolute;*/
+/*  opacity: 0;*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*.custom-checkbox {*/
+/*  width: 18px;*/
+/*  height: 18px;*/
+/*  border: 2px solid #3b3494;*/
+/*  border-radius: 4px;*/
+/*  margin-right: 8px;*/
+/*  display: inline-block;*/
+/*}*/
+
+/*.checkbox-label input:checked + .custom-checkbox {*/
+/*  background-color: #3b3494;*/
+/*  border-color: #3b3494;*/
+/*  position: relative;*/
+/*}*/
+
+/*.checkbox-label input:checked + .custom-checkbox::after {*/
+/*  content: "✔";*/
+/*  position: absolute;*/
+/*  left: 4px;*/
+/*  top: -1px;*/
+/*  color: white;*/
+/*  font-size: 14px;*/
+/*}*/
+
+/*!* Button Styling *!*/
+/*button {*/
+/*  padding: 10px 20px;*/
+/*  font-size: 16px;*/
+/*  background-color: #4CAF50;*/
+/*  color: white;*/
+/*  border: none;*/
+/*  border-radius: 5px;*/
+/*  cursor: pointer;*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*button:hover {*/
+/*  background-color: #45a049;*/
+/*  transform: scale(1.05);*/
+/*}*/
+
+/* General homepage container */
 .homepage-container {
   display: flex;
   flex-direction: column;
@@ -20,8 +199,11 @@
   gap: 20px;
   position: relative;
   width: 100%;
+  padding: 20px; /* Add padding to avoid content sticking to the edges */
+  box-sizing: border-box; /* To ensure padding doesn't overflow */
 }
 
+/* Add background image with blur effect */
 .homepage-container::before {
   content: "";
   position: absolute;
@@ -36,33 +218,37 @@
   z-index: -1; /* Send it behind content */
 }
 
-
-/* Style the calendar container */
+/* Streak container with max-width and better padding */
 .streak-container, .calendar-container {
   background: rgba(255, 255, 255, 0.6); /* Semi-transparent white background */
-  backdrop-filter: blur(10px); /* Optional: Adds a blur effect */
-  border-radius: 12px; /* Rounded corners */
-  padding: 20px; /* Inner spacing */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
-  width: 100%; /* Adjust width as needed */
-  max-width: 450px; /* Limit max width */
-  text-align: center; /* Center the text */
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px; /* Slightly increase max-width for tablets */
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Streak heading */
 .streak-container h2 {
-  color: #3b3494; /* Darker purple for contrast */
+  color: #3b3494;
   font-weight: bold;
+  font-size: 24px; /* Increase font size for better readability on tablet */
 }
 
+/* General left section for layout */
 .left-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px; /* Increase gap for spacing on tablet */
+  width: 100%;
 }
 
+/* Recent file container */
 .recent-files-container {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
@@ -70,22 +256,169 @@
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
+  width: 100%;
 }
 
+/* Recent file layout */
 .recent-file {
   display: flex;
   align-items: center;
-  padding: 10px;
-  gap: 10px;
+  padding: 15px; /* Larger padding for easier touch */
+  gap: 15px; /* Increased gap between icon and text */
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
+/* Hover effect */
 .recent-file:hover {
   background: #f3f3f3;
 }
 
+/* File icon size */
 .file-icon {
-  font-size: 24px;
+  font-size: 30px; /* Larger icon for better touch targeting */
   color: #3f51b5;
+}
+
+/* Title Styling */
+h3 {
+  color: #3b3494;
+  font-weight: bold;
+  margin-bottom: 20px; /* Add more space before title */
+  font-size: 20px; /* Increase title font size */
+}
+
+/* Goal input fields layout */
+.goal-input {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* More space between each question */
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Goal input label */
+.goal-input label {
+  font-weight: 600;
+  margin-bottom: 10px; /* Increased margin for better separation */
+  font-size: 18px; /* Larger font size for better readability */
+  color: #3b3494;
+}
+
+/* Goal input field */
+.goal-input input {
+  padding: 12px;
+  font-size: 18px; /* Increase font size for easy touch typing */
+  border: 2px solid #3b3494;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 8px; /* Extra spacing for input field */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Day selection layout */
+.day-selection {
+  margin-bottom: 20px; /* More space between day selection and other elements */
+}
+
+/* Flex layout for checkboxes */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px; /* More gap between checkboxes for better touch interaction */
+}
+
+/* Custom checkbox styling */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 18px; /* Larger font size for easier touch */
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  width: 25px; /* Larger checkbox for easier touch */
+  height: 25px;
+  border: 2px solid #3b3494;
+  border-radius: 4px;
+  margin-right: 12px; /* Larger margin for checkboxes */
+  display: inline-block;
+}
+
+/* Checked checkbox styling */
+.checkbox-label input:checked + .custom-checkbox {
+  background-color: #3b3494;
+  border-color: #3b3494;
+  position: relative;
+}
+
+.checkbox-label input:checked + .custom-checkbox::after {
+  content: "✔";
+  position: absolute;
+  left: 6px;
+  top: -2px;
+  color: white;
+  font-size: 16px; /* Bigger checkmark */
+}
+
+/* Button Styling */
+button {
+  padding: 12px 25px; /* Larger padding for easier tapping */
+  font-size: 18px; /* Larger font size for buttons */
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%; /* Full width button */
+}
+
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Media Queries for Tablet-Friendly Design */
+@media (max-width: 1024px) {
+  .homepage-container {
+    padding: 10px;
+  }
+
+  .streak-container, .calendar-container {
+    max-width: 90%; /* Make the streak and calendar containers more responsive */
+  }
+
+  .goal-input input {
+    font-size: 18px; /* Ensure inputs are larger */
+    padding: 12px; /* More comfortable padding */
+  }
+
+  .checkbox-label {
+    font-size: 18px; /* Larger font size for checkboxes */
+  }
+
+  .custom-checkbox {
+    width: 25px; /* Increase size for easier tap */
+    height: 25px;
+  }
+
+  button {
+    font-size: 18px;
+    padding: 15px 30px; /* Larger buttons for touch */
+    width: 100%; /* Full-width button */
+  }
+
+  .goal-input label {
+    font-size: 18px; /* Larger labels for readability */
+  }
 }

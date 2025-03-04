@@ -1,11 +1,44 @@
 <body>
  <div class="homepage-container">
-   <div class="streak-container">
-     <h2>🔥 Streak Count: 5 Days</h2> <!-- Placeholder text -->
+   <div class="streak-container" *ngIf="user">
+<!--     <h2>Welcome back, {{ username }}</h2>-->
+
+     <h2>🔥 Streak: {{ streakCount }} Week{{ streakCount > 1 ? 's' : '' }}</h2>
+     <p *ngIf="currentWeekPractices < practiceGoals.timesPerWeek">You need to practice {{ practiceGoals.timesPerWeek - currentWeekPractices }} more time{{ practiceGoals.timesPerWeek - currentWeekPractices > 1 ? 's' : '' }} this week to keep your streak.</p>
+     <p *ngIf="currentWeekPractices >= practiceGoals.timesPerWeek && currentWeekDuration >= practiceGoals.timesPerWeek * practiceGoals.duration">💪 Great job! You're on track to keep your streak this week.</p>
    </div>
 
    <div class="calendar-container">
    <app-streak-calendar></app-streak-calendar>
+   </div>
+
+   <div class="goal-input">
+     <h3>Set Your Practice Goals</h3>
+
+     <!-- Number of times per week -->
+     <label>How many times per week?</label>
+     <input type="number" [(ngModel)]="practiceGoals.timesPerWeek" (change)="adjustSelectedDays()" min="1" max="7">
+
+     <!-- Practice duration selection -->
+     <label>How many minutes per session?</label>
+     <input type="number" [(ngModel)]="practiceGoals.duration" min="10" max="180">
+
+     <!-- Optional: Select specific days (Limit based on 'timesPerWeek') -->
+     <label>Select the days you want to practice (optional, max {{ practiceGoals.timesPerWeek }} days):</label>
+     <div *ngFor="let day of weekDays">
+       <label>
+         <input
+           type="checkbox"
+           [value]="day"
+           (change)="toggleDaySelection(day)"
+           [checked]="practiceGoals.selectedDays.includes(day)"
+           [disabled]="practiceGoals.selectedDays.length >= practiceGoals.timesPerWeek && !practiceGoals.selectedDays.includes(day)">
+         {{ day }}
+       </label>
+     </div>
+
+     <!-- Save Button -->
+     <button (click)="savePracticeGoals()">Save Goals</button>
    </div>
 
    <!-- Recent Files Section -->

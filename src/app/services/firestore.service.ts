@@ -5,6 +5,25 @@ import {FileMetadata} from '../models/file-metadata';
 import { map } from 'rxjs/operators';
 import {FirebaseStorageService} from './firebase-storage.service';
 
+export interface Practice {
+  day: string;
+  duration: number;
+}
+
+export interface UserDocument {
+  practiceHistory?: {
+    weekStart: string; // Store the week start date
+    practices: Practice[]; // Array of practice sessions for the week
+    streakCount: number; // Streak count for consecutive weeks
+  }[];
+  practiceGoals?: {
+    timesPerWeek: number;
+    duration: number;
+    selectedDays: string[];
+  };
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -238,6 +257,45 @@ export class FirestoreService {
       console.error('Error updating file access timestamp:', error);
       throw error;
     }
+  }
+
+  updateUserPracticeGoals(userId: string, practiceGoals: any): Promise<void> {
+    return this.firestore.collection('users').doc(userId).update({ practiceGoals });
+  }
+
+  getUserPracticeGoals(userId: string): Observable<UserDocument['practiceGoals']> {
+    return this.firestore.collection<UserDocument>('users').doc(userId).valueChanges().pipe(
+      map(userDoc => userDoc?.practiceGoals ?? {
+        goalType: 'timesPerWeek',
+        timesPerWeek: 3,
+        duration: 30,
+        selectedDays: []
+      })
+    );
+  }
+
+  getUserStreak(userId: string) {
+    return this.firestore.collection('users').doc(userId).valueChanges().pipe(
+      map((userDoc: unknown) => {
+        // Check if the userDoc is of the correct type
+        if (this.isUserDocument(userDoc)) {
+          return userDoc.practiceHistory || [];
+        }
+        return [];
+      })
+    );
+  }
+
+// Type guard function to check if it's a UserDocument
+  private isUserDocument(userDoc: any): userDoc is UserDocument {
+    return userDoc && Array.isArray(userDoc.practiceHistory);
+  }
+
+
+
+  // Save updated streak and practice data
+  updateUserStreak(userId: string, streakData: any) {
+    return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
   }
 
 }
