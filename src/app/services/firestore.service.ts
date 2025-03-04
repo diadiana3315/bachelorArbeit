@@ -206,4 +206,38 @@ export class FirestoreService {
     return this.firestore.collection(`users/${userId}/folders`).valueChanges();
   }
 
+  getRecentFiles(userId: string, limit: number = 5): Observable<FileMetadata[]> {
+    return this.firestore
+      .collection<FileMetadata>(`users/${userId}/files`, ref =>
+        // This will place documents with lastAccessedAt first, then others
+        ref.orderBy('lastAccessedAt', 'desc')
+          .orderBy('uploadedAt', 'desc') // Secondary sort for documents without lastAccessedAt
+          .limit(limit))
+      .snapshotChanges()
+      .pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as FileMetadata;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        }))
+      );
+  }
+
+  async updateFileAccessTimestamp(userId: string, fileId: string): Promise<void> {
+    try {
+      await this.firestore
+        .collection('users')
+        .doc(userId)
+        .collection('files')
+        .doc(fileId)
+        .update({
+          lastAccessedAt: Date.now()
+        });
+      console.log('File access timestamp updated');
+    } catch (error) {
+      console.error('Error updating file access timestamp:', error);
+      throw error;
+    }
+  }
+
 }

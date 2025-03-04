@@ -85,4 +85,27 @@ export class UserService {
       lastLogin: new Date().toISOString()
     });
   }
+
+  // async signInWithGoogle() {
+  //   try {
+  //     const result = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  //
+  //     if (result.user) {
+  //       const userData = {
+  //         uid: result.user.uid,
+  //         email: result.user.email,
+  //         displayName: result.user.displayName,
+  //         photoURL: result.user.photoURL,
+  //         lastLogin: new Date().toISOString()
+  //       };
+  //
+  //       await this.saveUser(result.user.uid, userData); // Save or update user in Firestore
+  //       console.log('Google Sign-In Success:', result.user);
+  //       return result.user; // Return user details
+  //     }
+  //   } catch (error) {
+  //     console.error('Google Sign-In Error:', error);
+  //     throw error;
+  //   }
+  // }
 }

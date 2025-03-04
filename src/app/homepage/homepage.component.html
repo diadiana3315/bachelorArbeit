@@ -7,5 +7,17 @@
    <div class="calendar-container">
    <app-streak-calendar></app-streak-calendar>
    </div>
+
+   <!-- Recent Files Section -->
+   <div class="recent-files-container">
+     <h2>📄 Recent Files</h2>
+     <div *ngIf="recentFiles.length > 0">
+       <div class="recent-file" *ngFor="let file of recentFiles" (click)="openFile(file)">
+         <mat-icon class="file-icon">insert_drive_file</mat-icon>
+         <p>{{ file.fileName }}</p>
+       </div>
+     </div>
+     <p *ngIf="recentFiles.length === 0">No recent files.</p>
+   </div>
  </div>
 </body>

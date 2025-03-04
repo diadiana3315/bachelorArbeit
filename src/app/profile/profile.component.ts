@@ -3,6 +3,9 @@ import {ActivatedRoute} from '@angular/router';
 import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
 import {UserService} from '../services/user.service';
 import {AngularFireAuth} from '@angular/fire/compat/auth';
+import {AngularFireStorage} from '@angular/fire/compat/storage';
+import {finalize} from 'rxjs';
+import {FirebaseStorageService} from '../services/firebase-storage.service';
 
 @Component({
   selector: 'app-profile',
@@ -10,33 +13,50 @@ import {AngularFireAuth} from '@angular/fire/compat/auth';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  email: string = 'Anonymous User'; // Default email
+  email: string = ''; // Default email
   username: string = '';
-  profilePictureUrl: string = 'https://via.placeholder.com/64'; // Default profile picture
+  profilePictureUrl: string = '';
   userId: string = '';
   newPassword: string = '';
   newEmail: string = '';
   errorMessage: string = '';
   lastLogin: string = 'Unknown';
+  isEditing: boolean = false; // Toggle edit mode
+  isLoading: boolean = true; // <-- NEW: Prevents UI flicker
 
 
-  constructor(private userService: UserService, private afAuth: AngularFireAuth) {}
+  constructor(private userService: UserService,
+              private afAuth: AngularFireAuth,
+              private storage: FirebaseStorageService // Inject Firebase Storage
+  ) {
+  }
 
   async ngOnInit() {
-    this.userId = await this.userService.getCurrentUserId();
-    if (this.userId) {
-      this.userService.getUser(this.userId).subscribe((doc) => {
-        if (doc.exists) {
-          const userData: any = doc.data();
-          this.email = userData.email || 'Anonymous User';
-          this.username = userData.username || 'No username set';
-          this.profilePictureUrl = userData.profilePicture || 'https://via.placeholder.com/64';
-          this.lastLogin = userData?.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'Never';
+    this.afAuth.authState.subscribe(async (user) => {
+      if (user) {
+        this.userId = user.uid;
+        this.username = user.displayName || 'No username set';
+        this.email = user.email || 'Anonymous User';
+        this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64';
 
-        }
-      });
-    }
+        // Fetch additional user details from Firestore
+        this.userService.getUser(this.userId).subscribe((doc) => {
+          if (doc.exists) {
+            const userData: any = doc.data();
+            this.username = userData.username || this.username;
+            this.email = userData.email || this.email;
+            this.profilePictureUrl = userData.profilePicture || this.profilePictureUrl;
+            this.lastLogin = userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'Never';
+          }
+          this.isLoading = false; // <-- Hide loading state once data is ready
+        });
+      } else {
+        console.error('No user logged in');
+        this.isLoading = false; // <-- Hide loading state once data is ready
+      }
+    });
   }
+
 
   async updateProfile() {
     if (this.newEmail) {
@@ -68,4 +88,38 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  toggleEditMode() {
+    this.isEditing = !this.isEditing;
+  }
+
+  async uploadProfilePicture(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0]; // Get selected file
+    if (!file) return;
+
+    // Ensure userId and username are available
+    if (!this.userId) {
+      console.error("Error: userId is empty.");
+      return;
+    }
+    if (!this.username) {
+      console.error("Error: username is empty.");
+      return;
+    }
+
+    const filePath = `${this.userId}/profile_${Date.now()}`; // Unique filename
+    try {
+      const downloadURL = await this.storage.uploadFile(file, filePath); // Upload file to Firebase
+
+      // Update Firestore user document with new profile picture
+      await this.userService.updateUser(this.userId, { profilePicture: downloadURL });
+
+      // Update UI with new profile picture
+      this.profilePictureUrl = downloadURL;
+      console.log('Profile picture updated successfully!');
+    } catch (error) {
+      console.error("Failed to upload profile picture:", error);
+    }
+  }
+
 }
+
