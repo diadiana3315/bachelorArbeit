@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { FirestoreService } from '../services/firestore.service';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {UserService} from '../services/user.service';
+import jsPDF from "jspdf";
 
 @Component({
   selector: 'app-add-button',
@@ -92,14 +93,46 @@ export class AddButtonComponent {
     const file = event.target.files[0];
     if (file) {
       try {
+        // Convert image to PDF
+        const pdfBlob = await this.convertImageToPDF(file);
+
+        // Create a new File object from the PDF blob
+        const pdfFile = new File([pdfBlob], file.name.replace(/\.[^/.]+$/, ".pdf"), {type: "application/pdf"});
+
+        // Upload the PDF instead of the image
         const userId = await this.userService.getCurrentUserId();
-        const uploadedFile = await this.firestoreService.uploadAndSaveFile(file, this.currentFolder ? this.currentFolder.id : null, userId);
-        console.log('Image uploaded successfully:', uploadedFile);
+        const uploadedFile = await this.firestoreService.uploadAndSaveFile(pdfFile, this.currentFolder ? this.currentFolder.id : null, userId);
+
+        console.log("Image converted and uploaded as PDF:", uploadedFile);
         this.fileUploaded.emit(uploadedFile);
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error converting image to PDF:", error);
       }
     }
   }
 
+  async convertImageToPDF(imageFile: File): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(imageFile);
+
+      reader.onload = function () {
+        const imgData = reader.result as string;
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+        });
+
+        // Add image to PDF
+        pdf.addImage(imgData, "JPEG", 10, 10, 180, 0);
+
+        // Convert PDF to blob (synchronously)
+        const pdfBlob = pdf.output("blob");
+        resolve(pdfBlob);
+      };
+
+      reader.onerror = reject;
+    });
+  }
 }

@@ -57,4 +57,12 @@ export class FileViewerComponent implements OnInit {
     // Detect browser's default language
     this.browserLanguage = navigator.language || 'en-US';
   }
+
+  isImageFile(): boolean {
+    return this.fileMetadata?.fileType
+      ? ['jpg', 'jpeg', 'png'].includes(this.fileMetadata.fileType.toLowerCase())
+      : false;
+  }
+
+
 }
