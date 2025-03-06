@@ -7,4 +7,6 @@ export interface FileMetadata {
   userId: string;
   uploadedAt?: number; // Timestamp when uploaded
   lastAccessedAt?: number; // Timestamp when last accessed
+  isRenaming?: boolean;
+  newName?: string;
 }

@@ -291,11 +291,32 @@ export class FirestoreService {
     return userDoc && Array.isArray(userDoc.practiceHistory);
   }
 
-
-
   // Save updated streak and practice data
   updateUserStreak(userId: string, streakData: any) {
     return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
   }
+
+  updateFileName(userId: string, fileId: string, newName: string): Promise<void> {
+    if (!fileId) {
+      return Promise.reject('File ID is undefined');
+    }
+
+    console.log('Updating file with ID:', fileId);
+    const fileRef = this.firestore
+      .collection('users')
+      .doc(userId)
+      .collection('files')
+      .doc(fileId);
+
+    return fileRef.get().toPromise().then((doc) => {
+      if (!doc || !doc.exists) {
+        console.error('Firestore: No document found for ID:', fileId);
+
+        return Promise.reject('No document found with this ID');
+      }
+      return fileRef.update({ fileName: newName });
+    });
+  }
+
 
 }

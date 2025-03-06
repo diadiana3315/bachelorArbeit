@@ -131,7 +131,11 @@ export class LibraryComponent implements OnInit {
       this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder ? this.currentFolder.id : null)
         .subscribe(data => {
           this.folders = data.folders;
-          this.files = data.files;
+          this.files = data.files.map((file: FileMetadata) => ({
+            ...file,
+            isRenaming: false, // Initialize renaming state
+            newName: file.fileName // Default value
+          }));
           this.groupFilesUnderFolders();
         }, error => {
           console.error('Error loading folders and files:', error);
@@ -293,4 +297,37 @@ export class LibraryComponent implements OnInit {
     this.filteredFolders = [];
   }
 
+  // Enable rename mode
+  enableRename(file: any) {
+    file.isRenaming = true;
+    file.newName = file.fileName; // Set initial value to the current name
+  }
+  cancelRename(file: FileMetadata) {
+    file.isRenaming = false;
+    file.newName = '';
+  }
+
+  saveFileName(file: any) {
+    if (!file.id || !this.userId) {
+      console.error('File ID is missing for rename!');
+      return;
+    }
+    const newName = file.newName?.trim();
+    if (!newName || newName === file.fileName) {
+      this.cancelRename(file);
+      return;
+    }
+    console.log(`Renaming file ID ${file.id} to ${newName}`);
+
+    this.firestoreService.updateFileName(this.userId, file.id, newName)
+      .then(() => {
+        file.fileName = newName; // Update UI
+        file.isRenaming = false;
+      })
+      .catch(error => {
+        console.error('Error updating file name:', error);
+        alert('Failed to rename file. Please try again.');
+        this.cancelRename(file); // Reset UI if update fails
+      });
+  }
 }

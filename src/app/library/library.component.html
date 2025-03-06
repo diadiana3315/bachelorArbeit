@@ -66,13 +66,23 @@
   <!-- Display Files -->
   <div class="files-container">
     <h3>Files</h3>
-    <!-- Icon for Files Section (displayed once, you can remove this part if not needed anymore) -->
-    <!-- <mat-icon class="file-icon">insert_drive_file</mat-icon> -->
 
     <!-- List of Files -->
     <div *ngFor="let file of files" class="file-item">
-      <!-- File icon next to each file -->
       <mat-icon class="file-icon">insert_drive_file</mat-icon>
+      <!-- Show input field when renaming -->
+      <input
+        *ngIf="file.isRenaming"
+        [(ngModel)]="file.newName"
+        (keydown.enter)="saveFileName(file)"
+        (blur)="saveFileName(file)"
+        placeholder="Enter new name"
+        class="rename-input"
+      />
+
+
+      <!-- Show file name and buttons when NOT renaming -->
+      <div *ngIf="!file.isRenaming" class="file-display">
       <p
         class="file-name"
         draggable="true"
@@ -82,13 +92,27 @@
         (dragstart)="onDragStartFile($event, file)">
         {{ file.fileName }}
       </p>
+        <button class="rename-btn" (click)="enableRename(file)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button class="delete-btn" (click)="deleteFile(file)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <!-- Show Save & Cancel buttons when renaming -->
+      <div *ngIf="file.isRenaming" class="rename-actions">
+        <button (click)="saveFileName(file)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button (click)="cancelRename(file)">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+
     </div>
   </div>
 
-<!--  &lt;!&ndash; Context Menu for Right Click (Delete) &ndash;&gt;-->
-<!--  <div class="context-menu" *ngIf="contextMenuVisible" [style.top.px]="contextMenuY" [style.left.px]="contextMenuX">-->
-<!--    <button (click)="deleteItem(contextMenuItem)">Delete</button>-->
-<!--  </div>-->
 </div>
 </div>
 

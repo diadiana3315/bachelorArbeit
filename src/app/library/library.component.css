@@ -18,10 +18,10 @@
   flex-direction: column;
   width: 100%;
   max-width: 900px;
-  background: white;
+  background: transparent;
   padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
+  border: none;
 }
 
 .library-header h2 {
@@ -135,6 +135,26 @@
   color: #333;
   font-weight: 500;
 }
+
+
+
+
+
+
+
+
+/*.delete-btn {*/
+/*  background: transparent;*/
+/*  border: none;*/
+/*  cursor: pointer;*/
+/*  font-size: 24px;*/
+/*  transition: color 0.2s ease;*/
+/*}*/
+
+/*.delete-btn:hover {*/
+/*  color: #b71c1c; !* Darker red on hover *!*/
+/*}*/
+
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
