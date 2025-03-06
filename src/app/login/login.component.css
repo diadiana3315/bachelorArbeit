@@ -18,8 +18,8 @@ body {
   align-items: center;
   height: 100vh;
   /*background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); !* super fain*!*/
-  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/login-background.jpg"); /* super fain*/
-  background-size: cover;
+  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/martin-martz-wr9mf7S6bRQ-unsplash.jpg");
+  background-size: cover; /* Ensures the image covers the whole screen */
   background-position: center center; /* Center the background image */
   overflow: hidden; /* Prevent scrolling */
 }
