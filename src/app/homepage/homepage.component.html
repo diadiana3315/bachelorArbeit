@@ -4,6 +4,7 @@
    <div class="gallery">
      <div  class="column">
        <div class="goal-input">
+         <div class="goal-input-elements">
          <h3>Set Your Practice Goals</h3>
 
          <!-- Number of times per week -->
@@ -30,9 +31,11 @@
 
          <!-- Save Button -->
          <button (click)="savePracticeGoals()">Save Goals</button>
+         </div>
        </div>
 
        <div class="recent-files-container">
+         <div class="files-elements">
          <h2>📄 Recent Files</h2>
          <div *ngIf="recentFiles.length > 0">
            <div class="recent-file" *ngFor="let file of recentFiles" (click)="openFile(file)">
@@ -41,6 +44,7 @@
            </div>
          </div>
          <p *ngIf="recentFiles.length === 0">No recent files.</p>
+       </div>
        </div>
      </div>
 
