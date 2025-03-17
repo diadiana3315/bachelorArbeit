@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/compat/auth';
 import {FileMetadata} from '../models/file-metadata';
@@ -11,10 +11,35 @@ import {NgxExtendedPdfViewerService} from 'ngx-extended-pdf-viewer';
   templateUrl: './custom-toolbar.component.html',
   styleUrl: './custom-toolbar.component.css'
 })
-export class CustomToolbarComponent {
+export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   @Input() fileMetadata!: FileMetadata;
 
+  isAutoScrolling = false;
+  scrollSpeed = 1; // Default speed (adjustable)
+  animationFrameId: number | null = null;
+  viewerContainer: HTMLElement | null = null;
+
+
   public onClick?: () => void;
+
+  ngAfterViewInit() {
+    this.waitForViewerContainer();
+  }
+
+  private waitForViewerContainer(attempts = 0) {
+    setTimeout(() => {
+      this.viewerContainer = document.querySelector('.file-viewer-container ngx-extended-pdf-viewer') as HTMLElement;
+
+      if (this.viewerContainer) {
+        console.log('Viewer container found:', this.viewerContainer);
+      } else if (attempts < 10) {
+        console.warn(`Viewer container not found. Retrying... (${attempts + 1})`);
+        this.waitForViewerContainer(attempts + 1);
+      } else {
+        console.error('Viewer container could not be found after multiple attempts.');
+      }
+    }, 500);
+  }
 
   constructor(private router: Router,
               private auth: AngularFireAuth,
@@ -95,5 +120,45 @@ export class CustomToolbarComponent {
 
   goBackToLibrary(): void {
     this.router.navigate(['/library']); // Navigates back to the library page
+  }
+
+  toggleAutoScroll() {
+    this.isAutoScrolling = !this.isAutoScrolling;
+
+    if (this.isAutoScrolling) {
+      this.startAutoScroll();
+    } else {
+      this.stopAutoScroll();
+    }
+  }
+
+  startAutoScroll() {
+    if (!this.viewerContainer) {
+      console.error('Viewer container not found! Cannot start scrolling.');
+      return;
+    }
+
+    const scroll = () => {
+      if (!this.isAutoScrolling || !this.viewerContainer) return;
+      this.viewerContainer.scrollBy(0, this.scrollSpeed);
+      this.animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    this.animationFrameId = requestAnimationFrame(scroll);
+  }
+
+  stopAutoScroll() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  updateScrollSpeed(newSpeed: number) {
+    this.scrollSpeed = newSpeed;
+  }
+
+  ngOnDestroy() {
+    this.stopAutoScroll(); // Clean up interval when component is destroyed
   }
 }

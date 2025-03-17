@@ -50,11 +50,13 @@
 
      <div  class="column">
        <div class="streak-container" *ngIf="user">
+         <div class="streak-container-elements">
          <!--     <h2>Welcome back, {{ username }}</h2>-->
 
          <h2>🔥 Streak: {{ streakCount }} Week{{ streakCount > 1 ? 's' : '' }}</h2>
          <p *ngIf="currentWeekPractices < practiceGoals.timesPerWeek">You need to practice {{ practiceGoals.timesPerWeek - currentWeekPractices }} more time{{ practiceGoals.timesPerWeek - currentWeekPractices > 1 ? 's' : '' }} this week to keep your streak.</p>
          <p *ngIf="currentWeekPractices >= practiceGoals.timesPerWeek && currentWeekDuration >= practiceGoals.timesPerWeek * practiceGoals.duration">💪 Great job! You're on track to keep your streak this week.</p>
+         </div>
        </div>
 
        <div class="calendar-container">

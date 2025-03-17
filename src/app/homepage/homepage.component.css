@@ -32,9 +32,10 @@
   }
 }
 
-.goal-input-elements{
+.goal-input-elements, .streak-container-elements, .files-elements{
   margin: 10px;
 }
+
 .streak-container h2, h3 {
   color: #3b3494;
   font-weight: bold;

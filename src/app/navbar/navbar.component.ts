@@ -20,7 +20,9 @@ export class NavbarComponent {
   userId: string | null = null; // To store the user's UID
   searchTerm: string = '';  // Store user input
 
-  constructor(private router: Router, private searchService: SearchService)
+  constructor(private router: Router,
+              private searchService: SearchService,
+              private userService: UserService)
   {
     const auth = getAuth(); // Get Firebase Auth instance
     onAuthStateChanged(auth, (user: User | null) => {
@@ -28,6 +30,13 @@ export class NavbarComponent {
         this.userId = user.uid; // Store the UID
         this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64'; // Set profile picture URL
         this.email = user.email || 'No Email'; // Set email from Firebase Auth
+        // Fetch the updated profile picture from Firestore
+        this.userService.getUser(this.userId).subscribe((doc) => {
+          if (doc.exists) {
+            const userData: any = doc.data();
+            this.profilePictureUrl = userData.profilePicture || this.profilePictureUrl;
+          }
+        });
       } else {
         this.userId = null; // Clear UID when no user is logged in
         this.email = 'Anonymous User'; // Reset username

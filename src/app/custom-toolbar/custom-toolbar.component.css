@@ -105,3 +105,7 @@ mat-icon {
   color: #000;
 }
 
+.ngx-extended-pdf-viewer {
+  scroll-behavior: smooth;
+}
+
