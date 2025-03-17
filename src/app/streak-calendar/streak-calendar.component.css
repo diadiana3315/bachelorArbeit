@@ -101,4 +101,9 @@ button:hover mat-icon {
 }
 
 
+.today {
+  background-color: #f39c12; /* You can change this to whatever color you prefer for today's date */
+  color: white;
+  border-radius: 50%;
+}
 

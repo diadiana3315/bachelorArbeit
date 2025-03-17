@@ -34,6 +34,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StreakCalendarComponent } from './streak-calendar/streak-calendar.component';
 import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/moment';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import {adapterFactory} from 'angular-calendar/date-adapters/moment';
     MatDialogModule,
     AngularFirestoreModule,
     NgxExtendedPdfViewerModule,
+    HttpClientModule,  // <-- Add HttpClientModule here
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,

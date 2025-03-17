@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, firstValueFrom, Observable} from 'rxjs';
 import {FileMetadata} from '../models/file-metadata';
 import { map } from 'rxjs/operators';
 import {FirebaseStorageService} from './firebase-storage.service';
@@ -8,6 +8,14 @@ import {FirebaseStorageService} from './firebase-storage.service';
 export interface Practice {
   day: string;
   duration: number;
+}
+
+interface UsageData {
+  [key: string]: boolean; // Key is day, value is boolean indicating if the user accessed the app that day
+}
+
+interface DailyMessageData {
+  message: string;
 }
 
 export interface UserDocument {
@@ -274,27 +282,27 @@ export class FirestoreService {
     );
   }
 
-  getUserStreak(userId: string) {
-    return this.firestore.collection('users').doc(userId).valueChanges().pipe(
-      map((userDoc: unknown) => {
-        // Check if the userDoc is of the correct type
-        if (this.isUserDocument(userDoc)) {
-          return userDoc.practiceHistory || [];
-        }
-        return [];
-      })
-    );
-  }
+//   getUserStreak(userId: string) {
+//     return this.firestore.collection('users').doc(userId).valueChanges().pipe(
+//       map((userDoc: unknown) => {
+//         // Check if the userDoc is of the correct type
+//         if (this.isUserDocument(userDoc)) {
+//           return userDoc.practiceHistory || [];
+//         }
+//         return [];
+//       })
+//     );
+//   }
+//
+// // Type guard function to check if it's a UserDocument
+//   private isUserDocument(userDoc: any): userDoc is UserDocument {
+//     return userDoc && Array.isArray(userDoc.practiceHistory);
+//   }
 
-// Type guard function to check if it's a UserDocument
-  private isUserDocument(userDoc: any): userDoc is UserDocument {
-    return userDoc && Array.isArray(userDoc.practiceHistory);
-  }
-
-  // Save updated streak and practice data
-  updateUserStreak(userId: string, streakData: any) {
-    return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
-  }
+  // // Save updated streak and practice data
+  // updateUserStreak(userId: string, streakData: any) {
+  //   return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
+  // }
 
   updateFileName(userId: string, fileId: string, newName: string): Promise<void> {
     if (!fileId) {
@@ -318,5 +326,59 @@ export class FirestoreService {
     });
   }
 
+  logUserUsage(userId: string) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Months are 0-based, so we add 1
+    const day = today.getDate();
+
+    return this.firestore.collection(`users/${userId}/usageRecords`).doc(`${year}-${month}`).set({
+      [day]: true // Mark this day as accessed
+    }, { merge: true });
+  }
+
+  async getUserUsageDays(userId: string, year: number, month: number): Promise<Set<number>> {
+    const usageDays = new Set<number>(); // To store highlighted days
+
+    try {
+      const usageDocSnapshot = await this.firestore
+        .collection(`users/${userId}/usageRecords`)
+        .doc(`${year}-${month}`)
+        .get()
+        .toPromise();
+
+      if (usageDocSnapshot?.exists) {
+        const data = usageDocSnapshot.data() as UsageData; // Type assertion
+
+        // Now TypeScript knows the structure of 'data'
+        Object.keys(data).forEach(day => {
+          if (!isNaN(+day)) {
+            usageDays.add(+day); // Add the day to the set
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching usage days:", error);
+    }
+
+    return usageDays;
+  }
+
+  async getDailyMessage(): Promise<string> {
+    try {
+      const docRef = await this.firestore.collection('dailyMessages').doc('messageOfTheDay').get().toPromise();
+
+      // Check if docRef exists and contains data
+      if (docRef && docRef.exists) {
+        const data = docRef.data() as DailyMessageData;  // Type assertion for document data
+        return data?.message || 'No daily message available.';
+      } else {
+        return 'No daily message available.';
+      }
+    } catch (error) {
+      console.error('Error fetching daily message:', error);
+      return 'An error occurred while fetching the daily message.';
+    }
+  }
 
 }

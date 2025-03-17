@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {SearchService} from '../services/search.service';
 import {FileMetadata} from '../models/file-metadata';
 import {FirestoreService} from '../services/firestore.service';
+import {DailyMessageService} from '../services/daily-message.service';
 
 @Component({
   selector: 'app-homepage',
@@ -15,6 +16,8 @@ export class HomepageComponent implements OnInit {
   user: any;
   username: string = ''; // Store username here
   recentFiles: FileMetadata[] = []; // Store recent files here
+  streakCount: number = 0; // Will store the total number of distinct days the user logged in
+  dailyMessage: string = '';
 
   practiceGoals: any = {
     timesPerWeek: 3, // Default: 3 times per week
@@ -22,9 +25,6 @@ export class HomepageComponent implements OnInit {
     selectedDays: [] // Stores selected days if using "specific days"
   };
 
-  streakCount: number = 0;
-  currentWeekPractices: number = 0;
-  currentWeekDuration: number = 0;
 
   weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -33,7 +33,8 @@ export class HomepageComponent implements OnInit {
   constructor(private afAuth: AngularFireAuth,
               private router: Router,
               private searchService: SearchService,
-              private firestoreService: FirestoreService
+              private firestoreService: FirestoreService,
+              private dailyMessageService: DailyMessageService
   ) {}
 
   ngOnInit(): void {
@@ -44,8 +45,13 @@ export class HomepageComponent implements OnInit {
       else {
         this.user = user;
         this.username = user?.displayName || 'Guest'; // Set username from Firebase auth
+        this.firestoreService.logUserUsage(user.uid); // Log user activity
+
+        this.loadStreakData(user.uid);
+        this.loadDailyMessage();
+
         this.loadRecentFiles(); // Load recent files when user is authenticated
-        this.loadStreakData();
+        // this.loadStreakData();
 
         if (user.uid) {
           this.firestoreService.getUserPracticeGoals(user.uid).subscribe(goals => {
@@ -113,49 +119,29 @@ export class HomepageComponent implements OnInit {
       .catch(error => console.error('Error saving practice goals:', error));
   }
 
-  loadStreakData() {
-    // Get the user's practice streak data from Firestore
-    this.firestoreService.getUserStreak(this.user.uid).subscribe(streakHistory => {
-      if (streakHistory && streakHistory.length > 0) {
-        const lastWeek = streakHistory[streakHistory.length - 1];
-        this.streakCount = lastWeek.streakCount;
-        this.currentWeekPractices = lastWeek.practices.length;
-        this.currentWeekDuration = lastWeek.practices.reduce((acc, p) => acc + p.duration, 0);
+  async loadStreakData(userId: string) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Firestore stores months as 1-based, so no need to adjust here
+
+    try {
+      const usageDays = await this.firestoreService.getUserUsageDays(userId, year, month);
+      this.streakCount = usageDays.size; // Count distinct days logged in this month
+    } catch (error) {
+      console.error("Error loading streak data:", error);
+    }
+  }
+
+  loadDailyMessage() {
+    this.dailyMessageService.getDailyMessage().subscribe(
+      (message: string) => {
+        this.dailyMessage = message;
+      },
+      (error) => {
+        console.error('Error fetching the daily message:', error);
+        this.dailyMessage = 'Sorry, something went wrong while fetching the daily message.';
       }
-    });
+    );
   }
 
-  // Update the streak after a practice session
-  trackPractice(day: string, duration: number) {
-    const currentDate = new Date();
-    const currentWeekStart = this.getWeekStartDate(currentDate);
-
-    if (duration >= this.practiceGoals.duration) {
-      this.currentWeekPractices++;
-      this.currentWeekDuration += duration;
-    }
-
-    const practiceData = {
-      weekStart: currentWeekStart.toISOString(),
-      practices: [{ day, duration }],
-      streakCount: this.getStreakCount()
-    };
-
-    this.firestoreService.updateUserStreak(this.user.uid, practiceData);
-  }
-
-  getStreakCount() {
-    if (this.currentWeekPractices >= this.practiceGoals.timesPerWeek && this.currentWeekDuration >= this.practiceGoals.timesPerWeek * this.practiceGoals.duration) {
-      return this.streakCount + 1;
-    }
-    return 0;
-  }
-
-  getWeekStartDate(date: Date): Date {
-    const dayOfWeek = date.getDay();
-    const diff = date.getDate() - dayOfWeek + (dayOfWeek == 0 ? -6 : 1);
-    const startDate = new Date(date.setDate(diff));
-    startDate.setHours(0, 0, 0, 0);
-    return startDate;
-  }
 }
