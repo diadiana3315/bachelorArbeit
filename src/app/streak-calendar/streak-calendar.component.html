@@ -18,8 +18,10 @@
 
   <!-- Calendar Days -->
   <div class="cal-days">
-    <div *ngFor="let day of daysInMonth" class="cal-day" [ngClass]="{
-        'today': day?.isToday
+    <div *ngFor="let day of daysInMonth" class="cal-day"
+         [ngClass]="{
+        'today': day?.isToday,
+        'used-day': day?.used
          }">
       <span *ngIf="day.day"> {{ day.day }} </span>
     </div>

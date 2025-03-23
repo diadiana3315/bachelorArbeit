@@ -348,12 +348,16 @@ export class FirestoreService {
         .toPromise();
 
       if (usageDocSnapshot?.exists) {
-        const data = usageDocSnapshot.data() as UsageData; // Type assertion
+        const data = usageDocSnapshot.data() as Record<string, boolean>; // Type assertion
+
+        console.log("Fetched usage data from Firestore:", data); // Debug log
 
         // Now TypeScript knows the structure of 'data'
         Object.keys(data).forEach(day => {
-          if (!isNaN(+day)) {
-            usageDays.add(+day); // Add the day to the set
+          const dayNumber = parseInt(day, 10);
+
+          if (!isNaN(dayNumber)) {
+            usageDays.add(dayNumber);
           }
         });
       }
@@ -361,24 +365,10 @@ export class FirestoreService {
       console.error("Error fetching usage days:", error);
     }
 
+    console.log("Processed used days:", usageDays); // Debug log
+
     return usageDays;
   }
 
-  async getDailyMessage(): Promise<string> {
-    try {
-      const docRef = await this.firestore.collection('dailyMessages').doc('messageOfTheDay').get().toPromise();
-
-      // Check if docRef exists and contains data
-      if (docRef && docRef.exists) {
-        const data = docRef.data() as DailyMessageData;  // Type assertion for document data
-        return data?.message || 'No daily message available.';
-      } else {
-        return 'No daily message available.';
-      }
-    } catch (error) {
-      console.error('Error fetching daily message:', error);
-      return 'An error occurred while fetching the daily message.';
-    }
-  }
 
 }

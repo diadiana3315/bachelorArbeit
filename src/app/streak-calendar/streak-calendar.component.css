@@ -107,3 +107,10 @@ button:hover mat-icon {
   border-radius: 50%;
 }
 
+.used-day {
+  background-color: #f39c12; /* Green highlight for used days */
+  color: white;
+  border-radius: 50%;
+}
+
+

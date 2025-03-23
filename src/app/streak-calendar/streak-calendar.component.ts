@@ -65,7 +65,10 @@ export class StreakCalendarComponent implements OnInit {
     // Add actual days of the month
     for (let i = 1; i <= daysInCurrentMonth; i++) {
       const isUsed = usedDays.has(i);
-      const isToday = i === this.currentDate.getDate() && this.currentDate.getMonth() === new Date(this.currentYear, this.currentDate.getMonth()).getMonth();
+      const isToday =
+        i === this.currentDate.getDate() &&
+        this.currentDate.getMonth() === new Date().getMonth() &&
+        this.currentYear === new Date().getFullYear();
 
       this.daysInMonth.push({
         day: i,
