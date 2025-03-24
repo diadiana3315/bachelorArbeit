@@ -1,0 +1,21 @@
+{
+  "name": "My App",
+  "short_name": "My App",
+  "description": "A brief description of your app.",
+  "start_url": "/login",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976D2",
+  "icons": [
+    {
+      "src": "/public/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "public/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
