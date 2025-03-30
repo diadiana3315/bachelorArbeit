@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {FileMetadata} from '../models/file-metadata';
 import {FirestoreService} from '../services/firestore.service';
 import {UserService} from '../services/user.service';
+import {NgxExtendedPdfViewerComponent} from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-file-viewer',
@@ -15,12 +16,16 @@ export class FileViewerComponent implements OnInit {
   fileMetadata: FileMetadata | null = null; // Store the metadata
   userId: string | null = null;
 
+  @ViewChild('pdfViewer') pdfViewer!: NgxExtendedPdfViewerComponent;
+  @ViewChild('pdfContainer') pdfContainer!: ElementRef;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private firestoreService: FirestoreService, // Assuming you have a service to interact with Firestore
+    private firestoreService: FirestoreService,
     private userService: UserService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // Fetch the file URL from query params
@@ -28,41 +33,28 @@ export class FileViewerComponent implements OnInit {
       this.fileUrl = params['fileURL'];
 
       if (!this.fileUrl) {
-        this.router.navigate(['/library']);
+        await this.router.navigate(['/library']);
         return;
       }
 
-      this.userId = await this.userService.getCurrentUserId(); // Assuming you have a method to get the user ID
-      //
-      // if (!this.userId) {
-      //   console.error('User not logged in or userId not found.');
-      //   await this.router.navigate(['/login']); // Redirect to login if userId is not found
-      //   return;
-      // }
+      this.userId = await this.userService.getCurrentUserId();
 
       try {
         this.fileMetadata = await this.firestoreService.getFileMetadataByUrl(this.fileUrl, this.userId);
 
         if (!this.fileMetadata) {
           console.error('File metadata not found!');
-          this.router.navigate(['/library']);
+          await this.router.navigate(['/library']);
         }
       } catch (error) {
         console.error('Error fetching file metadata:', error);
-        this.router.navigate(['/library']);
+        await this.router.navigate(['/library']);
       }
     });
 
-
     // Detect browser's default language
     this.browserLanguage = navigator.language || 'en-US';
+    console.log('PDF Viewer initialized:', this.pdfViewer);
   }
-
-  isImageFile(): boolean {
-    return this.fileMetadata?.fileType
-      ? ['jpg', 'jpeg', 'png'].includes(this.fileMetadata.fileType.toLowerCase())
-      : false;
-  }
-
 
 }

@@ -1,15 +1,22 @@
-<div *ngIf="fileUrl && fileMetadata" class="file-viewer-container">
+<div *ngIf="fileUrl && fileMetadata" #pdfContainer class="file-viewer-container">
   <ngx-extended-pdf-viewer
+    #pdfViewer
     [src]="fileUrl"
     [customToolbar]="customToolbarTemplate"
     [height]="'100vh'"
     [language]="browserLanguage"
+    [pageViewMode]="'single'"
+    [zoom]="'page-fit'"
+    [scrollMode]="3"
     [localeFolderPath]="'assets/locale/'"
   ></ngx-extended-pdf-viewer>
-    <!-- Custom Toolbar -->
-    <ng-template #customToolbarTemplate>
-      <app-custom-toolbar [fileMetadata]="fileMetadata"></app-custom-toolbar>
-    </ng-template>
+
+  <!-- Custom Toolbar -->
+  <ng-template #customToolbarTemplate>
+    <app-custom-toolbar
+      [fileMetadata]="fileMetadata">
+    </app-custom-toolbar>
+  </ng-template>
 </div>
 <p *ngIf="!fileUrl">No file selected or unsupported file type.</p>
-<p *ngIf="!fileMetadata">Metadata not found.</p>
+<!--<p *ngIf="!fileMetadata">Metadata not found.</p>-->

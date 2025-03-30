@@ -41,3 +41,8 @@
 .custom-toolbar mat-icon {
   font-size: 24px;
 }
+
+ngx-extended-pdf-viewer #viewerContainer {
+  height: 100vh !important;  /* Ensure full height */
+  overflow-y: auto !important; /* Force scrolling */
+}

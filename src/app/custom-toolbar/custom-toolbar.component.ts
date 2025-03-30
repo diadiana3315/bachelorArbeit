@@ -28,7 +28,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
 
   private waitForViewerContainer(attempts = 0) {
     setTimeout(() => {
-      this.viewerContainer = document.querySelector('.file-viewer-container ngx-extended-pdf-viewer') as HTMLElement;
+      this.viewerContainer = document.querySelector('#viewerContainer') as HTMLElement;
 
       if (this.viewerContainer) {
         console.log('Viewer container found:', this.viewerContainer);
@@ -48,7 +48,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
               private pdfViewerService: NgxExtendedPdfViewerService
   )
   { // Bind the `handleSaveToFirebase` method to the component's context
-  this.onClick = this.handleSaveToFirebase.bind(this);
+    this.onClick = this.handleSaveToFirebase.bind(this);
   }
 
 
@@ -119,7 +119,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   }
 
   goBackToLibrary(): void {
-    this.router.navigate(['/library']); // Navigates back to the library page
+    this.router.navigate(['/library']);
   }
 
   toggleAutoScroll() {
