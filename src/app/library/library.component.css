@@ -1,221 +1,15 @@
-.library-container {
-  padding: 24px;
-  font-family: 'Inter', sans-serif;
-  height: 100%;
-  box-sizing: border-box;
-  background: #f5fdf0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 76px;
-}
-
-/* Header */
-.library-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column;
-  width: 100%;
-  max-width: 900px;
-  background: transparent;
-  padding: 12px 16px;
-  /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
-  border: none;
-}
-
-.library-header h2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-}
-
-.library-header button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.library-header mat-icon {
-  font-size: 28px;
-  color: #333;
-}
-
-/* Folders Section */
-.folders-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Auto-responsive */
-  gap: 20px;
-  width: 100%;
-  max-width: 900px;
-  margin-top: 20px;
-}
-
-.folder-item {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.folder-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.folder-icon {
-  font-size: 72px;
-  color: #3f51b5;
-  transition: color 0.2s ease;
-}
-
-.mat-icon {
-  font-size: 60px;
-}
-
-.folder-item:hover .folder-icon {
-  color: #1e88e5;
-}
-
-.folder-name {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-}
-/* Files Section */
-.files-container {
-  width: 100%;
-  max-width: 900px;
-  margin-top: 20px;
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.files-container h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-/* Individual File Items */
-.file-item {
-  display: flex;
-  align-items: center; /* Center the icon and text */
-  gap: 10px; /* Space between the icon and the file name */
-  padding: 8px 0;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.file-item:hover {
-  background: #f5f5f5; /* Highlight background on hover */
-}
-
-/* File Icon */
-.file-icon {
-  font-size: 24px;
-  color: #007bff; /* Blue color for the file icon */
-}
-
-/* File Name */
-.file-name {
-  margin: 0;
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-}
-
-
-
-
-
-
-
-
-/*.delete-btn {*/
-/*  background: transparent;*/
-/*  border: none;*/
-/*  cursor: pointer;*/
-/*  font-size: 24px;*/
-/*  transition: color 0.2s ease;*/
-/*}*/
-
-/*.delete-btn:hover {*/
-/*  color: #b71c1c; !* Darker red on hover *!*/
-/*}*/
-
-
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .file-name {
-    font-size: 14px;
-  }
-
-  .file-icon {
-    font-size: 20px;
-  }
-}
-
-/* Search Overlay (covers everything) */
-.search-overlay {
-  position: fixed; /* Makes it cover the entire screen */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Ensures it's above everything */
-}
-
-/* Search Results Box */
-.search-results {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  width: 90%;
-  text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/*!* -----------------------*/
 /*.library-container {*/
-/*  padding: 24px;*/
+/*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/pexels-codioful-7130555.jpg");*/
+/*  background-size: cover;*/
+/*  background-position: center center;*/
+/*  !*padding: 24px;*!*/
 /*  font-family: 'Inter', sans-serif;*/
-/*  background: #f5fdf0; !* Soft green background *!*/
+/*  height: auto;*/
+/*  box-sizing: border-box;*/
 /*  display: flex;*/
 /*  flex-direction: column;*/
 /*  align-items: center;*/
-/*  margin-top: 76px;*/
-/*  height: 100%;*/
-/*  box-sizing: border-box;*/
+/*  !*margin-top: 76px;*!*/
 /*}*/
 
 /*!* Header *!*/
@@ -226,33 +20,43 @@
 /*  flex-direction: column;*/
 /*  width: 100%;*/
 /*  max-width: 900px;*/
-/*  background: white;*/
-/*  padding: 12px 16px;*/
-/*  border-radius: 12px;*/
-/*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
+/*  background: transparent;*/
+/*  !*padding: 12px 16px;*!*/
+/*  border: none;*/
+/*  position: relative;*/
+/*  top: 12vh;*/
 /*}*/
 
-/*!* Content Layout *!*/
-/*.library-content {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center;*/
-/*  width: 100%;*/
-/*  max-width: 900px;*/
+/*!*.library-header h2 {*!*/
+/*!*  font-size: 24px;*!*/
+/*!*  font-weight: bold;*!*/
+/*!*  color: #333;*!*/
+/*!*  margin: 0;*!*/
+/*!*}*!*/
+
+/*.library-header button {*/
+/*  background: transparent;*/
+/*  border: none;*/
+/*  cursor: pointer;*/
 /*}*/
 
-/*!* Folders *!*/
+/*.library-header mat-icon {*/
+/*  font-size: 25px;*/
+/*  color: #333;*/
+/*}*/
+
+/*!* Folders Section *!*/
 /*.folders-container {*/
 /*  display: grid;*/
-/*  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); !* Responsive grid *!*/
+/*  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); !* Auto-responsive *!*/
 /*  gap: 20px;*/
 /*  width: 100%;*/
-/*  margin-top: 20px;*/
-/*  justify-content: center;*/
+/*  max-width: 900px;*/
+/*  !*margin-top: 20px;*!*/
 /*}*/
 
 /*.folder-item {*/
-/*  background: white;*/
+/*  background: rgba(255, 255, 255, 0.6); !* Semi-transparent white background *!*/
 /*  border-radius: 12px;*/
 /*  padding: 16px;*/
 /*  text-align: center;*/
@@ -269,83 +73,372 @@
 /*  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);*/
 /*}*/
 
-/*!* Folder Icon (Above Text) *!*/
-/*.folder-icon {*/
-/*  font-size: 22px;*/
-/*  color: #3f51b5;*/
-/*  transition: color 0.2s ease;*/
-/*}*/
+/*!*.folder-icon {*!*/
+/*!*  font-size: 72px;*!*/
+/*!*  color: #3f51b5;*!*/
+/*!*  transition: color 0.2s ease;*!*/
+/*!*}*!*/
 
-/*.folder-item:hover .folder-icon {*/
-/*  color: #1e88e5;*/
-/*}*/
+/*!*.mat-icon {*!*/
+/*!*  font-size: 60px;*!*/
+/*!*}*!*/
+
+/*!*.folder-item:hover .folder-icon {*!*/
+/*!*  color: #1e88e5;*!*/
+/*!*}*!*/
 
 /*.folder-name {*/
-/*  margin-top: 8px;*/
-/*  font-size: 16px;*/
+/*  margin-top: 10px;*/
+/*  font-size: 18px;*/
 /*  font-weight: 500;*/
 /*  color: #333;*/
 /*}*/
 
-/*!* Files *!*/
+
+/*!* Files Section *!*/
 /*.files-container {*/
 /*  width: 100%;*/
 /*  max-width: 900px;*/
 /*  margin-top: 20px;*/
-/*  background: white;*/
+/*  background: rgba(255, 255, 255, 0.6); !* Semi-transparent white background *!*/
 /*  border-radius: 12px;*/
 /*  padding: 16px;*/
 /*  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
 /*}*/
 
 /*.files-container h3 {*/
-/*  font-size: 18px;*/
+/*  font-size: 20px;*/
 /*  color: #333;*/
 /*  margin-bottom: 10px;*/
 /*  text-align: center;*/
 /*}*/
 
-/*.file-list {*/
-/*  display: grid;*/
-/*  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); !* Flexible grid *!*/
-/*  gap: 10px;*/
-/*}*/
-
+/*!*!* Individual File Items *!*/
 /*.file-item {*/
 /*  display: flex;*/
-/*  align-items: center;*/
-/*  gap: 10px;*/
-/*  padding: 8px 12px;*/
+/*  align-items: center; !* Center the icon and text *!*/
+/*  gap: 10px; !* Space between the icon and the file name *!*/
+/*  !*padding: 8px 0;*!*/
 /*  cursor: pointer;*/
 /*  transition: background 0.2s ease;*/
 /*}*/
 
 /*.file-item:hover {*/
-/*  background: #f5f5f5;*/
+/*  background: #f5f5f5; !* Highlight background on hover *!*/
 /*}*/
 
-/*.file-icon {*/
-/*  font-size: 24px;*/
-/*  color: #007bff;*/
-/*}*/
 
+/*!*!* File Name *!*/
 /*.file-name {*/
-/*  font-size: 14px;*/
+/*  margin: 0;*/
+/*  font-size: 16px;*/
 /*  color: #333;*/
 /*  font-weight: 500;*/
 /*}*/
 
-/*!* Mobile Styles *!*/
-/*@media (max-width: 600px) {*/
+
+
+/*!*!* Search Overlay (covers everything) *!*/
+/*.search-overlay {*/
+/*  position: fixed; !* Makes it cover the entire screen *!*/
+/*  !*top: 0;*!*/
+/*  !*left: 0;*!*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  background: rgba(0, 0, 0, 0.5); !* Dark transparent background *!*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  z-index: 1000; !* Ensures it's above everything *!*/
+/*}*/
+
+/*!* Search Results Box *!*/
+/*.search-results {*/
+/*  background: white;*/
+/*  padding: 24px;*/
+/*  border-radius: 12px;*/
+/*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);*/
+/*  max-width: 650px;*/
+/*  width: 90%;*/
+/*  text-align: center;*/
+/*  animation: fadeIn 0.3s ease-in-out;*/
+/*}*/
+
+/*!* Fade-in animation *!*/
+/*@keyframes fadeIn {*/
+/*  from {*/
+/*    opacity: 0;*/
+/*    transform: translateY(-10px);*/
+/*  }*/
+/*  to {*/
+/*    opacity: 1;*/
+/*    transform: translateY(0);*/
+/*  }*/
+/*}*/
+
+
+
+
+
+
+/* Main container styling */
+.library-container {
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f0ff 0%, #e0d0ff 100%);
+  font-family: 'Roboto', Arial, sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header section */
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+  position: relative;
+  top: 12vh;
+}
+
+.library-header h2 {
+  margin: 0;
+  color: #5a4a8a;
+  font-weight: 500;
+}
+
+/* Folder grid layout - positioned above files */
+.folders-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  margin-bottom: 30px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  max-width: 900px;
+}
+
+.folder-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.folder-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.folder-icon {
+  color: #8a6dce;
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+}
+
+.folder-name {
+  margin-top: 8px;
+  color: #444;
+  text-align: center;
+  word-break: break-word;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Files container styling - positioned below folders */
+.files-container {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(5px);
+  margin-top: 20px; /* Extra spacing from folders above */
+}
+
+.files-container h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #5a4a8a;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(138, 109, 206, 0.3);
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-icon {
+  color: #8a6dce;
+  margin-right: 12px;
+}
+
+.file-name {
+  flex-grow: 1;
+  margin: 0;
+  cursor: pointer;
+  color: #444;
+}
+
+.file-display {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Rename functionality styling */
+.rename-input {
+  border: 1px solid #8a6dce;
+  border-radius: 4px;
+  padding: 8px;
+  flex-grow: 1;
+  outline: none;
+  font-family: inherit;
+}
+
+.rename-actions {
+  display: flex;
+  margin-left: 10px;
+}
+
+.rename-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8a6dce;
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.rename-actions button:hover {
+  background-color: rgba(138, 109, 206, 0.1);
+}
+
+/* File action buttons */
+.rename-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.rename-btn:hover, .delete-btn:hover {
+  opacity: 1;
+  background-color: rgba(138, 109, 206, 0.1);
+}
+
+.rename-btn mat-icon {
+  color: #5a4a8a;
+}
+
+.delete-btn mat-icon {
+  color: #c06060;
+}
+
+/* Search overlay */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+  z-index: 1000;
+}
+
+.search-results {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-results h2 {
+  margin-top: 0;
+  color: #5a4a8a;
+  border-bottom: 1px solid rgba(138, 109, 206, 0.3);
+  padding-bottom: 10px;
+}
+
+/* Add button styling */
+app-add-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+}
+
+/*!* Responsive adjustments *!*/
+/*@media (max-width: 768px) {*/
 /*  .folders-container {*/
-/*    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));*/
+/*    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));*/
+/*    gap: 15px;*/
 /*  }*/
 
-/*  .file-name {*/
-/*    font-size: 12px;*/
+/*  .folder-icon {*/
+/*    font-size: 40px;*/
+/*    height: 40px;*/
+/*    width: 40px;*/
 /*  }*/
 
-/*  .file-icon {*/
-/*    font-size: 20px;*/
+/*  .folder-name {*/
+/*    font-size: 14px;*/
+/*  }*/
+/*}*/
+
+/*@media (max-width: 480px) {*/
+/*  .folders-container {*/
+/*    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));*/
+/*    gap: 10px;*/
 /*  }*/
 
+/*  .library-container {*/
+/*    padding: 15px;*/
+/*  }*/
+/*}*/

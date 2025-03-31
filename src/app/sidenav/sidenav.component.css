@@ -32,7 +32,20 @@ mat-sidenav-content.content-veiled {
 }
 
 /* Padding for main content */
-mat-sidenav-content {
-  padding: 16px;
-}
+/*mat-sidenav-content {*/
+/*  !*padding: 16px;*!*/
+/*}*/
 
+/*mat-sidenav-content.mat-drawer-open {*/
+/*  padding: 160px; !* Adjust padding as needed *!*/
+/*}*/
+
+/*!* Ensure no padding when the sidenav is closed *!*/
+/*mat-sidenav-content {*/
+/*  padding: 0; !* No padding when sidenav is closed *!*/
+/*}*/
+
+mat-sidenav-content {
+  z-index: 1;
+  position: relative;
+}
