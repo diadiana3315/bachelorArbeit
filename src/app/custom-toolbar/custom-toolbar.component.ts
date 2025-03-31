@@ -18,7 +18,8 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   scrollSpeed = 1; // Default speed (adjustable)
   animationFrameId: number | null = null;
   viewerContainer: HTMLElement | null = null;
-
+  bpm: number = 60;
+  autoScrollInterval: any = null; // Store the interval ID
 
   public onClick?: () => void;
 
@@ -138,25 +139,40 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const scroll = () => {
-      if (!this.isAutoScrolling || !this.viewerContainer) return;
-      this.viewerContainer.scrollBy(0, this.scrollSpeed);
-      this.animationFrameId = requestAnimationFrame(scroll);
-    };
+    this.stopAutoScroll(); // Stop any existing interval to prevent multiple from running
 
-    this.animationFrameId = requestAnimationFrame(scroll);
+    // Convert BPM to a scroll delay (longer delay = slower scrolling)
+    const beatsPerSecond = this.bpm / 60; // BPM to beats per second
+    const scrollInterval = 1000 / beatsPerSecond; // Time (ms) per beat
+
+    console.log(`🎵 BPM: ${this.bpm}, Scrolling every ${scrollInterval.toFixed(2)} ms`);
+
+    this.autoScrollInterval = setInterval(() => {
+      if (!this.isAutoScrolling || !this.viewerContainer) {
+        this.stopAutoScroll();
+        return;
+      }
+      this.viewerContainer.scrollBy(0, 1); // Scroll by **1 pixel** at each interval
+    }, scrollInterval); // Interval controls the speed
   }
 
   stopAutoScroll() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+      this.autoScrollInterval = null;
     }
   }
 
-  updateScrollSpeed(newSpeed: number) {
-    this.scrollSpeed = newSpeed;
-  }
+  // updateScrollSpeed(bpm: number) {
+  //   // Ensure BPM stays in range (20 - 300)
+  //   bpm = Math.max(20, Math.min(300, bpm));
+  //
+  //   const beatsPerSecond = bpm / 60; // Convert BPM to beats per second
+  //   const pixelsPerBeat = 1; // Adjust this for slower/faster scrolling
+  //   this.scrollSpeed = pixelsPerBeat * beatsPerSecond; // Compute px/sec
+  //
+  //   console.log(`🎵 BPM: ${bpm}, Scroll Speed: ${this.scrollSpeed.toFixed(2)} px/sec`);
+  // }
 
   ngOnDestroy() {
     this.stopAutoScroll(); // Clean up interval when component is destroyed

@@ -32,7 +32,9 @@
       <mat-icon>{{ isAutoScrolling ? 'pause' : 'play_arrow' }}</mat-icon>
     </button>
     <label>Speed:</label>
-    <input type="range" min="1" max="10" [(ngModel)]="scrollSpeed" (input)="updateScrollSpeed(scrollSpeed)">
+<!--    <input type="range" min="1" max="10" [(ngModel)]="scrollSpeed" (input)="updateScrollSpeed(scrollSpeed)">-->
+
+    <input type="number" min="20" max="300" [(ngModel)]="bpm" (input)="startAutoScroll()">
 
     <!--    <pdf-download></pdf-download>-->
     <pdf-print></pdf-print>
