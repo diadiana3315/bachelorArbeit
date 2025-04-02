@@ -5,6 +5,7 @@ import {FileMetadata} from '../models/file-metadata';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {FirestoreService} from '../services/firestore.service';
 import {NgxExtendedPdfViewerService} from 'ngx-extended-pdf-viewer';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-custom-toolbar',
@@ -22,9 +23,29 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   autoScrollInterval: any = null; // Store the interval ID
 
   public onClick?: () => void;
+  @Input() fileUrl: string | null = null;
+  musicXmlUrl: string | null = null;
+
+
 
   ngAfterViewInit() {
     this.waitForViewerContainer();
+
+    // Listen for the document load event
+    document.addEventListener('documentloaded', () => {
+      this.extractPdfUrl();
+    });
+  }
+
+  private extractPdfUrl() {
+    const pdfViewer = document.querySelector('#viewerContainer') as any;
+
+    if (pdfViewer && pdfViewer.src) {
+      this.fileUrl = pdfViewer.src; // Assign the loaded file's URL
+      console.log("✅ Loaded PDF URL:", this.fileUrl);
+    } else {
+      console.warn("⚠️ Could not retrieve PDF URL.");
+    }
   }
 
   private waitForViewerContainer(attempts = 0) {
@@ -46,7 +67,8 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
               private auth: AngularFireAuth,
               private firestoreService: FirestoreService,
               private storageService: FirebaseStorageService,
-              private pdfViewerService: NgxExtendedPdfViewerService
+              private pdfViewerService: NgxExtendedPdfViewerService,
+              private http: HttpClient
   )
   { // Bind the `handleSaveToFirebase` method to the component's context
     this.onClick = this.handleSaveToFirebase.bind(this);
@@ -177,4 +199,42 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.stopAutoScroll(); // Clean up interval when component is destroyed
   }
+
+  convertToMusicXML() {
+    if (!this.fileUrl) {
+      alert("No file to convert!");
+      return;
+    }
+
+    console.log("Fetching file from URL:", this.fileUrl);
+
+    // Fetch the file from Firebase Storage
+    fetch(this.fileUrl)
+      .then(response => response.blob()) // Convert response to a blob
+      .then(blob => {
+        const formData = new FormData();
+        formData.append('file', blob, 'uploaded.pdf'); // Append blob as a file
+
+        // Send request to backend
+        this.http.post<{ fileName: string }>('http://localhost:3000/convert', formData)
+          .subscribe(response => {
+            if (!response || !response.fileName) {
+              console.error("Conversion failed: No filename returned.");
+              alert("Conversion failed!");
+              return;
+            }
+
+            const musicXmlFileName = response.fileName;
+            this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}`;
+          }, error => {
+            console.error("Conversion failed:", error);
+            alert("Conversion failed!");
+          });
+      })
+      .catch(error => {
+        console.error("Error fetching PDF:", error);
+        alert("Failed to fetch the PDF file!");
+      });
+  }
+
 }

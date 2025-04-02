@@ -17,6 +17,8 @@ export class AddButtonComponent {
   @ViewChild('fileInput') fileInput: any;
   @ViewChild('imageInput') imageInput: any;
 
+  selectedFile: File | null = null;
+
   constructor(
     private firestoreService: FirestoreService,
     private firebaseStorageService: FirebaseStorageService,
@@ -66,12 +68,14 @@ export class AddButtonComponent {
    * @param event The event containing the selected file.
    */
   async onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
+    this.selectedFile = event.target.files[0];
+    if (!this.selectedFile) return;
+
+    const userId = await this.userService.getCurrentUserId();
+
       try {
-        const userId = await this.userService.getCurrentUserId();
         const uploadedFile = await this.firestoreService.uploadAndSaveFile(
-          file,
+          this.selectedFile,
           this.currentFolder ? this.currentFolder.id : null,
           userId
         );
@@ -81,7 +85,6 @@ export class AddButtonComponent {
       } catch (error) {
         console.error('Error uploading file:', error);
       }
-    }
   }
 
   /**
@@ -135,4 +138,5 @@ export class AddButtonComponent {
       reader.onerror = reject;
     });
   }
+
 }

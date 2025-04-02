@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://bachelor-858d7.web.app"],
+    "origin": ["http://localhost:4200","https://bachelor-858d7.web.app"],
     "method": ["GET", "POST", "PUT"],
     "maxAgeSeconds": 3600
   }
