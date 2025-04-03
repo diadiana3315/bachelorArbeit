@@ -328,47 +328,32 @@ export class FirestoreService {
 
   logUserUsage(userId: string) {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Months are 0-based, so we add 1
-    const day = today.getDate();
+    const dateString = today.toISOString().split('T')[0]; // Format YYYY-MM-DD
 
-    return this.firestore.collection(`users/${userId}/usageRecords`).doc(`${year}-${month}`).set({
-      [day]: true // Mark this day as accessed
-    }, { merge: true });
+    const usageRef = this.firestore.collection(`users/${userId}/usageRecords`).doc(dateString);
+
+    return usageRef.set({ used: true }, { merge: true });
   }
 
-  async getUserUsageDays(userId: string, year: number, month: number): Promise<Set<number>> {
-    const usageDays = new Set<number>(); // To store highlighted days
 
-    try {
-      const usageDocSnapshot = await this.firestore
-        .collection(`users/${userId}/usageRecords`)
-        .doc(`${year}-${month}`)
-        .get()
-        .toPromise();
+  async getUserUsageDays(userId: string): Promise<Set<string>> {
+    const usageRecords = await this.firestore.collection(`users/${userId}/usageRecords`).get().toPromise();
 
-      if (usageDocSnapshot?.exists) {
-        const data = usageDocSnapshot.data() as Record<string, boolean>; // Type assertion
-
-        console.log("Fetched usage data from Firestore:", data); // Debug log
-
-        // Now TypeScript knows the structure of 'data'
-        Object.keys(data).forEach(day => {
-          const dayNumber = parseInt(day, 10);
-
-          if (!isNaN(dayNumber)) {
-            usageDays.add(dayNumber);
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching usage days:", error);
+    if (!usageRecords || usageRecords.empty) {
+      return new Set(); // Return an empty set if there are no records
     }
 
-    console.log("Processed used days:", usageDays); // Debug log
+    const usedDays = new Set<string>();
 
-    return usageDays;
+    usageRecords.forEach(doc => {
+      if (doc.id) {
+        usedDays.add(doc.id); // Store full date (YYYY-MM-DD)
+      }
+    });
+
+    return usedDays;
   }
+
 
 
 }

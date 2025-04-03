@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import {SearchService} from '../services/search.service';
-import {FileMetadata} from '../models/file-metadata';
 import {FirestoreService} from '../services/firestore.service';
 import {DailyMessageService} from '../services/daily-message.service';
 
@@ -15,7 +14,6 @@ export class HomepageComponent implements OnInit {
 
   user: any;
   username: string = ''; // Store username here
-  recentFiles: FileMetadata[] = []; // Store recent files here
   streakCount: number = 0; // Will store the total number of distinct days the user logged in
   dailyMessage: string = '';
 
@@ -25,6 +23,7 @@ export class HomepageComponent implements OnInit {
     selectedDays: [] // Stores selected days if using "specific days"
   };
 
+  weeklyPracticeMessage: string = '';
 
   weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -50,9 +49,6 @@ export class HomepageComponent implements OnInit {
         this.loadStreakData(user.uid);
         this.loadDailyMessage();
 
-        this.loadRecentFiles(); // Load recent files when user is authenticated
-        // this.loadStreakData();
-
         if (user.uid) {
           this.firestoreService.getUserPracticeGoals(user.uid).subscribe(goals => {
             if (goals) {
@@ -64,38 +60,7 @@ export class HomepageComponent implements OnInit {
     });
   }
 
-  /**
-   * Fetch the 5 most recent files from Firestore
-   */
-  loadRecentFiles() {
-    this.firestoreService.getRecentFiles(this.user.uid, 5).subscribe((files) => {
-      this.recentFiles = files;
-    });
-  }
 
-  openFile(file: FileMetadata) {
-    console.log('Opening file:', file);
-    if (file.id) {
-      this.firestoreService.updateFileAccessTimestamp(this.user.uid, file.id)
-        .then(() => {
-          // Open the file after updating timestamp
-          if (['pdf', 'jpg', 'jpeg'].some(type => file.fileType.includes(type))) {
-            window.open(file.fileURL, '_blank');
-          } else {
-            alert('Unsupported file type!');
-          }
-        })
-        .catch(error => {
-          console.error('Error updating access timestamp:', error);
-          // Still open the file even if updating timestamp fails
-          if (['pdf', 'jpg', 'jpeg'].some(type => file.fileType.includes(type))) {
-            window.open(file.fileURL, '_blank');
-          } else {
-            alert('Unsupported file type!');
-          }
-        });
-    }
-  }
 
   toggleDaySelection(day: string) {
     const index = this.practiceGoals.selectedDays.indexOf(day);
@@ -119,18 +84,37 @@ export class HomepageComponent implements OnInit {
       .catch(error => console.error('Error saving practice goals:', error));
   }
 
+
+
   async loadStreakData(userId: string) {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Firestore stores months as 1-based, so no need to adjust here
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay()); // Get Sunday of this week
 
     try {
-      const usageDays = await this.firestoreService.getUserUsageDays(userId, year, month);
-      this.streakCount = usageDays.size; // Count distinct days logged in this month
+      const usageDays = await this.firestoreService.getUserUsageDays(userId);
+      this.streakCount = usageDays.size; // Count distinct login days
+
+      // Count how many times the user logged in during the current week
+      const daysPracticedThisWeek = Array.from(usageDays).filter(dateStr => {
+        const date = new Date(dateStr);
+        return date >= startOfWeek && date <= today;
+      }).length;
+
+      // Compare with practice goals
+      const remainingDays = Math.max(0, this.practiceGoals.timesPerWeek - daysPracticedThisWeek);
+
+      // Generate the message
+      if (remainingDays === 0) {
+        this.weeklyPracticeMessage = "Great job! You've completed your weekly practice goal!";
+      } else {
+        this.weeklyPracticeMessage = `You have ${remainingDays} more day${remainingDays > 1 ? 's' : ''} to practice this week!`;
+      }
     } catch (error) {
       console.error("Error loading streak data:", error);
     }
   }
+
 
   loadDailyMessage() {
     this.dailyMessageService.getDailyMessage().subscribe(

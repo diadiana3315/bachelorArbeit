@@ -34,19 +34,6 @@
          <button (click)="savePracticeGoals()">Save Goals</button>
          </div>
        </div>
-
-<!--       <div class="recent-files-container">-->
-<!--         <div class="files-elements">-->
-<!--         <h2>📄 Recent Files</h2>-->
-<!--         <div *ngIf="recentFiles.length > 0">-->
-<!--           <div class="recent-file" *ngFor="let file of recentFiles" (click)="openFile(file)">-->
-<!--             <mat-icon class="file-icon">insert_drive_file</mat-icon>-->
-<!--             <p>{{ file.fileName }}</p>-->
-<!--           </div>-->
-<!--         </div>-->
-<!--         <p *ngIf="recentFiles.length === 0">No recent files.</p>-->
-<!--       </div>-->
-<!--       </div>-->
      </div>
 
      <div  class="column">
@@ -55,7 +42,8 @@
          <!--     <h2>Welcome back, {{ username }}</h2>-->
 
           <h2>🔥 Streak: {{ streakCount }} Day{{ streakCount > 1 ? 's' : '' }}</h2>
-          <p>{{ dailyMessage }}</p> <!-- Display the daily message -->
+           <p>{{ weeklyPracticeMessage }}</p>
+           <p>{{ dailyMessage }}</p> <!-- Display the daily message -->
          </div>
        </div>
 

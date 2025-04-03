@@ -40,16 +40,22 @@ export class StreakCalendarComponent implements OnInit {
   async loadUsedDays() {
     if (!this.userId) return;
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Month is 0-indexed in JS, so we add 1
+    // Fetch all usage records for this user
+    const usedDates = await this.firestoreService.getUserUsageDays(this.userId);
 
-    // Get the set of used days for the current month
-    const usedDays = await this.firestoreService.getUserUsageDays(this.userId, year, month);
+    // Process the data for the current month
+    const usedDays = new Set<number>();
 
-    // Set the used days in the calendar
+    usedDates.forEach(dateStr => {
+      const date = new Date(dateStr);
+      if (date.getFullYear() === this.currentYear && date.getMonth() === this.currentDate.getMonth()) {
+        usedDays.add(date.getDate()); // Store the day only if it matches the selected month
+      }
+    });
+
     this.generateCalendar(usedDays);
   }
+
 
   generateCalendar(usedDays: Set<number>) {
     const daysInCurrentMonth = new Date(this.currentYear, this.currentDate.getMonth() + 1, 0).getDate();
