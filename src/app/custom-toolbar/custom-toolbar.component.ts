@@ -225,7 +225,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
             }
 
             const musicXmlFileName = response.fileName;
-            this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}`;
+            this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}?t=${Date.now()}`;
           }, error => {
             console.error("Conversion failed:", error);
             alert("Conversion failed!");

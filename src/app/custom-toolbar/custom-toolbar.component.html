@@ -40,7 +40,7 @@
       <mat-icon>music_note</mat-icon>
     </button>
 
-    <app-music-xml-player *ngIf="musicXmlUrl" [musicXmlUrl]="musicXmlUrl"></app-music-xml-player>
+<!--    <app-music-xml-player *ngIf="musicXmlUrl" [musicXmlUrl]="musicXmlUrl"></app-music-xml-player>-->
 
     <!-- Show download link when conversion is complete -->
     <a *ngIf="musicXmlUrl" [href]="musicXmlUrl" [download]="fileMetadata?.fileName?.replace('.pdf', '.mxl') || 'converted.mxl'">

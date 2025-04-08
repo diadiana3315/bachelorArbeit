@@ -9,6 +9,12 @@ const fetch = require('node-fetch'); // For downloading files from URLs if neede
 const app = express();
 const port = 3000;
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -61,7 +67,23 @@ app.post("/convert", upload.single("file"), (req, res) => {
 
     // Find the generated MusicXML file
     const files = fs.readdirSync(outputDir);
-    const musicXMLFile = files.find(file => file.endsWith(".mxl") || file.endsWith(".xml"));
+// Get all .mxl or .xml files
+    const musicXmlFiles = files.filter(file => file.endsWith(".mxl") || file.endsWith(".xml"));
+
+    if (musicXmlFiles.length === 0) {
+      console.error("No MusicXML file found after conversion.");
+      return res.status(500).json({ error: "No MusicXML file found" });
+    }
+
+// Sort by modified time (newest first)
+    musicXmlFiles.sort((a, b) => {
+      const aTime = fs.statSync(path.join(outputDir, a)).mtime;
+      const bTime = fs.statSync(path.join(outputDir, b)).mtime;
+      return bTime - aTime;
+    });
+
+// The most recent file
+    const musicXMLFile = musicXmlFiles[0];
 
     if (!musicXMLFile) {
       console.error("No MusicXML file found after conversion.");

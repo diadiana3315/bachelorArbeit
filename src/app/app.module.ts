@@ -35,7 +35,7 @@ import { StreakCalendarComponent } from './streak-calendar/streak-calendar.compo
 import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/moment';
 import {HttpClientModule} from '@angular/common/http';
-import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.component';
+// import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,7 @@ import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.com
     FileViewerComponent,
     CustomToolbarComponent,
     StreakCalendarComponent,
-    MusicXmlPlayerComponent,
+    // MusicXmlPlayerComponent,
   ],
   imports: [
     BrowserModule,
