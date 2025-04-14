@@ -35,6 +35,8 @@ import { StreakCalendarComponent } from './streak-calendar/streak-calendar.compo
 import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/moment';
 import {HttpClientModule} from '@angular/common/http';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 // import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.component';
 
 @NgModule({
@@ -83,6 +85,8 @@ import {HttpClientModule} from '@angular/common/http';
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow custom elements
   providers: [],

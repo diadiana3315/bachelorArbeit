@@ -16,7 +16,6 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   @Input() fileMetadata!: FileMetadata;
 
   isAutoScrolling = false;
-  scrollSpeed = 1; // Default speed (adjustable)
   animationFrameId: number | null = null;
   viewerContainer: HTMLElement | null = null;
   bpm: number = 60;
@@ -26,6 +25,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
   @Input() fileUrl: string | null = null;
   musicXmlUrl: string | null = null;
 
+  isConverting: boolean = false;
 
 
   ngAfterViewInit() {
@@ -42,9 +42,9 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
 
     if (pdfViewer && pdfViewer.src) {
       this.fileUrl = pdfViewer.src; // Assign the loaded file's URL
-      console.log("✅ Loaded PDF URL:", this.fileUrl);
+      console.log("Loaded PDF URL:", this.fileUrl);
     } else {
-      console.warn("⚠️ Could not retrieve PDF URL.");
+      console.warn("Could not retrieve PDF URL.");
     }
   }
 
@@ -155,35 +155,35 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  startAutoScroll() {
-    if (!this.viewerContainer) {
-      console.error('Viewer container not found! Cannot start scrolling.');
-      return;
-    }
-
-    this.stopAutoScroll(); // Stop any existing interval to prevent multiple from running
-
-    // Convert BPM to a scroll delay (longer delay = slower scrolling)
-    const beatsPerSecond = this.bpm / 60; // BPM to beats per second
-    const scrollInterval = 1000 / beatsPerSecond; // Time (ms) per beat
-
-    console.log(`🎵 BPM: ${this.bpm}, Scrolling every ${scrollInterval.toFixed(2)} ms`);
-
-    this.autoScrollInterval = setInterval(() => {
-      if (!this.isAutoScrolling || !this.viewerContainer) {
-        this.stopAutoScroll();
-        return;
-      }
-      this.viewerContainer.scrollBy(0, 1); // Scroll by **1 pixel** at each interval
-    }, scrollInterval); // Interval controls the speed
-  }
-
-  stopAutoScroll() {
-    if (this.autoScrollInterval) {
-      clearInterval(this.autoScrollInterval);
-      this.autoScrollInterval = null;
-    }
-  }
+  // startAutoScroll() {
+  //   if (!this.viewerContainer) {
+  //     console.error('Viewer container not found! Cannot start scrolling.');
+  //     return;
+  //   }
+  //
+  //   this.stopAutoScroll(); // Stop any existing interval to prevent multiple from running
+  //
+  //   // Convert BPM to a scroll delay (longer delay = slower scrolling)
+  //   const beatsPerSecond = this.bpm / 60; // BPM to beats per second
+  //   const scrollInterval = 1000 / beatsPerSecond; // Time (ms) per beat
+  //
+  //   console.log(`🎵 BPM: ${this.bpm}, Scrolling every ${scrollInterval.toFixed(2)} ms`);
+  //
+  //   this.autoScrollInterval = setInterval(() => {
+  //     if (!this.isAutoScrolling || !this.viewerContainer) {
+  //       this.stopAutoScroll();
+  //       return;
+  //     }
+  //     this.viewerContainer.scrollBy(0, 1); // Scroll by **1 pixel** at each interval
+  //   }, scrollInterval); // Interval controls the speed
+  // }
+  //
+  // stopAutoScroll() {
+  //   if (this.autoScrollInterval) {
+  //     clearInterval(this.autoScrollInterval);
+  //     this.autoScrollInterval = null;
+  //   }
+  // }
 
   // updateScrollSpeed(bpm: number) {
   //   // Ensure BPM stays in range (20 - 300)
@@ -200,41 +200,128 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
     this.stopAutoScroll(); // Clean up interval when component is destroyed
   }
 
+  // convertToMusicXML() {
+  //   if (!this.fileUrl) {
+  //     alert("No file to convert!");
+  //     return;
+  //   }
+  //
+  //   console.log("Fetching file from URL:", this.fileUrl);
+  //
+  //   this.isConverting = true;
+  //
+  //   // Fetch the file from Firebase Storage
+  //   fetch(this.fileUrl)
+  //     .then(response => response.blob()) // Convert response to a blob
+  //     .then(blob => {
+  //       const formData = new FormData();
+  //       formData.append('file', blob, 'uploaded.pdf'); // Append blob as a file
+  //
+  //       // Send request to backend
+  //       this.http.post<{ fileName: string }>('http://localhost:3000/convert', formData)
+  //         .subscribe(response => {
+  //           if (!response || !response.fileName) {
+  //             console.error("Conversion failed: No filename returned.");
+  //             alert("Conversion failed!");
+  //             return;
+  //           }
+  //
+  //           const musicXmlFileName = response.fileName;
+  //           this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}?t=${Date.now()}`;
+  //         }, error => {
+  //           console.error("Conversion failed:", error);
+  //           alert("Conversion failed!");
+  //           this.isConverting = false; // Set to false if there's an error
+  //         });
+  //     })
+  //     .catch(error => {
+  //       console.error("Error fetching PDF:", error);
+  //       alert("Failed to fetch the PDF file!");
+  //       this.isConverting = false; // Set to false if there's an error
+  //     });
+  // }
+
+
   convertToMusicXML() {
     if (!this.fileUrl) {
       alert("No file to convert!");
       return;
     }
 
+    this.isConverting = true;
     console.log("Fetching file from URL:", this.fileUrl);
 
-    // Fetch the file from Firebase Storage
     fetch(this.fileUrl)
-      .then(response => response.blob()) // Convert response to a blob
+      .then(response => response.blob())
       .then(blob => {
         const formData = new FormData();
-        formData.append('file', blob, 'uploaded.pdf'); // Append blob as a file
+        formData.append('file', blob, 'uploaded.pdf');
 
-        // Send request to backend
         this.http.post<{ fileName: string }>('http://localhost:3000/convert', formData)
-          .subscribe(response => {
-            if (!response || !response.fileName) {
-              console.error("Conversion failed: No filename returned.");
-              alert("Conversion failed!");
-              return;
-            }
+          .subscribe({
+            next: (response) => {
+              if (!response?.fileName) {
+                alert("Conversion failed!");
+                return;
+              }
 
-            const musicXmlFileName = response.fileName;
-            this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}?t=${Date.now()}`;
-          }, error => {
-            console.error("Conversion failed:", error);
-            alert("Conversion failed!");
+              this.musicXmlUrl = `http://localhost:3000/download/${response.fileName}?t=${Date.now()}`;
+            },
+            error: (error) => {
+              console.error("Conversion failed:", error);
+              alert("Conversion failed!");
+            },
+            complete: () => this.isConverting = false
           });
       })
       .catch(error => {
         console.error("Error fetching PDF:", error);
         alert("Failed to fetch the PDF file!");
+        this.isConverting = false;
       });
+  }
+
+  startAutoScroll() {
+    if (!this.viewerContainer) {
+      console.error('Viewer container not found! Cannot start scrolling.');
+      return;
+    }
+
+    const pixelsPerSecond = this.bpm * 0.2;
+    const pixelsPerFrame = pixelsPerSecond / 60; // Assume 60fps
+    let scrollRemainder = 0;
+
+    const step = () => {
+      if (!this.isAutoScrolling || !this.viewerContainer) {
+        return;
+      }
+
+      scrollRemainder += pixelsPerFrame;
+
+      // Only scroll when enough accumulated to move at least 1 pixel
+      if (scrollRemainder >= 1) {
+        const scrollPixels = Math.floor(scrollRemainder);
+        this.viewerContainer.scrollBy(0, scrollPixels);
+        scrollRemainder -= scrollPixels;
+      }
+
+      this.animationFrameId = requestAnimationFrame(step);
+    };
+
+    this.animationFrameId = requestAnimationFrame(step);
+  }
+
+
+  stopAutoScroll() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+      this.autoScrollInterval = null;
+    }
   }
 
 }

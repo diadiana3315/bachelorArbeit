@@ -14,6 +14,7 @@ export class StreakCalendarComponent implements OnInit {
   currentYear: number = 0;
   daysOfWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   userId: string | null = null;
+  calendarRows: number = 0;
 
   constructor(private firestoreService: FirestoreService, private afAuth: AngularFireAuth) {}
 
@@ -82,6 +83,8 @@ export class StreakCalendarComponent implements OnInit {
         isToday: isToday, // Track if it's today's date
       });
     }
+    this.calendarRows = Math.ceil(this.daysInMonth.length / 7); // Add this line
+
   }
 
   changeMonth(direction: number) {

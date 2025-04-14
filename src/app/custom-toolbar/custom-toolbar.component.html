@@ -36,17 +36,25 @@
 
     <input type="number" min="20" max="300" [(ngModel)]="bpm" (input)="startAutoScroll()">
 
-    <button mat-icon-button (click)="convertToMusicXML()">
-      <mat-icon>music_note</mat-icon>
+    <button mat-icon-button (click)="convertToMusicXML()" [disabled]="isConverting">
+      <ng-container *ngIf="!isConverting">
+        <mat-icon>music_note</mat-icon>
+      </ng-container>
+      <ng-container *ngIf="isConverting">
+        <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
+      </ng-container>
     </button>
 
-<!--    <app-music-xml-player *ngIf="musicXmlUrl" [musicXmlUrl]="musicXmlUrl"></app-music-xml-player>-->
+
+    <!--    <app-music-xml-player *ngIf="musicXmlUrl" [musicXmlUrl]="musicXmlUrl"></app-music-xml-player>-->
 
     <!-- Show download link when conversion is complete -->
     <a *ngIf="musicXmlUrl" [href]="musicXmlUrl" [download]="fileMetadata?.fileName?.replace('.pdf', '.mxl') || 'converted.mxl'">
       <button mat-button>Download MusicXML</button>
     </a>
 
+    <!-- Loading bar while the conversion is in progress -->
+    <mat-progress-bar *ngIf="isConverting" mode="indeterminate"></mat-progress-bar>
 
     <!--    <pdf-download></pdf-download>-->
     <pdf-print></pdf-print>

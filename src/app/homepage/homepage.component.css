@@ -222,6 +222,7 @@ body {
   align-items: center;
   position: relative;
   top: 12vh;
+  height: auto;
 }
 
 /* Pinterest-style gallery layout */
@@ -236,6 +237,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
 }
 
 /* Common card styling for all containers */
@@ -249,6 +251,23 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
+/* Adjust the streak container to be smaller */
+.streak-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  max-height: 165px; /* Limit the height */
+  min-height: 150px; /* Ensure it doesn't get too small */
+}
+
+/* Make the calendar container taller */
+.calendar-container {
+  padding: 0;
+  min-height: 500px; /* Increase from 350px to 500px */
+  flex-grow: 1; /* Allow it to take up remaining space */
+}
+
+
+
 
 /*.goal-input:hover, .recent-files-container:hover, .streak-container:hover, .calendar-container:hover {*/
 /*  transform: translateY(-5px);*/

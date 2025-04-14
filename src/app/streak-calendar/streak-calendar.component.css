@@ -1,12 +1,25 @@
+/*.calendar-container {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  width: 100%;*/
+/*  margin: 0;*/
+/*  font-family: Arial, sans-serif;*/
+/*  max-width: 450px;*/
+/*}*/
+
 .calendar-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Already good */
   width: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
   max-width: 450px;
+  padding: 10px; /* optional: a slight overall padding */
+  box-sizing: border-box;
 }
+
 
 .calendar-header {
   display: flex;
@@ -67,13 +80,23 @@ button:hover mat-icon {
   font-size: 1rem;
 }
 
+/*.cal-days {*/
+/*  display: grid;*/
+/*  grid-template-columns: repeat(7, minmax(40px, 1fr));*/
+/*  grid-gap: 10px;*/
+/*  width: 100%;*/
+/*  padding: 5px;*/
+/*}*/
+
 .cal-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(40px, 1fr));
   grid-gap: 10px;
   width: 100%;
-  padding: 5px;
+  padding: 10px 15px; /* ⬅️ Added horizontal padding */
+  box-sizing: border-box;
 }
+
 
 .cal-day {
   width: 40px;
