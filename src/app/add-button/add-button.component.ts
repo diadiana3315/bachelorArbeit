@@ -3,6 +3,10 @@ import { FirestoreService } from '../services/firestore.service';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {UserService} from '../services/user.service';
 import jsPDF from "jspdf";
+import {SharedFolderDialogComponent} from '../folder-dialog/shared-folder-dialog.component';
+import {Folder} from '../models/folder';
+import {MatDialog} from '@angular/material/dialog';
+import {take} from 'rxjs';
 
 @Component({
   selector: 'app-add-button',
@@ -22,7 +26,8 @@ export class AddButtonComponent {
   constructor(
     private firestoreService: FirestoreService,
     private firebaseStorageService: FirebaseStorageService,
-    private userService: UserService
+    private userService: UserService,
+    private dialog: MatDialog
   ) {}
 
   /**
@@ -47,6 +52,71 @@ export class AddButtonComponent {
       }
     }
   }
+
+  // async createFolder() {
+  //   const folderName = prompt("Enter folder name:");
+  //   if (!folderName) return;
+  //
+  //   const sharedWithStr = prompt("Share with (comma-separated user UIDs or emails)? (Leave empty if private)");
+  //   const sharedWith = sharedWithStr ? sharedWithStr.split(',').map(x => x.trim()) : [];
+  //
+  //   const userId = await this.userService.getCurrentUserId();
+  //
+  //   const newFolder = {
+  //     name: folderName,
+  //     parentFolderId: this.currentFolder ? this.currentFolder.id : null,
+  //     userId: userId,
+  //     sharedWith: sharedWith,
+  //     isShared: sharedWith.length > 0
+  //   };
+  //
+  //   try {
+  //     await this.firestoreService.createFolder(newFolder);
+  //     console.log('Folder created successfully');
+  //   } catch (error) {
+  //     console.error('Error creating folder:', error);
+  //   }
+  // }
+
+  // In add-button.component.ts
+
+  // async createFolder() {
+  //   const folderName = prompt("Enter folder name:");
+  //   if (!folderName) return;
+  //
+  //   const sharedWithStr = prompt("Share with (comma-separated user IDs)? (Leave empty if private)");
+  //   const sharedWith = sharedWithStr ? sharedWithStr.split(',').map(x => x.trim()) : [];
+  //
+  //   const userId = await this.userService.getCurrentUserId();
+  //
+  //   // Check if folder already exists
+  //   const existingFolder = await this.firestoreService.getFolderByNameAndParent(
+  //     folderName,
+  //     userId,
+  //     this.currentFolder?.id || null
+  //   );
+  //
+  //   if (existingFolder) {
+  //     console.warn('Folder with the same name already exists in this location.');
+  //     return;
+  //   }
+  //
+  //   const newFolder = {
+  //     name: folderName,
+  //     parentFolderId: this.currentFolder ? this.currentFolder.id : null,
+  //     userId: userId,
+  //     sharedWith: sharedWith,
+  //     isShared: sharedWith.length > 0,
+  //     createdAt: new Date()
+  //   };
+  //
+  //   try {
+  //     await this.firestoreService.createFolder(newFolder);
+  //     console.log('Folder created successfully');
+  //   } catch (error) {
+  //     console.error('Error creating folder:', error);
+  //   }
+  // }
 
   /**
    * Trigger the file input for PDF upload by simulating a click event on the file input element.
@@ -74,11 +144,11 @@ export class AddButtonComponent {
     const userId = await this.userService.getCurrentUserId();
 
       try {
-        const uploadedFile = await this.firestoreService.uploadAndSaveFile(
-          this.selectedFile,
-          this.currentFolder ? this.currentFolder.id : null,
-          userId
-        );
+        const uploadedFile = this.currentFolder?.isShared
+          ? await this.firestoreService.uploadFileToSharedFolder(this.selectedFile, this.currentFolder.id, userId)
+          : await this.firestoreService.uploadAndSaveFile(this.selectedFile, this.currentFolder, userId);
+
+
 
         console.log('File uploaded successfully:', uploadedFile);
         this.fileUploaded.emit(uploadedFile);
@@ -136,6 +206,64 @@ export class AddButtonComponent {
       };
 
       reader.onerror = reject;
+    });
+  }
+
+  async openCreateSharedFolderDialog(): Promise<void> {
+    const dialogRef = this.dialog.open(SharedFolderDialogComponent);
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(async (result) => {
+      if (result) {
+        try {
+          const userId = await this.userService.getCurrentUserId();
+
+          // Check if folder exists first (optimization)
+          const existingFolder = await this.firestoreService.getFolderByNameAndParent(
+            result.name,
+            userId,
+            this.currentFolder?.id || null
+          );
+
+          if (existingFolder) {
+            console.warn('Folder with the same name already exists.');
+            return;
+          }
+
+          // Convert emails to user IDs
+          const sharedWithUserIds: string[] = [];
+          for (const email of result.sharedWithEmails) {
+            const uid = await this.userService.getUserIdByEmail(email);
+            if (uid) {
+              if (typeof uid === "string") {
+                sharedWithUserIds.push(uid);
+              }
+            } else {
+              console.warn(`User with email ${email} not found`);
+              // Optional: Show warning to user about invalid emails
+            }
+          }
+
+          const sharedFolder: Folder = {
+            name: result.name,
+            parentFolderId: this.currentFolder?.id || null,
+            userId: userId,
+            sharedWith: sharedWithUserIds,  // Store user IDs, not emails
+            sharedWithEmails: result.sharedWithEmails, // Optional: keep for reference
+            isShared: sharedWithUserIds.length > 0,
+            createdAt: new Date()  // Important for sorting
+          };
+
+          await this.firestoreService.createSharedFolder(sharedFolder);
+
+          // Optional: Show success message
+          // this.snackBar.open('Folder shared successfully!', 'Close', {duration: 3000});
+
+        } catch (error) {
+          console.error('Error creating shared folder:', error);
+          // Optional: Show error to user
+          // this.snackBar.open('Error sharing folder', 'Close', {duration: 3000});
+        }
+      }
     });
   }
 

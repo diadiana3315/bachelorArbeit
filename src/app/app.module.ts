@@ -10,7 +10,7 @@ import {AngularFireModule} from '@angular/fire/compat';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HomepageComponent } from './homepage/homepage.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
@@ -37,6 +37,7 @@ import {adapterFactory} from 'angular-calendar/date-adapters/moment';
 import {HttpClientModule} from '@angular/common/http';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialog.component';
 // import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.component';
 
 @NgModule({
@@ -53,6 +54,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     FileViewerComponent,
     CustomToolbarComponent,
     StreakCalendarComponent,
+    SharedFolderDialogComponent,
     // MusicXmlPlayerComponent,
   ],
   imports: [
@@ -87,6 +89,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     }),
     MatProgressBarModule,
     MatProgressSpinnerModule,
+    ReactiveFormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow custom elements
   providers: [],

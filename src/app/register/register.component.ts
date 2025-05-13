@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import {UserService} from '../services/user.service';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,8 @@ export class RegisterComponent {
   constructor(
     private afAuth: AngularFireAuth,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private firestore: AngularFirestore
   ) { }
 
   isValid(): boolean {
@@ -35,6 +37,12 @@ export class RegisterComponent {
             this.userService.saveUser(userId, {
               email: this.email,
               createdAt: new Date().toISOString()
+            }).then(() => {
+              // Then store the email-UID mapping
+              return this.firestore.doc(`userEmails/${this.email}`).set({
+                uid: userId,
+                createdAt: new Date().toISOString()
+              });
             }).then(() => {
               this.router.navigate(['/homepage']);
             }).catch((error) => {

@@ -6,6 +6,9 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from '../services/search.service';
+import {Folder} from '../models/folder';
+import {combineLatest, switchMap} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 
 /**
@@ -21,12 +24,12 @@ import {SearchService} from '../services/search.service';
 })
 export class LibraryComponent implements OnInit {
   currentFolder: any = null;
-  folders: any[] = [];
+  folders: Folder[] = [];
   files: FileMetadata[] = [];
   userId: string = '';
   draggedFile: FileMetadata | null = null;
   filteredFiles: any[] = [];  // Search results
-  filteredFolders: any[] = [];
+  filteredFolders: Folder[] = [];
   searchActive: boolean = false;  // Flag to track search mode
   searchTerm: string = '';  // Store search query
 
@@ -55,15 +58,12 @@ export class LibraryComponent implements OnInit {
     }
 
     this.searchActive = true;
-    // Search globally, not just the current folder
-    this.firestoreService.getAllFilesAndFolders(this.userId).subscribe(data => {
-      this.filteredFiles = data.files.filter(file =>
-        file.fileName.toLowerCase().includes(lowerQuery)
-      );
-      this.filteredFolders = this.folders.filter((folder: { name: string }) =>
-        folder.name.toLowerCase().includes(lowerQuery)
-      );
-    });
+    this.filteredFiles = this.files.filter(file =>
+      file.fileName.toLowerCase().includes(lowerQuery)
+    );
+    this.filteredFolders = this.folders.filter(folder =>
+      folder.name.toLowerCase().includes(lowerQuery)
+    );
   }
 
   /**
@@ -126,33 +126,196 @@ export class LibraryComponent implements OnInit {
    * Loads folders and files for the current user.
    * It uses the FirestoreService to retrieve folders and files.
    */
-  private loadFoldersAndFiles() {
-    if (this.userId) {
-      this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder ? this.currentFolder.id : null)
-        .subscribe(data => {
-          this.folders = data.folders;
-          this.files = data.files.map((file: FileMetadata) => ({
-            ...file,
-            isRenaming: false, // Initialize renaming state
-            newName: file.fileName // Default value
-          }));
-          this.groupFilesUnderFolders();
-        }, error => {
-          console.error('Error loading folders and files:', error);
-        });
+  // private loadFoldersAndFiles() {
+  //   if (this.userId) {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder ? this.currentFolder.id : null)
+  //       .subscribe(data => {
+  //         this.folders = data.folders;
+  //         this.files = data.files.map((file: FileMetadata) => ({
+  //           ...file,
+  //           isRenaming: false, // Initialize renaming state
+  //           newName: file.fileName // Default value
+  //         }));
+  //         this.groupFilesUnderFolders();
+  //       }, error => {
+  //         console.error('Error loading folders and files:', error);
+  //       });
+  //   }
+  // }
+
+  // In library.component.ts
+
+  // private loadFoldersAndFiles() {
+  //   if (this.userId) {
+  //     combineLatest([
+  //       this.firestoreService.getAccessibleFolders(
+  //         this.userId,
+  //         this.currentFolder ? this.currentFolder.id : null
+  //       ),
+  //       this.firestoreService.getAccessibleFiles(
+  //         this.userId,
+  //         this.currentFolder ? this.currentFolder.id : null
+  //       )
+  //     ]).subscribe(([folders, files]) => {
+  //       this.folders = folders;
+  //       this.files = files.map(file => ({
+  //         ...file,
+  //         isRenaming: false,
+  //         newName: file.fileName
+  //       }));
+  //
+  //       this.groupFilesUnderFolders();
+  //     }, error => {
+  //       console.error('Error loading folders and files:', error);
+  //     });
+  //   }
+  // }
+
+  // private loadFoldersAndFiles() {
+  //   if (!this.userId) return;
+  //
+  //   this.firestoreService.getAccessibleFolders(this.userId, this.currentFolder?.id || null)
+  //     .pipe(
+  //       switchMap(folders => {
+  //         this.folders = folders;
+  //
+  //         const privateFolderIds = folders
+  //           .filter(f => !f.isShared)
+  //           .map(f => f.id);
+  //
+  //         const sharedFolders = folders.filter(f => f.isShared);
+  //
+  //         const privateFiles$ = this.firestoreService.getAccessibleFiles(this.userId, this.currentFolder?.id || null)
+  //           .pipe(
+  //             map(files =>
+  //               files
+  //                 .filter(file => !file.parentFolderId || privateFolderIds.includes(file.parentFolderId))
+  //                 .map(file => ({
+  //                   ...file,
+  //                   isRenaming: false,
+  //                   newName: file.fileName
+  //                 }))
+  //             )
+  //           );
+  //
+  //         const sharedFiles$ = this.firestoreService.getFilesForSharedFolders(sharedFolders)
+  //           .pipe(
+  //             map(files =>
+  //               files
+  //                 .filter(file => file.parentFolderId === this.currentFolder?.id || (!file.parentFolderId && !this.currentFolder))
+  //                 .map(file => ({
+  //                   ...file,
+  //                   isRenaming: false,
+  //                   newName: file.fileName
+  //                 }))
+  //             )
+  //           );
+  //
+  //         return combineLatest([privateFiles$, sharedFiles$]);
+  //       })
+  //     )
+  //     .subscribe({
+  //       next: ([privateFiles, sharedFiles]) => {
+  //         this.files = [...privateFiles, ...sharedFiles];
+  //         this.groupFilesUnderFolders(); // if this applies to shared too
+  //       },
+  //       error: err => console.error('Error loading folders/files:', err)
+  //     });
+  // }
+
+  // private loadFoldersAndFiles() {
+  //   if (!this.userId) return;
+  //
+  //   // if (this.currentFolder?.isShared) {
+  //   //   this.firestoreService.getSharedFolderFiles(this.currentFolder.id).subscribe(files => {
+  //   //     this.files = files;
+  //   //     this.groupFilesUnderFolders();
+  //   //   });
+  //   // } else {
+  //   //   this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder?.id || null).subscribe(data => {
+  //   //     this.folders = data.folders;
+  //   //     this.files = data.files;
+  //   //     this.groupFilesUnderFolders();
+  //   //   });
+  //   // }
+  //   //
+  //   // // Load shared root folders if at root level
+  //   // if (!this.currentFolder) {
+  //   //   this.folders = this.folders || []; // Ensure it's an array before appending
+  //   //
+  //   //   this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
+  //   //     this.folders = [...this.folders, ...shared.map(folder => ({ ...folder, isShared: true }))];
+  //   //   });
+  //   // }
+  //
+  //   if (!this.currentFolder) {
+  //     // Get user's own folders
+  //     this.firestoreService.getFoldersAndFiles(this.userId, null).subscribe(data => {
+  //       this.folders = data.folders;
+  //
+  //       // Then get shared folders and merge them
+  //       this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
+  //         console.log('Shared folders:', shared);
+  //         const sharedWithFlag = shared.map(folder => ({ ...folder, isShared: true }));
+  //         this.folders = [...this.folders, ...sharedWithFlag];
+  //       });
+  //
+  //       this.files = data.files;
+  //       this.groupFilesUnderFolders();
+  //     });
+  //   }
+  //
+  // }
+
+  private loadFoldersAndFiles(): void {
+    if (!this.userId) return;
+
+    // Case 1: Inside a shared folder — load its own subfolders and files
+    if (this.currentFolder?.isShared) {
+      this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
+        this.folders = data.folders;
+        this.files = data.files;
+        this.groupFilesUnderFolders();
+      });
+
+      // Case 2: Inside a private folder — load its own subfolders and files
+    } else if (this.currentFolder) {
+      this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
+        this.folders = data.folders;
+        this.files = data.files;
+        this.groupFilesUnderFolders();
+      });
+
+      // Case 3: Root level — load root private folders/files + all shared folders
+    } else {
+      this.firestoreService.getFoldersAndFiles(this.userId, null).subscribe(data => {
+        this.folders = data.folders;
+        this.files = data.files;
+        this.groupFilesUnderFolders();
+      });
+
+      // Also load shared root folders
+      this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
+        this.folders = [...this.folders, ...shared.map(folder => ({ ...folder, isShared: true }))];
+      });
     }
   }
+
 
   /**
    * Groups files under the corresponding folders based on their parentFolderId.
    */
   private groupFilesUnderFolders() {
-    this.folders.forEach(folder => {
-      folder.files = this.files.filter((file: FileMetadata) => file.parentFolderId === folder.id);
+    this.folders.forEach((folder: Folder) => {
+      folder.files = this.files.filter((file: FileMetadata) =>
+        file.parentFolderId === folder.id
+      );
     });
 
     if (this.currentFolder) {
-      this.currentFolder.files = this.files.filter((file: FileMetadata) => file.parentFolderId === this.currentFolder.id);
+      this.currentFolder.files = this.files.filter((file: FileMetadata) =>
+        file.parentFolderId === this.currentFolder?.id
+      );
     }
   }
 

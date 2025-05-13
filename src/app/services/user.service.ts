@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AngularFireAuth} from '@angular/fire/compat/auth';
+import {getAuth} from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -108,4 +109,25 @@ export class UserService {
   //     throw error;
   //   }
   // }
+
+  async getUserIdByEmail(email: string): Promise<string | null> {
+    try {
+      const snapshot = await this.firestore
+        .collection('users', ref => ref.where('email', '==', email.toLowerCase()))
+        .get()
+        .toPromise();
+
+      if (snapshot && !snapshot.empty) {
+        const doc = snapshot.docs[0];
+        return doc.id; // userId
+      } else {
+        console.warn(`No user found with email: ${email}`);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching user by email:', error);
+      return null;
+    }
+  }
+
 }

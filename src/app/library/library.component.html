@@ -47,20 +47,30 @@
   </app-add-button>
 
   <!-- Display Folders -->
-  <div class="folders-container">
-    <div
-      class="folder-item"
-      *ngFor="let folder of folders"
-      (click)="navigateToFolder(folder)"
-      (contextmenu)="onRightClick($event, folder, 'folder')"
-      (swiperight)="onSwipeLeft(folder, 'folder')"
-      (dragover)="onDragOverFolder($event)"
-      (drop)="onDropFile($event, folder)">
+    <!-- Display Folders -->
+    <div class="folders-container">
+      <div
+        *ngFor="let folder of folders"
+        class="folder-item"
+        [class.shared-folder]="folder.isShared"
+        (click)="navigateToFolder(folder)"
+        (contextmenu)="onRightClick($event, folder, 'folder')"
+        (swiperight)="onSwipeLeft(folder, 'folder')"
+        (dragover)="onDragOverFolder($event)"
+        (drop)="onDropFile($event, folder)">
 
-      <mat-icon class="folder-icon">folder</mat-icon>
-      <p class="folder-name">{{ folder.name }}</p>
+        <mat-icon class="folder-icon">folder</mat-icon>
+        <div class="folder-info">
+          <p class="folder-name">{{ folder.name }}</p>
+          <div class="folder-meta">
+            <span *ngIf="folder.isShared" class="shared-badge">Shared</span>
+            <span *ngIf="folder.isShared && folder.userId !== userId" class="owner-badge">
+          (Owner: {{ folder.ownerName || 'Unknown' }})
+        </span>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
   <!-- Display Files -->
   <div class="files-container">

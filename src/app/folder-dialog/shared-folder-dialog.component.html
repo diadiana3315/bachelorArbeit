@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Create Shared Folder</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <mat-label>Folder Name</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+
+  <div formArrayName="sharedWithEmails">
+    <div *ngFor="let emailCtrl of sharedWithEmails; let i = index">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput [formControl]="emailCtrl" />
+        <button mat-icon-button (click)="removeEmailField(i)" *ngIf="i > 0"><mat-icon>remove</mat-icon></button>
+      </mat-form-field>
+    </div>
+    <button mat-button (click)="addEmailField()">+ Add Another Email</button>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button color="primary" (click)="save()">Create</button>
+</mat-dialog-actions>
