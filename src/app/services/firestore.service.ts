@@ -37,45 +37,79 @@ export class FirestoreService {
   }
 
   // Save file metadata to Firestore
-  async saveFileMetadata(fileMetadata: FileMetadata): Promise<void> {
-    try {
-      const fileId = fileMetadata.id; // Assuming fileMetadata.id is a unique file ID
+  async saveFileMetadata(metadata: FileMetadata): Promise<void> {
+    const { id, userId, isShared, parentFolderId } = metadata;
 
-      await this.firestore
-        .collection('users')
-        .doc(fileMetadata.userId)
-        .collection('files')
-        .doc(fileId)
-        .set(fileMetadata);
-      console.log('File metadata saved successfully');
-    } catch (error) {
-      console.error('Error saving file metadata:', error);
-      throw error;
+    if (!id) {
+      throw new Error('File ID is missing');
     }
+
+    if (isShared && parentFolderId) {
+      // Save under shared structure
+      return this.firestore
+        .collection('folders')
+        .doc(parentFolderId)
+        .collection('files')
+        .doc(id)
+        .set(metadata);
+    }
+
+    // Default to private user file
+    return this.firestore
+      .collection('users')
+      .doc(userId)
+      .collection('files')
+      .doc(id)
+      .set(metadata);
   }
 
-  // Delete file and its metadata
-  async deleteFile(userId: string, fileId: string): Promise<void> {
-    const filePath = `${userId}/${fileId}`; // Matches Firebase Storage structure: username/filename
 
+  // Delete file and its metadata
+  async deleteFile(
+    userId: string,
+    fileId: string,
+    isShared: boolean = false,
+    parentFolderId?: string
+  ): Promise<void> {
+    let filePath: string;
+
+    if (isShared) {
+      if (!parentFolderId) {
+        throw new Error('parentFolderId is required for shared files');
+      }
+      filePath = `shared/${parentFolderId}/${fileId}`;
+    } else {
+      filePath = `${userId}/${fileId}`; // Private file path
+    }
 
     try {
       // Step 1: Delete the file from Firebase Storage
       await this.storageService.deleteFile(filePath);
 
-      // Step 2: Delete the file metadata from Firestore
-      await this.firestore
-        .collection('users')
-        .doc(userId)
-        .collection('files')
-        .doc(fileId)
-        .delete();
+      // Step 2: Delete the metadata from Firestore
+      if (isShared) {
+        await this.firestore
+          .collection('folders')
+          .doc(parentFolderId)
+          .collection('files')
+          .doc(fileId)
+          .delete();
+      } else {
+        await this.firestore
+          .collection('users')
+          .doc(userId)
+          .collection('files')
+          .doc(fileId)
+          .delete();
+      }
+
       console.log('File metadata deleted from Firestore');
     } catch (error) {
       console.error('Error deleting file:', error);
       throw error;
     }
   }
+
 
   // Method for uploading and saving file metadata
   // async uploadAndSaveFile(file: File, parentFolderId: string | null, userId: string): Promise<FileMetadata> {
@@ -200,31 +234,64 @@ export class FirestoreService {
    * @param folderId The ID of the folder to delete.
    * @returns A promise that resolves when the folder and all its contents have been deleted.
    */
-  async deleteFolderRecursively(userId: string, folderId: string): Promise<void> {
-    const folderRef = this.firestore.collection(`users/${userId}/folders`).doc(folderId);
+  async deleteFolderRecursively(userId: string, folderId: string, isShared: boolean = false): Promise<void> {
+    if (isShared) {
+      const folderRef = this.firestore.collection('folders').doc(folderId);
 
-    // Get subfolders
-    const subfoldersSnapshot = await this.firestore
-      .collection(`users/${userId}/folders`, ref => ref.where('parentFolderId', '==', folderId))
-      .get().toPromise();
+      // Get subfolders of the shared folder
+      const subfoldersSnapshot = await this.firestore
+        .collection(`folders/${folderId}/folders`)
+        .get()
+        .toPromise();
 
-    // Get files inside the folder
-    const filesSnapshot = await this.firestore
-      .collection(`users/${userId}/files`, ref => ref.where('parentFolderId', '==', folderId))
-      .get().toPromise();
+      // Get files inside the shared folder
+      const filesSnapshot = await this.firestore
+        .collection(`folders/${folderId}/files`)
+        .get()
+        .toPromise();
 
-    // Recursively delete all subfolders
-    for (const doc of subfoldersSnapshot?.docs || []) {
-      await this.deleteFolderRecursively(userId, doc.id);
+      // Recursively delete all subfolders inside shared folder
+      for (const doc of subfoldersSnapshot?.docs || []) {
+        await this.deleteFolderRecursively(userId, doc.id, true);
+      }
+
+      // Delete all files inside the shared folder
+      for (const doc of filesSnapshot?.docs || []) {
+        // Also delete file from storage here if needed
+        await this.firestore.collection(`folders/${folderId}/files`).doc(doc.id).delete();
+      }
+
+      // Finally, delete the shared folder itself
+      await folderRef.delete();
+    } else {
+      // Private folder deletion (existing logic)
+      const folderRef = this.firestore.collection(`users/${userId}/folders`).doc(folderId);
+
+      // Get subfolders
+      const subfoldersSnapshot = await this.firestore
+        .collection(`users/${userId}/folders`, ref => ref.where('parentFolderId', '==', folderId))
+        .get()
+        .toPromise();
+
+      // Get files inside the folder
+      const filesSnapshot = await this.firestore
+        .collection(`users/${userId}/files`, ref => ref.where('parentFolderId', '==', folderId))
+        .get()
+        .toPromise();
+
+      // Recursively delete all subfolders
+      for (const doc of subfoldersSnapshot?.docs || []) {
+        await this.deleteFolderRecursively(userId, doc.id, false);
+      }
+
+      // Delete all files inside the folder
+      for (const doc of filesSnapshot?.docs || []) {
+        await this.firestore.collection(`users/${userId}/files`).doc(doc.id).delete();
+      }
+
+      // Finally, delete the folder itself
+      await folderRef.delete();
     }
-
-    // Delete all files inside the folder
-    for (const doc of filesSnapshot?.docs || []) {
-      await this.firestore.collection(`users/${userId}/files`).doc(doc.id).delete();
-    }
-
-    // Finally, delete the folder itself
-    await folderRef.delete();
   }
 
   /**
@@ -235,61 +302,85 @@ export class FirestoreService {
    */
   async getFileMetadataByUrl(fileURL: string, userId: string): Promise<FileMetadata | null> {
     try {
-      // Query Firestore to find the file metadata with the matching fileURL
-      const fileRef = this.firestore
+      // 1. Check private user files
+      const privateFileRef = this.firestore
         .collection('users')
         .doc(userId)
         .collection('files', (ref) => ref.where('fileURL', '==', fileURL));
 
-      const snapshot = await fileRef.get().toPromise();
+      const privateSnapshot = await privateFileRef.get().toPromise();
 
-      if (!(snapshot) || snapshot.empty) {
-        console.error('No file found with this URL.');
-        return null; // If no file is found, return null
+      if (privateSnapshot && !privateSnapshot.empty && privateSnapshot.docs.length > 0) {
+        const fileDoc = privateSnapshot.docs[0];
+        const fileData = fileDoc.data();
+        if (fileData) {
+          return { id: fileDoc.id, ...fileData } as FileMetadata;
+        }
       }
 
-      // Assuming only one document will match the file URL
-      const fileDoc = snapshot.docs[0];
+      // 2. Search shared folders
+      const foldersSnapshot = await this.firestore.collection('folders').get().toPromise();
 
-      // Return the file metadata from the document
-      return {id: fileDoc.id, ...fileDoc.data()} as FileMetadata;
+      if (foldersSnapshot && !foldersSnapshot.empty) {
+        for (const folderDoc of foldersSnapshot.docs) {
+          const folderId = folderDoc.id;
+
+          const sharedFileRef = this.firestore
+            .collection(`folders/${folderId}/files`, (ref) => ref.where('fileURL', '==', fileURL));
+
+          const sharedSnapshot = await sharedFileRef.get().toPromise();
+
+          if (sharedSnapshot && !sharedSnapshot.empty && sharedSnapshot.docs.length > 0) {
+            const sharedFileDoc = sharedSnapshot.docs[0];
+            const sharedFileData = sharedFileDoc.data();
+            if (sharedFileData) {
+              return { id: sharedFileDoc.id, ...sharedFileData } as FileMetadata;
+            }
+          }
+        }
+      }
+
+      // Not found
+      return null;
     } catch (error) {
       console.error('Error fetching file metadata by URL:', error);
       return null;
     }
   }
 
-  getAllFilesAndFolders(userId: string) {
-    return this.firestore.collection(`users/${userId}/files`).valueChanges().pipe(
-      map(files => {
-        return {
-          files: files as FileMetadata[],
-          folders: this.getAllFolders(userId) // Fetch all folders
-        };
-      })
-    );
-  }
 
-  getAllFolders(userId: string) {
-    return this.firestore.collection(`users/${userId}/folders`).valueChanges();
-  }
 
-  async updateFileAccessTimestamp(userId: string, fileId: string): Promise<void> {
-    try {
-      await this.firestore
-        .collection('users')
-        .doc(userId)
-        .collection('files')
-        .doc(fileId)
-        .update({
-          lastAccessedAt: Date.now()
-        });
-      console.log('File access timestamp updated');
-    } catch (error) {
-      console.error('Error updating file access timestamp:', error);
-      throw error;
-    }
-  }
+  // getAllFilesAndFolders(userId: string) {
+  //   return this.firestore.collection(`users/${userId}/files`).valueChanges().pipe(
+  //     map(files => {
+  //       return {
+  //         files: files as FileMetadata[],
+  //         folders: this.getAllFolders(userId) // Fetch all folders
+  //       };
+  //     })
+  //   );
+  // }
+
+  // getAllFolders(userId: string) {
+  //   return this.firestore.collection(`users/${userId}/folders`).valueChanges();
+  // }
+  //
+  // async updateFileAccessTimestamp(userId: string, fileId: string): Promise<void> {
+  //   try {
+  //     await this.firestore
+  //       .collection('users')
+  //       .doc(userId)
+  //       .collection('files')
+  //       .doc(fileId)
+  //       .update({
+  //         lastAccessedAt: Date.now()
+  //       });
+  //     console.log('File access timestamp updated');
+  //   } catch (error) {
+  //     console.error('Error updating file access timestamp:', error);
+  //     throw error;
+  //   }
+  // }
 
   updateUserPracticeGoals(userId: string, practiceGoals: any): Promise<void> {
     return this.firestore.collection('users').doc(userId).update({practiceGoals});
@@ -328,27 +419,43 @@ export class FirestoreService {
   //   return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
   // }
 
-  updateFileName(userId: string, fileId: string, newName: string): Promise<void> {
+  updateFileName(userId: string, fileId: string, newName: string, isShared: boolean = false, parentFolderId?: string): Promise<void> {
     if (!fileId) {
       return Promise.reject('File ID is undefined');
     }
 
     console.log('Updating file with ID:', fileId);
-    const fileRef = this.firestore
-      .collection('users')
-      .doc(userId)
-      .collection('files')
-      .doc(fileId);
+
+    let fileRef;
+
+    if (isShared) {
+      if (!parentFolderId) {
+        return Promise.reject('Shared file requires parentFolderId');
+      }
+
+      fileRef = this.firestore
+        .collection('folders')
+        .doc(parentFolderId)
+        .collection('files')
+        .doc(fileId);
+    } else {
+      fileRef = this.firestore
+        .collection('users')
+        .doc(userId)
+        .collection('files')
+        .doc(fileId);
+    }
 
     return fileRef.get().toPromise().then((doc) => {
       if (!doc || !doc.exists) {
         console.error('Firestore: No document found for ID:', fileId);
-
         return Promise.reject('No document found with this ID');
       }
-      return fileRef.update({fileName: newName});
+
+      return fileRef.update({ fileName: newName });
     });
   }
+
 
   logUserUsage(userId: string) {
     const today = new Date();

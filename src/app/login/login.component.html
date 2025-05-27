@@ -16,13 +16,14 @@
       <button type="submit">Login</button>
     </form>
 
-    <div class="forgot-password-link">
-      <a href="javascript:void(0)" (click)="forgotPassword()">Forgot Password?</a>
-    </div>
+    <p>
+      <a href="javascript:void(0)" (click)="forgotPassword()" class="register-link">Forgot Password?</a>
+    </p>
+    <p>
+      Don't have an account?
+      <a (click)="goToRegister()" class="register-link">Register</a>
+    </p>
 
-<!--    <button (click)="loginWithGoogle()">Login with Google</button>-->
-
-    <p>Don't have an account? <a (click)="goToRegister()" class="register-link">Register</a></p>
   </div>
 </div>
 </body>

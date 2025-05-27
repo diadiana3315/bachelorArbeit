@@ -401,18 +401,23 @@ export class LibraryComponent implements OnInit {
    * @param file The file metadata of the file to be deleted.
    */
   deleteFile(file: FileMetadata) {
-    // Check if file ID and user ID are defined before proceeding
+    // Ensure required fields are present
     if (!file.userId || !file.id) {
       console.error('File userId or id is undefined');
-      return; // Exit if either the userId or fileId is not available
+      return;
     }
 
-    // Call the Firestore service to delete the file
-    this.firestoreService.deleteFile(file.userId, file.id).then(() => {
-      this.loadFoldersAndFiles(); // Reload after deletion
-    }).catch(error => {
-      console.error('Error deleting file:', error);
-    });
+    const isShared = file.isShared || false;
+    const parentFolderId = file.parentFolderId;
+
+    this.firestoreService
+      .deleteFile(file.userId, file.id, isShared, parentFolderId ?? undefined)
+      .then(() => {
+        this.loadFoldersAndFiles(); // Reload files/folders
+      })
+      .catch(error => {
+        console.error('Error deleting file:', error);
+      });
   }
 
 
@@ -422,13 +427,14 @@ export class LibraryComponent implements OnInit {
       return;
     }
 
-    // Call Firestore service to delete the folder
-    this.firestoreService.deleteFolderRecursively(this.userId, folder.id).then(() => {
-      console.log(`Folder ${folder.id} deleted successfully`);
-      this.loadFoldersAndFiles(); // Refresh UI
-    }).catch(error => {
-      console.error('Error deleting folder:', error);
-    });
+    this.firestoreService.deleteFolderRecursively(this.userId, folder.id, folder.isShared === true)
+      .then(() => {
+        console.log(`Folder ${folder.id} deleted successfully`);
+        this.loadFoldersAndFiles(); // Refresh UI
+      })
+      .catch(error => {
+        console.error('Error deleting folder:', error);
+      });
   }
 
   /**
@@ -475,22 +481,29 @@ export class LibraryComponent implements OnInit {
       console.error('File ID is missing for rename!');
       return;
     }
+
     const newName = file.newName?.trim();
     if (!newName || newName === file.fileName) {
       this.cancelRename(file);
       return;
     }
+
     console.log(`Renaming file ID ${file.id} to ${newName}`);
 
-    this.firestoreService.updateFileName(this.userId, file.id, newName)
-      .then(() => {
-        file.fileName = newName; // Update UI
-        file.isRenaming = false;
-      })
-      .catch(error => {
-        console.error('Error updating file name:', error);
-        alert('Failed to rename file. Please try again.');
-        this.cancelRename(file); // Reset UI if update fails
-      });
+    this.firestoreService.updateFileName(
+      this.userId,
+      file.id,
+      newName,
+      file.isShared,
+      file.parentFolderId
+    ).then(() => {
+      file.fileName = newName;
+      file.isRenaming = false;
+    }).catch(error => {
+      console.error('Error updating file name:', error);
+      alert('Failed to rename file. Please try again.');
+      this.cancelRename(file);
+    });
   }
+
 }

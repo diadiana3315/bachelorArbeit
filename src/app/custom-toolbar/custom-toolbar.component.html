@@ -16,17 +16,21 @@
 
   <!-- Right Section -->
   <div id="toolbarViewerRight">
-    <pdf-shy-button
-      [cssClass]=" 'always-visible' | responsiveCSSClass "
-      title="Save"
-      l10nId="save_button"
-      [action]="onClick"
-      [order]="3400"
-      [closeOnClick]="false"
-      aria-label="Save"
-    >
+<!--    <pdf-shy-button-->
+<!--      [cssClass]=" 'always-visible' | responsiveCSSClass "-->
+<!--      title="Save"-->
+<!--      l10nId="save_button"-->
+<!--      [action]="onClick"-->
+<!--      [order]="3400"-->
+<!--      [closeOnClick]="false"-->
+<!--      aria-label="Save"-->
+<!--    >-->
+<!--      <mat-icon aria-label="Save">save</mat-icon>-->
+<!--    </pdf-shy-button>-->
+    <button mat-icon-button (click)="handleSaveToFirebase()" title="Save">
       <mat-icon aria-label="Save">save</mat-icon>
-    </pdf-shy-button>
+    </button>
+
 
     <button mat-icon-button (click)="toggleAutoScroll()">
       <mat-icon>{{ isAutoScrolling ? 'pause' : 'play_arrow' }}</mat-icon>

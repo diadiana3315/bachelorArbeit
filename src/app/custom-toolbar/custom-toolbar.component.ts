@@ -87,8 +87,20 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const { userId, id: fileId, fileName } = this.fileMetadata;
-    const filePath = `${userId}/${fileId}`; // Path in Firebase Storage
+    const { userId, id: fileId, fileName, isShared, parentFolderId } = this.fileMetadata;
+
+    if (!fileId || !fileName) {
+      console.error('Invalid file metadata: missing fileId or fileName');
+      return;
+    }
+
+    // Construct storage path
+    let filePath: string;
+    if (isShared && parentFolderId) {
+      filePath = `shared/${parentFolderId}/${fileId}`; // For shared files
+    } else {
+      filePath = `${userId}/${fileId}`; // For private files
+    }
 
     try {
       console.log('Uploading PDF to Firebase...');
