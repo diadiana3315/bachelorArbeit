@@ -22,7 +22,7 @@ export class StreakCalendarComponent implements OnInit {
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userId = user.uid;
-        this.logCurrentDay(); // Log the current day when the user is authenticated
+        this.logCurrentDay();
         this.loadUsedDays();
       }
     });
@@ -41,10 +41,8 @@ export class StreakCalendarComponent implements OnInit {
   async loadUsedDays() {
     if (!this.userId) return;
 
-    // Fetch all usage records for this user
     const usedDates = await this.firestoreService.getUserUsageDays(this.userId);
 
-    // Process the data for the current month
     const usedDays = new Set<number>();
 
     usedDates.forEach(dateStr => {
@@ -64,12 +62,10 @@ export class StreakCalendarComponent implements OnInit {
 
     this.daysInMonth = [];
 
-    // Add empty slots for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       this.daysInMonth.push({ day: null, used: false });
     }
 
-    // Add actual days of the month
     for (let i = 1; i <= daysInCurrentMonth; i++) {
       const isUsed = usedDays.has(i);
       const isToday =
@@ -80,22 +76,19 @@ export class StreakCalendarComponent implements OnInit {
       this.daysInMonth.push({
         day: i,
         used: isUsed,
-        isToday: isToday, // Track if it's today's date
+        isToday: isToday,
       });
     }
-    this.calendarRows = Math.ceil(this.daysInMonth.length / 7); // Add this line
+    this.calendarRows = Math.ceil(this.daysInMonth.length / 7);
 
   }
 
   changeMonth(direction: number) {
-    // Update the currentDate to go to previous/next month
     this.currentDate.setMonth(this.currentDate.getMonth() + direction);
 
-    // Update the currentYear and currentMonth based on the new currentDate
     this.currentMonth = this.currentDate.toLocaleString('default', { month: 'long' });
     this.currentYear = this.currentDate.getFullYear();
 
-    // Load used days and generate the new calendar for the updated month
     this.loadUsedDays();
   }
 

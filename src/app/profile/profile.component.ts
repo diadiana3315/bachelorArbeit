@@ -1,10 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
 import {UserService} from '../services/user.service';
 import {AngularFireAuth} from '@angular/fire/compat/auth';
-import {AngularFireStorage} from '@angular/fire/compat/storage';
-import {finalize} from 'rxjs';
 import {FirebaseStorageService} from '../services/firebase-storage.service';
 
 @Component({
@@ -13,7 +9,7 @@ import {FirebaseStorageService} from '../services/firebase-storage.service';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  email: string = ''; // Default email
+  email: string = '';
   username: string = '';
   profilePictureUrl: string = '';
   userId: string = '';
@@ -21,13 +17,13 @@ export class ProfileComponent implements OnInit {
   newEmail: string = '';
   errorMessage: string = '';
   lastLogin: string = 'Unknown';
-  isEditing: boolean = false; // Toggle edit mode
-  isLoading: boolean = true; // <-- NEW: Prevents UI flicker
+  isEditing: boolean = false;
+  isLoading: boolean = true;
 
 
   constructor(private userService: UserService,
               private afAuth: AngularFireAuth,
-              private storage: FirebaseStorageService // Inject Firebase Storage
+              private storage: FirebaseStorageService
   ) {
   }
 
@@ -64,7 +60,7 @@ export class ProfileComponent implements OnInit {
         await this.userService.updateEmail(this.newEmail);
         this.email = this.newEmail; // Update UI
       } catch (error) {
-        this.errorMessage = (error as Error).message; // Fix here
+        this.errorMessage = (error as Error).message;
         return;
       }
     }
@@ -73,7 +69,7 @@ export class ProfileComponent implements OnInit {
       try {
         await this.userService.updatePassword(this.newPassword);
       } catch (error) {
-        this.errorMessage = (error as Error).message; // Fix here
+        this.errorMessage = (error as Error).message;
         return;
       }
     }
@@ -84,7 +80,7 @@ export class ProfileComponent implements OnInit {
     }).then(() => {
       alert('Profile updated successfully!');
     }).catch((error) => {
-      this.errorMessage = (error as Error).message; // Fix here
+      this.errorMessage = (error as Error).message;
     });
   }
 
@@ -93,10 +89,9 @@ export class ProfileComponent implements OnInit {
   }
 
   async uploadProfilePicture(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0]; // Get selected file
+    const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
 
-    // Ensure userId and username are available
     if (!this.userId) {
       console.error("Error: userId is empty.");
       return;
@@ -106,14 +101,12 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const filePath = `${this.userId}/profile_${Date.now()}`; // Unique filename
+    const filePath = `${this.userId}/profile_${Date.now()}`;
     try {
-      const downloadURL = await this.storage.uploadFile(file, filePath); // Upload file to Firebase
+      const downloadURL = await this.storage.uploadFile(file, filePath);
 
-      // Update Firestore user document with new profile picture
       await this.userService.updateUser(this.userId, { profilePicture: downloadURL });
 
-      // Update UI with new profile picture
       this.profilePictureUrl = downloadURL;
       console.log('Profile picture updated successfully!');
     } catch (error) {

@@ -3,34 +3,32 @@ import { Router } from '@angular/router';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import {signOut} from '@angular/fire/auth';
 import {UserService} from '../services/user.service';
-import {SearchService} from '../services/search.service';  // New import for Firebase Auth
+import {SearchService} from '../services/search.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  // encapsulation: ViewEncapsulation.None // Disable encapsulation
 })
 export class NavbarComponent {
   @Output() toggleSidenav = new EventEmitter<void>();
-  @Output() searchQuery = new EventEmitter<string>();  // Emit search query
+  @Output() searchQuery = new EventEmitter<string>();
 
-  profilePictureUrl: string = 'https://via.placeholder.com/64'; // Default profile picture
-  email: string = 'User'; // Default username
-  userId: string | null = null; // To store the user's UID
-  searchTerm: string = '';  // Store user input
+  profilePictureUrl: string = 'https://via.placeholder.com/64';
+  email: string = 'User';
+  userId: string | null = null;
+  searchTerm: string = '';
 
   constructor(private router: Router,
               private searchService: SearchService,
               private userService: UserService)
   {
-    const auth = getAuth(); // Get Firebase Auth instance
+    const auth = getAuth();
     onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
-        this.userId = user.uid; // Store the UID
-        this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64'; // Set profile picture URL
-        this.email = user.email || 'No Email'; // Set email from Firebase Auth
-        // Fetch the updated profile picture from Firestore
+        this.userId = user.uid;
+        this.profilePictureUrl = user.photoURL || 'https://via.placeholder.com/64';
+        this.email = user.email || 'No Email';
         this.userService.getUser(this.userId).subscribe((doc) => {
           if (doc.exists) {
             const userData: any = doc.data();
@@ -50,20 +48,6 @@ export class NavbarComponent {
     this.toggleSidenav.emit();
   }
 
-  // loadUserData() {
-  //   if (this.userId) {
-  //     this.userService.getUser(this.userId).subscribe((doc) => {
-  //       if (doc.exists) {
-  //         const userData = doc.data();
-  //         this.email = userData?.username || 'Anonymous User'; // Update username
-  //       } else {
-  //         console.error('User not found in Firestore');
-  //       }
-  //     });
-  //   }
-  // }
-
-  // Navigate to Profile Page
   navigateToProfile() {
     this.router.navigate(['/profile'], {
       queryParams: {
@@ -73,21 +57,18 @@ export class NavbarComponent {
     });
   }
 
-  // Logout
   logout() {
     const auth = getAuth();
     signOut(auth).then(() => {
       console.log('Logged out successfully');
-      this.router.navigate(['/login']); // Navigate to the login page after logout
+      this.router.navigate(['/login']);
     }).catch((error) => {
       console.error('Logout failed:', error);
     });
   }
 
   onSearch() {
-    this.searchService.setSearchTerm(this.searchTerm); // Store search term globally
-
-    // Redirect to Library with the search query
+    this.searchService.setSearchTerm(this.searchTerm);
     this.router.navigate(['/library'], { queryParams: { search: this.searchTerm } });
     this.searchTerm = '';  // Reset the search input field
   }

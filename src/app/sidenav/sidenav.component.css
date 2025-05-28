@@ -3,47 +3,34 @@
 }
 
 mat-sidenav {
-  width: 200px; /* Sidebar width */
-  top: 78px; /* Align it to the very top of the page */
-  background: #f2e6fa; /* Soft pastel background */
-  border-radius: 12px; /* Rounded corners on the left */
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2); /* Floating shadow */
-  margin-top: 10px; /* Align with the floating navbar */
-  height: calc(100vh - 20px); /* Ensure it doesn't reach the very bottom */
-  overflow: hidden; /* Prevent content from overflowing */
-  position: absolute; /* Position it over the main content */
-  left:1.5%; /* Keep it aligned to the left */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth open/close effect */
+  width: 200px;
+  top: 78px;
+  background: #f2e6fa;
+  border-radius: 12px;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  height: calc(100vh - 20px);
+  overflow: hidden;
+  position: absolute;
+  left:1.5%;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 mat-sidenav[mode="over"] {
   transform: translateX(-100%);
 }
 
-/* When open, bring it into view */
+
 mat-sidenav[mode="over"].mat-drawer-open {
   transform: translateX(0);
 }
 
 mat-sidenav-content.content-veiled {
-  background-color: rgba(0, 0, 0, 0.3); /* Dark transparent overlay */
-  pointer-events: none; /* Disable interactions with the main content */
-  transition: background-color 0.3s ease; /* Smooth transition effect */
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  transition: background-color 0.3s ease;
 }
 
-/* Padding for main content */
-/*mat-sidenav-content {*/
-/*  !*padding: 16px;*!*/
-/*}*/
-
-/*mat-sidenav-content.mat-drawer-open {*/
-/*  padding: 160px; !* Adjust padding as needed *!*/
-/*}*/
-
-/*!* Ensure no padding when the sidenav is closed *!*/
-/*mat-sidenav-content {*/
-/*  padding: 0; !* No padding when sidenav is closed *!*/
-/*}*/
 
 mat-sidenav-content {
   z-index: 1;

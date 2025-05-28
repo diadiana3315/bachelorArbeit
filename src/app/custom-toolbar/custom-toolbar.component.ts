@@ -70,7 +70,7 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
               private pdfViewerService: NgxExtendedPdfViewerService,
               private http: HttpClient
   )
-  { // Bind the `handleSaveToFirebase` method to the component's context
+  {
     this.onClick = this.handleSaveToFirebase.bind(this);
   }
 
@@ -167,91 +167,9 @@ export class CustomToolbarComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // startAutoScroll() {
-  //   if (!this.viewerContainer) {
-  //     console.error('Viewer container not found! Cannot start scrolling.');
-  //     return;
-  //   }
-  //
-  //   this.stopAutoScroll(); // Stop any existing interval to prevent multiple from running
-  //
-  //   // Convert BPM to a scroll delay (longer delay = slower scrolling)
-  //   const beatsPerSecond = this.bpm / 60; // BPM to beats per second
-  //   const scrollInterval = 1000 / beatsPerSecond; // Time (ms) per beat
-  //
-  //   console.log(`🎵 BPM: ${this.bpm}, Scrolling every ${scrollInterval.toFixed(2)} ms`);
-  //
-  //   this.autoScrollInterval = setInterval(() => {
-  //     if (!this.isAutoScrolling || !this.viewerContainer) {
-  //       this.stopAutoScroll();
-  //       return;
-  //     }
-  //     this.viewerContainer.scrollBy(0, 1); // Scroll by **1 pixel** at each interval
-  //   }, scrollInterval); // Interval controls the speed
-  // }
-  //
-  // stopAutoScroll() {
-  //   if (this.autoScrollInterval) {
-  //     clearInterval(this.autoScrollInterval);
-  //     this.autoScrollInterval = null;
-  //   }
-  // }
-
-  // updateScrollSpeed(bpm: number) {
-  //   // Ensure BPM stays in range (20 - 300)
-  //   bpm = Math.max(20, Math.min(300, bpm));
-  //
-  //   const beatsPerSecond = bpm / 60; // Convert BPM to beats per second
-  //   const pixelsPerBeat = 1; // Adjust this for slower/faster scrolling
-  //   this.scrollSpeed = pixelsPerBeat * beatsPerSecond; // Compute px/sec
-  //
-  //   console.log(`🎵 BPM: ${bpm}, Scroll Speed: ${this.scrollSpeed.toFixed(2)} px/sec`);
-  // }
-
   ngOnDestroy() {
     this.stopAutoScroll(); // Clean up interval when component is destroyed
   }
-
-  // convertToMusicXML() {
-  //   if (!this.fileUrl) {
-  //     alert("No file to convert!");
-  //     return;
-  //   }
-  //
-  //   console.log("Fetching file from URL:", this.fileUrl);
-  //
-  //   this.isConverting = true;
-  //
-  //   // Fetch the file from Firebase Storage
-  //   fetch(this.fileUrl)
-  //     .then(response => response.blob()) // Convert response to a blob
-  //     .then(blob => {
-  //       const formData = new FormData();
-  //       formData.append('file', blob, 'uploaded.pdf'); // Append blob as a file
-  //
-  //       // Send request to backend
-  //       this.http.post<{ fileName: string }>('http://localhost:3000/convert', formData)
-  //         .subscribe(response => {
-  //           if (!response || !response.fileName) {
-  //             console.error("Conversion failed: No filename returned.");
-  //             alert("Conversion failed!");
-  //             return;
-  //           }
-  //
-  //           const musicXmlFileName = response.fileName;
-  //           this.musicXmlUrl = `http://localhost:3000/download/${musicXmlFileName}?t=${Date.now()}`;
-  //         }, error => {
-  //           console.error("Conversion failed:", error);
-  //           alert("Conversion failed!");
-  //           this.isConverting = false; // Set to false if there's an error
-  //         });
-  //     })
-  //     .catch(error => {
-  //       console.error("Error fetching PDF:", error);
-  //       alert("Failed to fetch the PDF file!");
-  //       this.isConverting = false; // Set to false if there's an error
-  //     });
-  // }
 
 
   convertToMusicXML() {

@@ -45,78 +45,13 @@ export class AddButtonComponent {
       };
 
       try {
-        await this.firestoreService.createFolder(newFolder); // Call the createFolder method from the service
+        await this.firestoreService.createFolder(newFolder);
         console.log('Folder created successfully');
       } catch (error) {
-        console.error('Error creating folder:', error); // Handle any errors
+        console.error('Error creating folder:', error);
       }
     }
   }
-
-  // async createFolder() {
-  //   const folderName = prompt("Enter folder name:");
-  //   if (!folderName) return;
-  //
-  //   const sharedWithStr = prompt("Share with (comma-separated user UIDs or emails)? (Leave empty if private)");
-  //   const sharedWith = sharedWithStr ? sharedWithStr.split(',').map(x => x.trim()) : [];
-  //
-  //   const userId = await this.userService.getCurrentUserId();
-  //
-  //   const newFolder = {
-  //     name: folderName,
-  //     parentFolderId: this.currentFolder ? this.currentFolder.id : null,
-  //     userId: userId,
-  //     sharedWith: sharedWith,
-  //     isShared: sharedWith.length > 0
-  //   };
-  //
-  //   try {
-  //     await this.firestoreService.createFolder(newFolder);
-  //     console.log('Folder created successfully');
-  //   } catch (error) {
-  //     console.error('Error creating folder:', error);
-  //   }
-  // }
-
-  // In add-button.component.ts
-
-  // async createFolder() {
-  //   const folderName = prompt("Enter folder name:");
-  //   if (!folderName) return;
-  //
-  //   const sharedWithStr = prompt("Share with (comma-separated user IDs)? (Leave empty if private)");
-  //   const sharedWith = sharedWithStr ? sharedWithStr.split(',').map(x => x.trim()) : [];
-  //
-  //   const userId = await this.userService.getCurrentUserId();
-  //
-  //   // Check if folder already exists
-  //   const existingFolder = await this.firestoreService.getFolderByNameAndParent(
-  //     folderName,
-  //     userId,
-  //     this.currentFolder?.id || null
-  //   );
-  //
-  //   if (existingFolder) {
-  //     console.warn('Folder with the same name already exists in this location.');
-  //     return;
-  //   }
-  //
-  //   const newFolder = {
-  //     name: folderName,
-  //     parentFolderId: this.currentFolder ? this.currentFolder.id : null,
-  //     userId: userId,
-  //     sharedWith: sharedWith,
-  //     isShared: sharedWith.length > 0,
-  //     createdAt: new Date()
-  //   };
-  //
-  //   try {
-  //     await this.firestoreService.createFolder(newFolder);
-  //     console.log('Folder created successfully');
-  //   } catch (error) {
-  //     console.error('Error creating folder:', error);
-  //   }
-  // }
 
   /**
    * Trigger the file input for PDF upload by simulating a click event on the file input element.
@@ -169,10 +104,8 @@ export class AddButtonComponent {
         // Convert image to PDF
         const pdfBlob = await this.convertImageToPDF(file);
 
-        // Create a new File object from the PDF blob
         const pdfFile = new File([pdfBlob], file.name.replace(/\.[^/.]+$/, ".pdf"), {type: "application/pdf"});
 
-        // Upload the PDF instead of the image
         const userId = await this.userService.getCurrentUserId();
         const uploadedFile = await this.firestoreService.uploadAndSaveFile(pdfFile, this.currentFolder ? this.currentFolder.id : null, userId);
 
@@ -197,10 +130,8 @@ export class AddButtonComponent {
           format: "a4",
         });
 
-        // Add image to PDF
         pdf.addImage(imgData, "JPEG", 10, 10, 180, 0);
 
-        // Convert PDF to blob (synchronously)
         const pdfBlob = pdf.output("blob");
         resolve(pdfBlob);
       };
@@ -217,7 +148,6 @@ export class AddButtonComponent {
         try {
           const userId = await this.userService.getCurrentUserId();
 
-          // Check if folder exists first (optimization)
           const existingFolder = await this.firestoreService.getFolderByNameAndParent(
             result.name,
             userId,
@@ -229,17 +159,13 @@ export class AddButtonComponent {
             return;
           }
 
-          // Convert emails to user IDs
           const sharedWithUserIds: string[] = [];
           for (const email of result.sharedWithEmails) {
             const uid = await this.userService.getUserIdByEmail(email);
             if (uid) {
-              if (typeof uid === "string") {
-                sharedWithUserIds.push(uid);
-              }
+              sharedWithUserIds.push(uid);
             } else {
               console.warn(`User with email ${email} not found`);
-              // Optional: Show warning to user about invalid emails
             }
           }
 
@@ -247,21 +173,17 @@ export class AddButtonComponent {
             name: result.name,
             parentFolderId: this.currentFolder?.id || null,
             userId: userId,
-            sharedWith: sharedWithUserIds,  // Store user IDs, not emails
-            sharedWithEmails: result.sharedWithEmails, // Optional: keep for reference
+            sharedWith: sharedWithUserIds,
+            sharedWithEmails: result.sharedWithEmails,
             isShared: sharedWithUserIds.length > 0,
-            createdAt: new Date()  // Important for sorting
+            createdAt: new Date()
           };
 
           await this.firestoreService.createSharedFolder(sharedFolder);
 
-          // Optional: Show success message
-          // this.snackBar.open('Folder shared successfully!', 'Close', {duration: 3000});
 
         } catch (error) {
           console.error('Error creating shared folder:', error);
-          // Optional: Show error to user
-          // this.snackBar.open('Error sharing folder', 'Close', {duration: 3000});
         }
       }
     });

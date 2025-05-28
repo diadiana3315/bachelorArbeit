@@ -16,17 +16,6 @@
 
   <!-- Right Section -->
   <div id="toolbarViewerRight">
-<!--    <pdf-shy-button-->
-<!--      [cssClass]=" 'always-visible' | responsiveCSSClass "-->
-<!--      title="Save"-->
-<!--      l10nId="save_button"-->
-<!--      [action]="onClick"-->
-<!--      [order]="3400"-->
-<!--      [closeOnClick]="false"-->
-<!--      aria-label="Save"-->
-<!--    >-->
-<!--      <mat-icon aria-label="Save">save</mat-icon>-->
-<!--    </pdf-shy-button>-->
     <button mat-icon-button (click)="handleSaveToFirebase()" title="Save">
       <mat-icon aria-label="Save">save</mat-icon>
     </button>
@@ -36,7 +25,6 @@
       <mat-icon>{{ isAutoScrolling ? 'pause' : 'play_arrow' }}</mat-icon>
     </button>
     <label>Speed:</label>
-<!--    <input type="range" min="1" max="10" [(ngModel)]="scrollSpeed" (input)="updateScrollSpeed(scrollSpeed)">-->
 
     <input type="number" min="20" max="300" [(ngModel)]="bpm" (input)="startAutoScroll()">
 
@@ -49,9 +37,6 @@
       </ng-container>
     </button>
 
-
-    <!--    <app-music-xml-player *ngIf="musicXmlUrl" [musicXmlUrl]="musicXmlUrl"></app-music-xml-player>-->
-
     <!-- Show download link when conversion is complete -->
     <a *ngIf="musicXmlUrl" [href]="musicXmlUrl" [download]="fileMetadata?.fileName?.replace('.pdf', '.mxl') || 'converted.mxl'">
       <button mat-button>Download MusicXML</button>
@@ -60,7 +45,6 @@
     <!-- Loading bar while the conversion is in progress -->
     <mat-progress-bar *ngIf="isConverting" mode="indeterminate"></mat-progress-bar>
 
-    <!--    <pdf-download></pdf-download>-->
     <pdf-print></pdf-print>
     <pdf-highlight-editor></pdf-highlight-editor>
     <pdf-text-editor></pdf-text-editor>

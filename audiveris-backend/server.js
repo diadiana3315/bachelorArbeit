@@ -4,12 +4,12 @@ const cors = require("cors");
 const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const fetch = require('node-fetch'); // For downloading files from URLs if needed
+const fetch = require('node-fetch');
 
 const app = express();
 const port = 3000;
 
-// Ensure uploads directory exists
+
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
@@ -18,20 +18,20 @@ if (!fs.existsSync(uploadsDir)) {
 app.use(cors());
 app.use(express.json());
 
-// Set up multer to save file with the correct extension
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Destination folder for uploaded files
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // Get the file extension from the original filename
-    cb(null, file.fieldname + "-" + Date.now() + ext); // Create a filename with the extension
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + Date.now() + ext);
   }
 });
 
 const upload = multer({ storage: storage });
 
-// Handle PDF upload and conversion
+
 app.post("/convert", upload.single("file"), (req, res) => {
   console.log("Received a request to convert a file.");
 
@@ -40,23 +40,23 @@ app.post("/convert", upload.single("file"), (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  // Log the file details
+
   const inputFile = path.join(__dirname, req.file.path);
   console.log(`File received. Saved at: ${inputFile}`);
 
-  // Check if the output directory exists, create it if not
+
   const outputDir = path.join(__dirname, "output");
   if (!fs.existsSync(outputDir)) {
     console.log("Output directory not found, creating one.");
     fs.mkdirSync(outputDir);
   }
 
-  // Log the conversion command
+
   const command = `"C:\\Program Files\\Audiveris\\bin\\Audiveris.bat" -batch -export -output "${outputDir}" "${inputFile}"`;
 
   console.log(`Running conversion command: ${command}`);
 
-  // Execute the conversion
+
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.error("Error during conversion:", stderr);
@@ -65,9 +65,8 @@ app.post("/convert", upload.single("file"), (req, res) => {
 
     console.log("Conversion successful:", stdout);
 
-    // Find the generated MusicXML file
+
     const files = fs.readdirSync(outputDir);
-// Get all .mxl or .xml files
     const musicXmlFiles = files.filter(file => file.endsWith(".mxl") || file.endsWith(".xml"));
 
     if (musicXmlFiles.length === 0) {
@@ -75,14 +74,14 @@ app.post("/convert", upload.single("file"), (req, res) => {
       return res.status(500).json({ error: "No MusicXML file found" });
     }
 
-// Sort by modified time (newest first)
+
     musicXmlFiles.sort((a, b) => {
       const aTime = fs.statSync(path.join(outputDir, a)).mtime;
       const bTime = fs.statSync(path.join(outputDir, b)).mtime;
       return bTime - aTime;
     });
 
-// The most recent file
+
     const musicXMLFile = musicXmlFiles[0];
 
     if (!musicXMLFile) {
@@ -91,12 +90,10 @@ app.post("/convert", upload.single("file"), (req, res) => {
     }
 
     console.log("MusicXML file found:", musicXMLFile);
-    // res.download(path.join(outputDir, musicXMLFile), musicXMLFile);
     res.json({ fileName: musicXMLFile });
   });
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -3,7 +3,7 @@
   align-items: center;
   padding: 8px;
   background-color: #f5f5f5;
-  height: 48px; /* Match the height of the default toolbar */
+  height: 48px;
 }
 
 
@@ -11,8 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px; /* Match the size of other toolbar buttons */
-  height: 36px; /* Match the size of other toolbar buttons */
+  width: 36px;
+  height: 36px;
   background: none;
   border: none;
   cursor: pointer;
@@ -24,27 +24,26 @@ mat-icon {
   color: #000;
 }
 
-/* Specific fix for misaligned page navigation icons */
 #toolbarViewerLeft {
   display: flex;
   align-items: center;
-  gap: 8px; /* Add spacing between the elements if needed */
+  gap: 8px;
 }
 
 #toolbarViewerLeft .toolbarButtonSpacer {
-  display: none; /* Optional: Hide extra spacers that could misalign elements */
+  display: none;
 }
 
 #toolbarViewerLeft button,
 #toolbarViewerLeft input {
-  height: 36px; /* Match the button size of other icons */
-  line-height: normal; /* Prevent input fields from stretching */
+  height: 36px;
+  line-height: normal;
   display: flex;
   align-items: center;
 }
 
 #toolbarViewerLeft input {
-  padding: 0 4px; /* Ensure the page input field is compact and aligned */
+  padding: 0 4px;
   font-size: 14px;
   text-align: center;
 }
@@ -52,48 +51,46 @@ mat-icon {
 #toolbarViewerRight {
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Ensures all items in the right section are aligned to the right */
+  justify-content: flex-end;
 }
 
 #toolbarViewerRight button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px; /* Same size as other buttons */
-  height: 34px; /* Same size as other buttons */
+  width: 34px;
+  height: 34px;
   background: none;
   border: none;
   cursor: pointer;
-  margin-left: 2px; /* Adjust spacing between buttons */
+  margin-left: 2px;
 }
 
-/* Set icon size and color to match the others */
 #toolbarViewerRight mat-icon {
   font-size: 24px;
   color: #000;
 }
 
 #toolbarViewerRight .toolbarButtonSpacer {
-  display: none; /* Optional: Hide extra spacers that could misalign elements */
+  display: none;
 }
 
 #toolbarViewerRight button,
 #toolbarViewerRight input {
-  height: 36px; /* Match the button size of other icons */
-  line-height: normal; /* Prevent input fields from stretching */
+  height: 36px;
+  line-height: normal;
   display: flex;
   align-items: center;
 }
 
 #toolbarViewerRight input {
-  padding: 0 4px; /* Ensure the page input field is compact and aligned */
+  padding: 0 4px;
   font-size: 14px;
   text-align: center;
 }
 
 
 pdf-shy-button {
-  /* Ensure consistent size and positioning */
   margin-left: 8px;
   display: flex;
   align-items: center;
@@ -109,7 +106,6 @@ mat-icon {
   scroll-behavior: smooth;
 }
 
-/* Optional: Style the progress bar */
 mat-progress-bar {
   width: 100%;
   height: 6px;
@@ -117,7 +113,6 @@ mat-progress-bar {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Optional: Customize the appearance of the indeterminate progress bar */
 mat-progress-bar .mat-progress-bar-fill {
   background-color: #8a5cf8;
 }

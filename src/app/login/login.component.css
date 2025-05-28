@@ -1,54 +1,46 @@
-/** {*/
-/*  margin: 0;*/
-/*  padding: 0;*/
-/*  transition: all 0.5s;*/
-/*  font-family: Arial, sans-serif;*/
-/*}*/
-
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
 }
-/* Body Styles */
+
 body {
   color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  /*background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/maxim-berg-lnvpji4fC3c-unsplash.jpg"); !* super fain*!*/
   background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/martin-martz-wr9mf7S6bRQ-unsplash.jpg");
-  background-size: cover; /* Ensures the image covers the whole screen */
-  background-position: center center; /* Center the background image */
-  overflow: hidden; /* Prevent scrolling */
+  background-size: cover;
+  background-position: center center;
+  overflow: hidden;
 }
 
 
-/* Login Container */
+
 .login-container {
-  width: 100%;          /* Allow the container to be 100% width */
-  max-width: 400px;     /* Maximum width for the container */
+  width: 100%;
+  max-width: 400px;
   padding: 20px;
-  box-sizing: border-box; /* Ensure padding is inside the container */
-  display: flex;         /* Ensure the form inside is centered */
-  justify-content: center; /* Horizontally center */
-  align-items: center;    /* Vertically center */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 }
 
-/* Login Form Styles */
+
 .login-form {
-  background: rgba(255, 255, 255, 0.25);  /* Semi-transparent background */
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 15px;
-  backdrop-filter: blur(10px);   /* Frosted glass effect */
+  backdrop-filter: blur(10px);
   padding: 20px;
   text-align: center;
   display: flex;
-  flex-direction: column;       /* Stack elements vertically */
-  justify-content: center;      /* Vertically center form content */
-  align-items: center;          /* Horizontally center form content */
-  width: 80%;                  /* Ensure it stretches inside the container */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
 }
@@ -59,10 +51,10 @@ body {
 }
 
 .form-group label {
-  text-align: left; /* Align the label text to the left */
-  width: 100%; /* Ensure the label takes up full width */
-  margin-bottom: 5px; /* Space between the label and the input */
-  color: #f1eaea; /* Optional: to match the label color */
+  text-align: left;
+  width: 100%;
+  margin-bottom: 5px;
+  color: #f1eaea;
 }
 
 .form-group {
@@ -70,7 +62,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Ensure each input is centered */
+  align-items: center;
 }
 
 .form-group input {
@@ -87,8 +79,8 @@ body {
 
 .form-group input:focus {
   outline: none;
-  background: #ffffff; /* Make it even whiter on focus */
-  color: #3b3494; /* Ensure text remains visible */
+  background: #ffffff;
+  color: #3b3494;
 }
 
 button {
@@ -108,20 +100,20 @@ button:hover {
 }
 
 .register-link {
-  color: #6d6de8;  /* Set your preferred color */
-  text-decoration: none;  /* Remove underline */
-  font-weight: bold;  /* Make the text bold */
+  color: #6d6de8;
+  text-decoration: none;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .register-link:hover {
-  text-decoration: underline;  /* Underline on hover */
-  color: #3b3494;  /* Change color on hover */
+  text-decoration: underline;
+  color: #3b3494;
 }
 
 input::placeholder {
-  color: #6a5b7c; /* Slightly darker purple for visibility */
-  opacity: 0.8; /* Adjust transparency */
+  color: #6a5b7c;
+  opacity: 0.8;
   font-size: 14px;
   font-weight: normal;
 }

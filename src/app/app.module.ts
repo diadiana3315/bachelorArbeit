@@ -38,7 +38,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialog.component';
-// import { MusicXmlPlayerComponent } from './music-xml-player/music-xml-player.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +54,6 @@ import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialo
     CustomToolbarComponent,
     StreakCalendarComponent,
     SharedFolderDialogComponent,
-    // MusicXmlPlayerComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,8 +64,6 @@ import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialo
     AngularFireStorageModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
     FormsModule,
@@ -82,7 +78,7 @@ import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialo
     MatDialogModule,
     AngularFirestoreModule,
     NgxExtendedPdfViewerModule,
-    HttpClientModule,  // <-- Add HttpClientModule here
+    HttpClientModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
@@ -91,7 +87,7 @@ import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialo
     MatProgressSpinnerModule,
     ReactiveFormsModule,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Allow custom elements
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -22,17 +22,14 @@ export class AppComponent implements OnInit{
   constructor(private afAuth: AngularFireAuth, private router: Router) {}
 
   ngOnInit(): void {
-    // Initialize Firebase App
-    initializeApp(environment.firebaseConfig); // Initialize Firebase with your config
+    initializeApp(environment.firebaseConfig);
 
-    // Set Firebase auth persistence to 'local'
     this.afAuth.setPersistence('local').then(() => {
       console.log('Auth persistence set to local storage.');
     }).catch((error) => {
       console.error('Error setting auth persistence:', error);
     });
 
-    // Listen to Firebase auth state changes
     this.afAuth.authState.subscribe(user => {
       if (!user) {
         this.router.navigate(['/login']);
@@ -40,23 +37,15 @@ export class AppComponent implements OnInit{
       this.user = user;
     });
 
-    // Listen to route changes for layout management
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.shouldDisplayLayout();
       });
   }
-  // toggleSidenav() {
-  //   if (this.sidenav) {
-  //     this.sidenav.toggle();
-  //   }
-  // }
 
   shouldDisplayLayout(): boolean {
-    // List of routes where Navbar and Sidenav should NOT appear
     const excludedRoutes = ['/login', '/register', '/viewer'];
-    // return !excludedRoutes.includes(this.router.url);
     return !excludedRoutes.some(route => this.router.url.startsWith(route));
 
   }

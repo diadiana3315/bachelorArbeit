@@ -1,122 +1,29 @@
-/*.toolbar {*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  justify-content: space-between;*/
-/*  padding: 0 16px; !* Adjust padding to move content away from edges *!*/
-/*  height: 64px; !* Set a consistent height for the navbar *!*/
-/*  box-sizing: border-box;*/
-/*  background: #3f51b5; !* Example background color *!*/
-/*}*/
 
-
-/*!* Spacer to push elements to the right *!*/
-/*.spacer {*/
-/*  flex: 1;*/
-/*}*/
-
-/*!* Style the search container for alignment and positioning *!*/
-/*.search-container {*/
-/*  display: flex;               !* Use flexbox for alignment *!*/
-/*  align-items: center;         !* Vertically center the mat-form-field *!*/
-/*  justify-content: flex-start; !* Align to the left (default) *!*/
-/*  flex: 2;                     !* Adjust width relative to other elements in the toolbar *!*/
-/*  !*margin: 0 16px;              !* Add horizontal margins for spacing *!*!*/
-/*  height: 100%;                !* Ensure it takes up the full height of the toolbar *!*/
-/*}*/
-
-/*!* Ensure mat-form-field styling remains unaffected *!*/
-/*.search-field {*/
-/*  width: 100%;                 !* Search field should fill the container's width *!*/
-/*  height: 50px;*/
-/*  max-width: 400px;            !* Set a max width to prevent it from being too large *!*/
-/*  background: #f1f1f1;         !* Light background for the field *!*/
-/*  !*border-radius: 25px;         !* Rounded corners for the field *!*!*/
-/*  !*overflow: hidden;            !* Prevent overflow for the rounded corners *!*!*/
-/*}*/
-
-/*!* Adjust padding for mat-form-field to make input vertically aligned *!*/
-/*.mat-form-field-wrapper {*/
-/*  padding: 0 12px;             !* Inner padding for input text and icons *!*/
-/*}*/
-
-/*!* Adjust height and alignment of the search field *!*/
-/*.mat-form-field {*/
-/*  height: 20px;                !* Set a consistent height for the field *!*/
-/*  display: flex;               !* Ensures the field aligns with container *!*/
-/*  align-items: center;         !* Centers input text vertically *!*/
-/*}*/
-
-/*!* Optional: Style the input placeholder and text *!*/
-/*.mat-input-element {*/
-/*  font-size: 14px;             !* Adjust font size for readability *!*/
-/*  line-height: 36px;           !* Match the height to ensure vertical alignment *!*/
-/*  !*padding: 0 8px;*!*/
-/*}*/
-
-/*!* Style the search button (suffix) *!*/
-/*.mat-icon-button {*/
-/*  border-radius: 50%;          !* Make the search button fully circular *!*/
-/*  padding: 6px;                !* Ensure button has padding and is not too large *!*/
-/*  font-size: 18px;             !* Adjust icon size *!*/
-/*}*/
-
-/*!* Profile Menu Styles *!*/
-/*.profile-menu-content {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center;*/
-/*  padding: 16px;*/
-/*  width: 200px; !* Fixed width for consistency *!*/
-/*}*/
-
-/*.profile-picture {*/
-/*  width: 48px;*/
-/*  height: 48px;*/
-/*  border-radius: 50%;*/
-/*  margin-bottom: 12px;*/
-/*}*/
-
-/*.username {*/
-/*  font-size: 14px;*/
-/*  font-weight: bold;*/
-/*  margin-bottom: 16px;*/
-/*  text-align: center;*/
-/*}*/
-
-/*button {*/
-/*  width: 100%;*/
-/*  margin: 4px 0;*/
-/*}*/
-/* General Toolbar Styles */
-/*body {*/
-/*  padding-top: 64px; !* Add padding equal to the height of the navbar *!*/
-/*}*/
 
 .toolbar {
-  position: fixed; /* Fix the navbar at the top */
-  top: 10px; /* Align it to the very top of the page */
-  left: 50%; /* Stretch to the left edge */
-  transform: translateX(-50%); /* Center horizontally */
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 
-  width: 97%; /* Ensure the navbar spans the full width of the page */
-  /*max-width: 1200px; !* Limit max width for better aesthetics *!*/
+  width: 97%;
 
-  z-index: 1000; /* Keep it above other elements */
+
+  z-index: 1000;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
   height: 64px;
-  background: #f2e6fa; /* Background color */
-  border-radius: 12px; /* Rounded corners */
+  background: #f2e6fa;
+  border-radius: 12px;
 
   box-sizing: border-box;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
 }
 
-/* Spacer to push elements to the right */
 .spacer {
   flex: 1;
 }
@@ -129,7 +36,7 @@
   overflow: hidden;
   background-color: white;
   margin-right: auto;
-  margin-left: 16px; /* Add space between the title and the search bar */
+  margin-left: 16px;
 }
 
 .search-input {
@@ -140,7 +47,7 @@
 }
 
 .search-button {
-  background-color: transparent; /* Transparent background to match the navbar */
+  background-color: transparent;
   border: none;
   cursor: pointer;
   display: flex;
@@ -149,12 +56,12 @@
   padding: 4px;
 }
 .search-button mat-icon {
-  color: #3f51b5; /* Adjust icon color */
+  color: #3f51b5;
   font-size: 20px;
 }
 
 .search-button:hover mat-icon {
-  color: #283593; /* Change color on hover */
+  color: #283593;
 }
 
 ::ng-deep .mat-mdc-menu-panel {
@@ -162,35 +69,34 @@
   border-radius: 12px !important;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2) !important;
   padding: 8px !important;
-  transform: translateY(23px) translateX(13px); /* Adjust value based on the navbar height */
+  transform: translateY(23px) translateX(13px);
 
 }
 
 
-/* Profile Menu Content */
 .profile-menu-content {
   display: flex;
-  flex-direction: column; /* Stack content vertically */
-  align-items: center; /* Center align items */
-  padding: 16px; /* Add padding for spacing */
-  width: 200px; /* Fixed width for consistency */
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  width: 200px;
 }
 
-/* Profile Picture Styling */
+
 .profile-picture {
-  width: 48px; /* Fixed width */
-  height: 48px; /* Fixed height */
-  border-radius: 50%; /* Circular profile picture */
-  margin-bottom: 12px; /* Space below the picture */
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-bottom: 12px;
 }
 
 /* Username Styling */
 .username {
-  font-size: 14px; /* Text size for username */
-  font-weight: bold; /* Bold for emphasis */
-  margin-bottom: 16px; /* Add spacing below username */
-  text-align: center; /* Center-align text */
-  color: #3b3494; /* A darker purple for contrast */
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+  color: #3b3494;
 }
 
 
@@ -200,11 +106,11 @@
   text-align: center;
   font-weight: bold;
   border-radius: 12px;
-  transition: background-color 0.3s ease; /* Smooth color transition */
-  background-color: #dcb1fd; /* Apply the background color */
-  display: flex; /* Enable flexbox */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
+  transition: background-color 0.3s ease;
+  background-color: #dcb1fd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logout-btn {
@@ -212,25 +118,19 @@
   text-align: center;
   font-weight: bold;
   border-radius: 12px;
-  transition: background-color 0.3s ease; /* Smooth color transition */
-  background-color: #ee331e; /* Change to the second color on hover */
-  margin-top: 10px; /* Add padding for better button size */
-  display: flex; /* Enable flexbox */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
+  transition: background-color 0.3s ease;
+  background-color: #ee331e;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-/*!* Hover effect for buttons *!*/
-/*.mat-mdc-menu-item:hover {*/
-/*  background: rgba(240, 240, 240, 0.8) !important; !* Light hover effect *!*/
-/*  border-radius: 12px; !* Keep the rounded look *!*/
-/*}*/
 
 .manage-profile-btn:hover{
-  background: #c47cfd !important; /* Light hover effect */
-  border-radius: 12px; /* Keep the rounded look */
+  background: #c47cfd !important;
+  border-radius: 12px;
 }
 .logout-btn:hover{
-  background: #ca2412 !important; /* Light hover effect */
-  border-radius: 12px; /* Keep the rounded look */
+  background: #ca2412 !important;
+  border-radius: 12px;
 }

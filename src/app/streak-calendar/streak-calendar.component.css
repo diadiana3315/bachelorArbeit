@@ -1,22 +1,12 @@
-/*.calendar-container {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center;*/
-/*  width: 100%;*/
-/*  margin: 0;*/
-/*  font-family: Arial, sans-serif;*/
-/*  max-width: 450px;*/
-/*}*/
-
 .calendar-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Already good */
+  align-items: center;
   width: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
   max-width: 450px;
-  padding: 10px; /* optional: a slight overall padding */
+  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -26,10 +16,10 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 5px 15px; /* Adds some padding to avoid content touching the edges */
+  padding: 5px 15px;
 }
 
-/* Arrows on the left and right of the month name */
+
 .calendar-header button {
   padding: 8px;
   background-color: transparent;
@@ -42,23 +32,21 @@
   color: #007bff;
 }
 
-/* Arrows on the left and right */
+
 .calendar-header .left-arrow {
-  left: 0; /* Positioned at the left of the header */
+  left: 0;
 }
 
 .calendar-header .right-arrow {
-  right: 0; /* Positioned at the right of the header */
+  right: 0;
 }
 
-/* Hover effect on arrows */
 button:hover mat-icon {
   color: #0056b3;
 }
 
-/* Center the month name in the middle */
 .calendar-header h2 {
-  margin: 0; /* Space for arrows on both sides */
+  margin: 0;
   text-align: center;
   font-size: 1.4rem;
 }
@@ -69,7 +57,7 @@ button:hover mat-icon {
   grid-template-columns: repeat(7, minmax(40px, 1fr));
   text-align: center;
   font-weight: bold;
-  padding-bottom: 10px; /* Add padding below the days-of-week */
+  padding-bottom: 10px;
   width: 100%;
   max-width: 450px;
 }
@@ -80,20 +68,12 @@ button:hover mat-icon {
   font-size: 1rem;
 }
 
-/*.cal-days {*/
-/*  display: grid;*/
-/*  grid-template-columns: repeat(7, minmax(40px, 1fr));*/
-/*  grid-gap: 10px;*/
-/*  width: 100%;*/
-/*  padding: 5px;*/
-/*}*/
-
 .cal-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(40px, 1fr));
   grid-gap: 10px;
   width: 100%;
-  padding: 10px 15px; /* ⬅️ Added horizontal padding */
+  padding: 10px 15px;
   box-sizing: border-box;
 }
 
@@ -116,7 +96,7 @@ button:hover mat-icon {
 }
 
 .cal-day.null {
-  background-color: transparent; /* For empty spaces (null) */
+  background-color: transparent;
 }
 
 button:hover mat-icon {
@@ -125,13 +105,13 @@ button:hover mat-icon {
 
 
 .today {
-  background-color: #f39c12; /* You can change this to whatever color you prefer for today's date */
+  background-color: #f39c12;
   color: white;
   border-radius: 50%;
 }
 
 .used-day {
-  background-color: #f39c12; /* Green highlight for used days */
+  background-color: #f39c12;
   color: white;
   border-radius: 50%;
 }

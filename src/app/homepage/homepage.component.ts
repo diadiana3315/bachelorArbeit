@@ -13,14 +13,14 @@ import {DailyMessageService} from '../services/daily-message.service';
 export class HomepageComponent implements OnInit {
 
   user: any;
-  username: string = ''; // Store username here
-  streakCount: number = 0; // Will store the total number of distinct days the user logged in
+  username: string = '';
+  streakCount: number = 0;
   dailyMessage: string = '';
 
   practiceGoals: any = {
-    timesPerWeek: 3, // Default: 3 times per week
-    duration: 30, // Default: 30 minutes per session
-    selectedDays: [] // Stores selected days if using "specific days"
+    timesPerWeek: 3,
+    duration: 30,
+    selectedDays: []
   };
 
   weeklyPracticeMessage: string = '';
@@ -43,8 +43,8 @@ export class HomepageComponent implements OnInit {
       }
       else {
         this.user = user;
-        this.username = user?.displayName || 'Guest'; // Set username from Firebase auth
-        this.firestoreService.logUserUsage(user.uid); // Log user activity
+        this.username = user?.displayName || 'Guest';
+        this.firestoreService.logUserUsage(user.uid);
 
         this.loadStreakData(user.uid);
         this.loadDailyMessage();
@@ -89,22 +89,20 @@ export class HomepageComponent implements OnInit {
   async loadStreakData(userId: string) {
     const today = new Date();
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay()); // Get Sunday of this week
+    startOfWeek.setDate(today.getDate() - today.getDay());
 
     try {
       const usageDays = await this.firestoreService.getUserUsageDays(userId);
       this.streakCount = usageDays.size; // Count distinct login days
 
-      // Count how many times the user logged in during the current week
+
       const daysPracticedThisWeek = Array.from(usageDays).filter(dateStr => {
         const date = new Date(dateStr);
         return date >= startOfWeek && date <= today;
       }).length;
 
-      // Compare with practice goals
       const remainingDays = Math.max(0, this.practiceGoals.timesPerWeek - daysPracticedThisWeek);
 
-      // Generate the message
       if (remainingDays === 0) {
         this.weeklyPracticeMessage = "Great job! You've completed your weekly practice goal!";
       } else {

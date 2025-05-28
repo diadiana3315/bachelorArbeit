@@ -6,7 +6,7 @@ import {deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable} fro
   providedIn: 'root',
 })
 export class FirebaseStorageService {
-  private storage = getStorage(); // Get the Firebase storage instance
+  private storage = getStorage();
 
   /**
    * Uploads a file to Firebase Storage/
@@ -15,13 +15,12 @@ export class FirebaseStorageService {
    * @returns A promise indicating success or failure of both the upload and metadata save operations.
    */
   async uploadFile(file: File, filePath: string): Promise<string> {
-    const fileRef = ref(this.storage, filePath); // Creating reference for file path
+    const fileRef = ref(this.storage, filePath);
 
     try {
       const uploadTask = uploadBytesResumable(fileRef, file);
-      await uploadTask; // Wait for the upload to finish
+      await uploadTask;
 
-      // Get download URL for the uploaded file
       return await getDownloadURL(fileRef);
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -38,7 +37,7 @@ export class FirebaseStorageService {
   async deleteFile(filePath: string): Promise<void> {
     const fileRef = ref(this.storage, filePath);
     try {
-      await deleteObject(fileRef); // Delete the file from Firebase Storage
+      await deleteObject(fileRef);
       console.log('File deleted successfully');
     } catch (error) {
       console.error('Error deleting file:', error);

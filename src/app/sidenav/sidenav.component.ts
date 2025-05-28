@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
 
 @Component({

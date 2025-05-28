@@ -241,7 +241,6 @@ body {
   height: 100%;
 }
 
-/* Common card styling for all containers */
 .goal-input, .recent-files-container, .streak-container, .calendar-container {
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.8);
@@ -254,34 +253,22 @@ body {
   object-fit: cover;
 }
 
-/* Adjust the streak container to be smaller */
 .streak-container {
   background-color: rgba(255, 255, 255, 0.9);
   max-height: 165px; /* Limit the height */
   min-height: 150px; /* Ensure it doesn't get too small */
 }
 
-/* Make the calendar container taller */
 .calendar-container {
   padding: 0;
-  min-height: 500px; /* Increase from 350px to 500px */
-  flex-grow: 1; /* Allow it to take up remaining space */
+  min-height: 500px;
+  flex-grow: 1;
 }
 
-
-
-
-/*.goal-input:hover, .recent-files-container:hover, .streak-container:hover, .calendar-container:hover {*/
-/*  transform: translateY(-5px);*/
-/*  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);*/
-/*}*/
-
-/* Inner content padding */
 .goal-input-elements, .files-elements, .streak-container-elements {
   padding: 20px;
 }
 
-/* Goal input specific styling */
 .goal-input {
   background-color: rgba(255, 255, 255, 0.9);
 }
@@ -376,16 +363,15 @@ body {
   line-height: 1.4;
 }
 
-/* Calendar container styling */
+
 .calendar-container {
-  padding: 0; /* Let the component handle its own padding */
-  min-height: 350px; /* Give the calendar enough height */
+  padding: 0;
+  min-height: 350px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
   .gallery {
-    grid-template-columns: 1fr; /* Stack to single column on smaller screens */
+    grid-template-columns: 1fr;
   }
 }
 

@@ -6,8 +6,8 @@ export interface FileMetadata {
   parentFolderId: string | null;
   userId: string;
   isShared:boolean;
-  uploadedAt?: number; // Timestamp when uploaded
-  lastAccessedAt?: number; // Timestamp when last accessed
+  uploadedAt?: number;
+  lastAccessedAt?: number;
   isRenaming?: boolean;
   newName?: string;
 }

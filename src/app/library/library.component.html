@@ -1,16 +1,13 @@
 <div class="library-container">
   <div class="library-header">
-    <!-- Back button only visible when inside a folder -->
     <button *ngIf="currentFolder" mat-icon-button (click)="navigateToRoot()">
       <mat-icon>arrow_back</mat-icon>
     </button>
 
-    <!-- Show search results if searchActive is true -->
     <div *ngIf="searchActive" class="search-overlay" (click)="clearSearch()">
       <div class="search-results" (click)="$event.stopPropagation()">
         <h2>Search Results</h2>
 
-      <!-- If files or folders are found, display them -->
       <div *ngIf="filteredFiles.length > 0 || filteredFolders.length > 0">
         <div class="folders-container">
           <div class="folder-item" *ngFor="let folder of filteredFolders"  (click)="navigateToFolder(folder)">
@@ -28,7 +25,6 @@
         </div>
       </div>
 
-      <!-- If nothing is found, show message -->
       <div *ngIf="filteredFiles.length === 0 && filteredFolders.length === 0">
         <p>No results found.</p>
       </div>
@@ -36,18 +32,15 @@
     </div>
 
     <div *ngIf="!searchActive">
-<!--    <h2>Library</h2>-->
   </div>
 
-  <!-- Add Button Component: Visible for all folders, including root -->
   <app-add-button
     [currentFolder]="currentFolder"
     (folderCreated)="onFolderCreated($event)"
     (fileUploaded)="onFileUploaded($event)">
   </app-add-button>
 
-  <!-- Display Folders -->
-    <!-- Display Folders -->
+
     <div class="folders-container">
       <div
         *ngFor="let folder of folders"
@@ -72,11 +65,9 @@
       </div>
     </div>
 
-  <!-- Display Files -->
   <div class="files-container">
     <h3>Files</h3>
 
-    <!-- List of Files -->
     <div *ngFor="let file of files" class="file-item">
       <mat-icon class="file-icon">insert_drive_file</mat-icon>
       <!-- Show input field when renaming -->
@@ -90,7 +81,6 @@
       />
 
 
-      <!-- Show file name and buttons when NOT renaming -->
       <div *ngIf="!file.isRenaming" class="file-display">
       <p
         class="file-name"
@@ -109,7 +99,6 @@
         </button>
       </div>
 
-      <!-- Show Save & Cancel buttons when renaming -->
       <div *ngIf="file.isRenaming" class="rename-actions">
         <button (click)="saveFileName(file)">
           <mat-icon>check</mat-icon>

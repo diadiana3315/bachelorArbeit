@@ -22,11 +22,9 @@
     <label for="password">New Password</label>
     <input id="password" type="password" [(ngModel)]="newPassword" placeholder="Enter new password" />
 
-    <!-- Upload Profile Picture -->
     <label for="profilePic">Profile Picture</label>
     <input id="profilePic" type="file" (change)="uploadProfilePicture($event)" />
 
-    <!-- Save & Cancel Buttons -->
     <button (click)="updateProfile()">Save Changes</button>
     <button class="cancel-btn" (click)="toggleEditMode()">Cancel</button>
   </div>

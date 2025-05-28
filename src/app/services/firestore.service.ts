@@ -17,9 +17,9 @@ export interface Practice {
 
 export interface UserDocument {
   practiceHistory?: {
-    weekStart: string; // Store the week start date
-    practices: Practice[]; // Array of practice sessions for the week
-    streakCount: number; // Streak count for consecutive weeks
+    weekStart: string;
+    practices: Practice[];
+    streakCount: number;
   }[];
   practiceGoals?: {
     timesPerWeek: number;
@@ -36,7 +36,7 @@ export class FirestoreService {
   constructor(private firestore: AngularFirestore, private storageService: FirebaseStorageService) {
   }
 
-  // Save file metadata to Firestore
+
   async saveFileMetadata(metadata: FileMetadata): Promise<void> {
     const { id, userId, isShared, parentFolderId } = metadata;
 
@@ -45,7 +45,7 @@ export class FirestoreService {
     }
 
     if (isShared && parentFolderId) {
-      // Save under shared structure
+
       return this.firestore
         .collection('folders')
         .doc(parentFolderId)
@@ -54,7 +54,6 @@ export class FirestoreService {
         .set(metadata);
     }
 
-    // Default to private user file
     return this.firestore
       .collection('users')
       .doc(userId)
@@ -64,7 +63,6 @@ export class FirestoreService {
   }
 
 
-  // Delete file and its metadata
   async deleteFile(
     userId: string,
     fileId: string,
@@ -79,14 +77,12 @@ export class FirestoreService {
       }
       filePath = `shared/${parentFolderId}/${fileId}`;
     } else {
-      filePath = `${userId}/${fileId}`; // Private file path
+      filePath = `${userId}/${fileId}`;
     }
 
     try {
-      // Step 1: Delete the file from Firebase Storage
       await this.storageService.deleteFile(filePath);
 
-      // Step 2: Delete the metadata from Firestore
       if (isShared) {
         await this.firestore
           .collection('folders')
@@ -110,40 +106,13 @@ export class FirestoreService {
     }
   }
 
-
-  // Method for uploading and saving file metadata
-  // async uploadAndSaveFile(file: File, parentFolderId: string | null, userId: string): Promise<FileMetadata> {
-  //   const fileId = `${userId}_${Date.now()}`;
-  //   const filePath = `${userId}/${fileId}`; // Use the actual filename in the file path
-  //
-  //   try {
-  //     const downloadURL = await this.storageService.uploadFile(file, filePath);
-  //
-  //     const fileMetadata: FileMetadata = {
-  //       fileURL: downloadURL,
-  //       fileName: file.name,
-  //       fileType: file.type,
-  //       parentFolderId: parentFolderId,
-  //       userId: userId,
-  //       id: fileId, // Path as the file ID
-  //     };
-  //
-  //     await this.saveFileMetadata(fileMetadata);
-  //
-  //     return fileMetadata; // Return file metadata
-  //   } catch (error) {
-  //     console.error('Error uploading and saving file:', error);
-  //     throw error;
-  //   }
-  // }
-
   async uploadAndSaveFile(
     file: File,
-    parentFolder: any, // Pass the entire folder object here
+    parentFolder: any,
     userId: string
   ): Promise<FileMetadata> {
     const fileId = `${userId}_${Date.now()}`;
-    const filePath = `${userId}/${fileId}`; // For Firebase Storage
+    const filePath = `${userId}/${fileId}`;
 
     try {
       const downloadURL = await this.storageService.uploadFile(file, filePath);
@@ -155,17 +124,15 @@ export class FirestoreService {
         parentFolderId: parentFolder ? parentFolder.id : null,
         userId: userId,
         id: fileId,
-        isShared: parentFolder ? parentFolder.isShared : false, // Check if the folder is shared
+        isShared: parentFolder ? parentFolder.isShared : false,
       };
 
       if (parentFolder && parentFolder.isShared) {
-        // Store under shared folders collection
         await this.firestore
           .collection(`folders/${parentFolder.id}/files`)
           .doc(fileId)
           .set(fileMetadata);
       } else {
-        // Default to private storage
         await this.firestore
           .collection(`users/${userId}/files`)
           .doc(fileId)
@@ -244,52 +211,42 @@ export class FirestoreService {
         .get()
         .toPromise();
 
-      // Get files inside the shared folder
       const filesSnapshot = await this.firestore
         .collection(`folders/${folderId}/files`)
         .get()
         .toPromise();
 
-      // Recursively delete all subfolders inside shared folder
       for (const doc of subfoldersSnapshot?.docs || []) {
         await this.deleteFolderRecursively(userId, doc.id, true);
       }
 
-      // Delete all files inside the shared folder
       for (const doc of filesSnapshot?.docs || []) {
         // Also delete file from storage here if needed
         await this.firestore.collection(`folders/${folderId}/files`).doc(doc.id).delete();
       }
 
-      // Finally, delete the shared folder itself
       await folderRef.delete();
     } else {
-      // Private folder deletion (existing logic)
       const folderRef = this.firestore.collection(`users/${userId}/folders`).doc(folderId);
 
-      // Get subfolders
       const subfoldersSnapshot = await this.firestore
         .collection(`users/${userId}/folders`, ref => ref.where('parentFolderId', '==', folderId))
         .get()
         .toPromise();
 
-      // Get files inside the folder
       const filesSnapshot = await this.firestore
         .collection(`users/${userId}/files`, ref => ref.where('parentFolderId', '==', folderId))
         .get()
         .toPromise();
 
-      // Recursively delete all subfolders
       for (const doc of subfoldersSnapshot?.docs || []) {
         await this.deleteFolderRecursively(userId, doc.id, false);
       }
 
-      // Delete all files inside the folder
       for (const doc of filesSnapshot?.docs || []) {
         await this.firestore.collection(`users/${userId}/files`).doc(doc.id).delete();
       }
 
-      // Finally, delete the folder itself
       await folderRef.delete();
     }
   }
@@ -302,7 +259,6 @@ export class FirestoreService {
    */
   async getFileMetadataByUrl(fileURL: string, userId: string): Promise<FileMetadata | null> {
     try {
-      // 1. Check private user files
       const privateFileRef = this.firestore
         .collection('users')
         .doc(userId)
@@ -318,7 +274,6 @@ export class FirestoreService {
         }
       }
 
-      // 2. Search shared folders
       const foldersSnapshot = await this.firestore.collection('folders').get().toPromise();
 
       if (foldersSnapshot && !foldersSnapshot.empty) {
@@ -340,7 +295,6 @@ export class FirestoreService {
         }
       }
 
-      // Not found
       return null;
     } catch (error) {
       console.error('Error fetching file metadata by URL:', error);
@@ -348,39 +302,6 @@ export class FirestoreService {
     }
   }
 
-
-
-  // getAllFilesAndFolders(userId: string) {
-  //   return this.firestore.collection(`users/${userId}/files`).valueChanges().pipe(
-  //     map(files => {
-  //       return {
-  //         files: files as FileMetadata[],
-  //         folders: this.getAllFolders(userId) // Fetch all folders
-  //       };
-  //     })
-  //   );
-  // }
-
-  // getAllFolders(userId: string) {
-  //   return this.firestore.collection(`users/${userId}/folders`).valueChanges();
-  // }
-  //
-  // async updateFileAccessTimestamp(userId: string, fileId: string): Promise<void> {
-  //   try {
-  //     await this.firestore
-  //       .collection('users')
-  //       .doc(userId)
-  //       .collection('files')
-  //       .doc(fileId)
-  //       .update({
-  //         lastAccessedAt: Date.now()
-  //       });
-  //     console.log('File access timestamp updated');
-  //   } catch (error) {
-  //     console.error('Error updating file access timestamp:', error);
-  //     throw error;
-  //   }
-  // }
 
   updateUserPracticeGoals(userId: string, practiceGoals: any): Promise<void> {
     return this.firestore.collection('users').doc(userId).update({practiceGoals});
@@ -396,28 +317,6 @@ export class FirestoreService {
       })
     );
   }
-
-//   getUserStreak(userId: string) {
-//     return this.firestore.collection('users').doc(userId).valueChanges().pipe(
-//       map((userDoc: unknown) => {
-//         // Check if the userDoc is of the correct type
-//         if (this.isUserDocument(userDoc)) {
-//           return userDoc.practiceHistory || [];
-//         }
-//         return [];
-//       })
-//     );
-//   }
-//
-// // Type guard function to check if it's a UserDocument
-//   private isUserDocument(userDoc: any): userDoc is UserDocument {
-//     return userDoc && Array.isArray(userDoc.practiceHistory);
-//   }
-
-  // // Save updated streak and practice data
-  // updateUserStreak(userId: string, streakData: any) {
-  //   return this.firestore.collection('users').doc(userId).update({ practiceHistory: streakData });
-  // }
 
   updateFileName(userId: string, fileId: string, newName: string, isShared: boolean = false, parentFolderId?: string): Promise<void> {
     if (!fileId) {
@@ -505,94 +404,6 @@ export class FirestoreService {
     return null;
   }
 
-
-// // Get all folders accessible by a user (both owned and shared)
-//   getAccessibleFolders(userId: string, parentFolderId: string | null = null): Observable<Folder[]> {
-//     // Get user's own folders
-//     const ownFolders$ = this.firestore
-//       .collection(`users/${userId}/folders`, ref =>
-//         ref.where('parentFolderId', '==', parentFolderId)
-//       )
-//       .snapshotChanges()
-//       .pipe(
-//         map(actions => actions.map(a => ({
-//           id: a.payload.doc.id,
-//           ...a.payload.doc.data() as Folder
-//         })))
-//       );
-//
-//     // Get folders shared with this user
-//     const sharedFolders$ = this.firestore
-//       .collectionGroup('folders', ref =>
-//         ref.where('sharedWith', 'array-contains', userId)
-//           .where('parentFolderId', '==', parentFolderId)
-//       )
-//       .snapshotChanges()
-//       .pipe(
-//         map(actions => actions.map(a => ({
-//           id: a.payload.doc.id,
-//           ...a.payload.doc.data() as Folder,
-//           isShared: true // Mark as shared
-//         })))
-//       );
-//
-//     return combineLatest([ownFolders$, sharedFolders$]).pipe(
-//       map(([ownFolders, sharedFolders]) => [...ownFolders, ...sharedFolders])
-//     );
-//   }
-//
-// // Get all files accessible by a user (including those in shared folders)
-//   getAccessibleFiles(userId: string, parentFolderId: string | null = null): Observable<FileMetadata[]> {
-//     return this.firestore
-//       .collectionGroup('files', ref =>
-//         ref.where('parentFolderId', '==', parentFolderId)
-//       )
-//       .snapshotChanges()
-//       .pipe(
-//         map(actions => actions.map(a => ({
-//           id: a.payload.doc.id,
-//           ...a.payload.doc.data() as FileMetadata
-//         })))
-//       );
-//   }
-//
-//
-//   createSharedFolder(folder: Folder): Promise<void> {
-//     const folderData = {
-//       ...folder,
-//       isShared: true,
-//       createdAt: folder.createdAt || new Date()
-//     };
-//
-//     return this.firestore.collection('folders')
-//       .add(folderData)
-//       .then(() => {
-//         console.log('Shared folder saved to Firestore');
-//       })
-//       .catch(error => {
-//         console.error('Error saving shared folder:', error);
-//       });
-//   }
-//
-//   getFilesForSharedFolders(sharedFolders: Folder[]): Observable<FileMetadata[]> {
-//     const fileObservables = sharedFolders.map(folder =>
-//       this.firestore
-//         .collection<FileMetadata>(`folders/${folder.id}/files`)
-//         .snapshotChanges()
-//         .pipe(
-//           map(actions => actions.map(a => ({
-//             id: a.payload.doc.id,
-//             ...a.payload.doc.data() as FileMetadata
-//           })))
-//         )
-//     );
-//
-//     return combineLatest(fileObservables).pipe(
-//       map(fileGroups => fileGroups.flat()) // Flatten array of arrays
-//     );
-//   }
-
-
   // Create a shared folder
   async createSharedFolder(folder: Folder): Promise<void> {
     const sharedFolder: Folder = {
@@ -604,7 +415,6 @@ export class FirestoreService {
   }
 
 
-// Get all shared folders where user is involved
   getSharedFolders(userId: string): Observable<Folder[]> {
     const sharedWith$ = this.firestore.collection<Folder>('folders', ref =>
       ref.where('sharedWith', 'array-contains', userId)
@@ -626,10 +436,9 @@ export class FirestoreService {
   }
 
 
-// Upload file to shared folder
   async uploadFileToSharedFolder(file: File, folderId: string, userId: string): Promise<FileMetadata> {
     const fileId = `${userId}_${Date.now()}`;
-    const path = `shared/${folderId}/${fileId}`; // optional: or just `${folderId}/${fileId}`
+    const path = `shared/${folderId}/${fileId}`;
     const downloadURL = await this.storageService.uploadFile(file, path);
 
     const fileMetadata: FileMetadata = {
@@ -646,18 +455,15 @@ export class FirestoreService {
     return fileMetadata;
   }
 
-// Get files in shared folder
   getSharedFolderFiles(folderId: string): Observable<FileMetadata[]> {
     return this.firestore.collection<FileMetadata>(`folders/${folderId}/files`).valueChanges({ idField: 'id' });
   }
 
-// Delete shared file
   async deleteSharedFile(folderId: string, fileId: string): Promise<void> {
     await this.storageService.deleteFile(`shared/${folderId}/${fileId}`);
     return this.firestore.collection(`folders/${folderId}/files`).doc(fileId).delete();
   }
 
-  // Get subfolders + files for a shared folder
   getSharedFolderContents(folderId: string): Observable<{ folders: Folder[], files: FileMetadata[] }> {
     const folders$ = this.firestore.collection<Folder>('folders', ref =>
       ref.where('parentFolderId', '==', folderId)
