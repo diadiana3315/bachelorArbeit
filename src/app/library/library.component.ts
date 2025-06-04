@@ -180,16 +180,21 @@ export class LibraryComponent implements OnInit {
    * @param file The file that is being dragged.
    */
   onDragStartFile(event: DragEvent, file: FileMetadata) {
-    this.draggedFile = file;
-  }
+    if (this.getCurrentUserRole() === 'editor') {
+      this.draggedFile = file;
+    } else {
+      event.preventDefault();
+    }  }
 
   /**
    * Allows the folder to accept a dragged file by preventing the default drag-over behavior.
    * @param event The drag-over event.
    */
   onDragOverFolder(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
+    if (this.getCurrentUserRole() === 'editor') {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 
   /**
@@ -199,6 +204,11 @@ export class LibraryComponent implements OnInit {
    * @param folder The target folder to drop the file into.
    */
   onDropFile(event: DragEvent, folder: any) {
+    if (this.getCurrentUserRole() !== 'editor') {
+      event.preventDefault();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -215,6 +225,11 @@ export class LibraryComponent implements OnInit {
   onRightClick(event: MouseEvent, item: any, type: 'file' | 'folder') {
     event.preventDefault(); // Prevent the default right-click menu
 
+    if (this.getCurrentUserRole() !== 'editor') {
+      alert('You do not have permission to delete this item.');
+      return;
+    }
+
     if (confirm(`Are you sure you want to delete this ${type}?`)) {
       if (type === 'file') {
         this.deleteFile(item);
@@ -225,6 +240,11 @@ export class LibraryComponent implements OnInit {
   }
 
   onSwipeLeft(item: any, type: 'file' | 'folder') {
+    if (this.getCurrentUserRole() !== 'editor') {
+      alert('You do not have permission to delete this item.');
+      return;
+    }
+
     if (confirm(`Are you sure you want to delete this ${type}?`)) {
       if (type === 'file') {
         this.deleteFile(item);
@@ -262,6 +282,12 @@ export class LibraryComponent implements OnInit {
       return;
     }
 
+    if (this.getCurrentUserRole() !== 'editor') {
+      alert('You do not have permission to delete this file.');
+      return;
+    }
+
+
     const isShared = file.isShared || false;
     const parentFolderId = file.parentFolderId;
 
@@ -279,6 +305,11 @@ export class LibraryComponent implements OnInit {
   deleteFolder(folder: any) {
     if (!folder.id || !this.userId) {
       console.error('Invalid folder or user ID');
+      return;
+    }
+
+    if (this.getCurrentUserRole() !== 'editor' && folder?.isShared) {
+      alert('You do not have permission to delete this folder.');
       return;
     }
 
@@ -337,6 +368,11 @@ export class LibraryComponent implements OnInit {
       return;
     }
 
+    if (this.getCurrentUserRole() !== 'editor') {
+      alert('You do not have permission to rename this file.');
+      return;
+    }
+
     const newName = file.newName?.trim();
     if (!newName || newName === file.fileName) {
       this.cancelRename(file);
@@ -360,5 +396,17 @@ export class LibraryComponent implements OnInit {
       this.cancelRename(file);
     });
   }
+
+  getCurrentUserRole(): 'editor' | 'viewer' | null {
+    if (!this.userId) return null;
+
+    if (!this.currentFolder?.isShared) {
+      return 'editor';
+    }
+
+    const sharedUser = this.currentFolder.sharedWith?.find((u: { userId: string; role: string }) => u.userId === this.userId);
+    return sharedUser?.role || null;
+  }
+
 
 }

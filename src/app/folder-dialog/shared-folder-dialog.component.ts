@@ -1,4 +1,4 @@
-import {FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Component} from '@angular/core';
 
@@ -8,7 +8,7 @@ import {Component} from '@angular/core';
   styleUrl: './shared-folder-dialog.component.css'
 })
 export class SharedFolderDialogComponent {
-  form;
+  form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -16,20 +16,38 @@ export class SharedFolderDialogComponent {
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      sharedWithEmails: this.fb.array([this.fb.control('', Validators.email)])
+      sharedWith: this.fb.array([
+        this.fb.group({
+          email: ['', [Validators.required, Validators.email]],
+          role: ['viewer']
+        })
+      ])
     });
   }
 
-  get sharedWithEmails(): FormControl[] {
-    return (this.form.get('sharedWithEmails') as FormArray).controls as FormControl[];
+  // get sharedWithEmails(): FormControl[] {
+  //   return (this.form.get('sharedWithEmails') as FormArray).controls as FormControl[];
+  // }
+
+  get sharedWithControls(): FormGroup[] {
+    return (this.form.get('sharedWith') as FormArray).controls as FormGroup[];
   }
 
+  // addEmailField() {
+  //   (this.form.get('sharedWithEmails') as FormArray).push(this.fb.control('', Validators.email));
+  // }
+
   addEmailField() {
-    (this.form.get('sharedWithEmails') as FormArray).push(this.fb.control('', Validators.email));
+    (this.form.get('sharedWith') as FormArray).push(
+      this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        role: ['viewer']
+      })
+    );
   }
 
   removeEmailField(index: number) {
-    (this.form.get('sharedWithEmails') as FormArray).removeAt(index);
+    (this.form.get('sharedWith') as FormArray).removeAt(index);
   }
 
   save() {

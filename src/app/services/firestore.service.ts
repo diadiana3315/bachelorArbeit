@@ -395,7 +395,7 @@ export class FirestoreService {
       return null;
     }
 
-    const doc = snapshot.docs[0]; // Now safe to access
+    const doc = snapshot.docs[0];
     const docData = doc.data();
 
     if (typeof docData === 'object' && docData !== null) {
@@ -404,20 +404,31 @@ export class FirestoreService {
     return null;
   }
 
-  // Create a shared folder
+  // async createSharedFolder(folder: Folder): Promise<void> {
+  //   const sharedFolder: Folder = {
+  //     ...folder,
+  //     isShared: true,
+  //   };
+  //
+  //   return this.firestore.collection('folders').doc(folder.id).set(sharedFolder);
+  // }
+
   async createSharedFolder(folder: Folder): Promise<void> {
-    const sharedFolder: Folder = {
+    const folderRef = this.firestore.collection('folders').doc();  // generate new doc id
+    const folderToSave: Folder = {
       ...folder,
+      id: folderRef.ref.id,
       isShared: true,
     };
 
-    return this.firestore.collection('folders').doc(folder.id).set(sharedFolder);
+    return folderRef.set(folderToSave);
   }
+
 
 
   getSharedFolders(userId: string): Observable<Folder[]> {
     const sharedWith$ = this.firestore.collection<Folder>('folders', ref =>
-      ref.where('sharedWith', 'array-contains', userId)
+      ref.where('sharedWithUserIds', 'array-contains', userId)
     ).valueChanges({ idField: 'id' });
 
     const createdBy$ = this.firestore.collection<Folder>('folders', ref =>
@@ -455,14 +466,14 @@ export class FirestoreService {
     return fileMetadata;
   }
 
-  getSharedFolderFiles(folderId: string): Observable<FileMetadata[]> {
-    return this.firestore.collection<FileMetadata>(`folders/${folderId}/files`).valueChanges({ idField: 'id' });
-  }
-
-  async deleteSharedFile(folderId: string, fileId: string): Promise<void> {
-    await this.storageService.deleteFile(`shared/${folderId}/${fileId}`);
-    return this.firestore.collection(`folders/${folderId}/files`).doc(fileId).delete();
-  }
+  // getSharedFolderFiles(folderId: string): Observable<FileMetadata[]> {
+  //   return this.firestore.collection<FileMetadata>(`folders/${folderId}/files`).valueChanges({ idField: 'id' });
+  // }
+  //
+  // async deleteSharedFile(folderId: string, fileId: string): Promise<void> {
+  //   await this.storageService.deleteFile(`shared/${folderId}/${fileId}`);
+  //   return this.firestore.collection(`folders/${folderId}/files`).doc(fileId).delete();
+  // }
 
   getSharedFolderContents(folderId: string): Observable<{ folders: Folder[], files: FileMetadata[] }> {
     const folders$ = this.firestore.collection<Folder>('folders', ref =>

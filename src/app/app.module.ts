@@ -38,6 +38,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialog.component';
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -86,6 +88,8 @@ import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialo
     MatProgressBarModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    MatOptionModule,
+    MatSelectModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

@@ -159,28 +159,33 @@ export class AddButtonComponent {
             return;
           }
 
-          const sharedWithUserIds: string[] = [];
-          for (const email of result.sharedWithEmails) {
-            const uid = await this.userService.getUserIdByEmail(email);
+          const sharedWith: { userId: string; email: string; role: 'viewer' | 'editor' }[] = [];
+
+          for (const entry of result.sharedWith) {
+            const uid = await this.userService.getUserIdByEmail(entry.email);
             if (uid) {
-              sharedWithUserIds.push(uid);
+              sharedWith.push({ userId: uid, email: entry.email, role: entry.role });
             } else {
-              console.warn(`User with email ${email} not found`);
+              console.warn(`User with email ${entry.email} not found`);
             }
           }
+
+          const sharedWithUserIds = sharedWith.map(u => u.userId);
 
           const sharedFolder: Folder = {
             name: result.name,
             parentFolderId: this.currentFolder?.id || null,
             userId: userId,
-            sharedWith: sharedWithUserIds,
-            sharedWithEmails: result.sharedWithEmails,
+            sharedWith,
+            sharedWithUserIds,
             isShared: sharedWithUserIds.length > 0,
             createdAt: new Date()
           };
 
-          await this.firestoreService.createSharedFolder(sharedFolder);
 
+          await this.firestoreService.createSharedFolder(sharedFolder);
+          console.log('Shared folder created');
+          // this.folderCreated.emit(sharedFolder); //delete if necessary
 
         } catch (error) {
           console.error('Error creating shared folder:', error);
