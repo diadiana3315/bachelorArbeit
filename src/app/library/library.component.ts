@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit} from '@angular/core';
 import { FirestoreService } from '../services/firestore.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FileMetadata } from '../models/file-metadata';
@@ -7,8 +7,7 @@ import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from '../services/search.service';
 import {Folder} from '../models/folder';
-import {combineLatest, switchMap} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {combineLatest, Subscription} from 'rxjs';
 
 
 /**
@@ -23,16 +22,17 @@ import {map} from 'rxjs/operators';
   styleUrls: ['./library.component.css']
 })
 export class LibraryComponent implements OnInit {
-  currentFolder: any = null;
+  currentFolder: Folder | null = null;
   folders: Folder[] = [];
   files: FileMetadata[] = [];
   userId: string = '';
   draggedFile: FileMetadata | null = null;
-  filteredFiles: any[] = [];  // Search results
+  filteredFiles: any[] = [];
   filteredFolders: Folder[] = [];
-  searchActive: boolean = false;  // Flag to track search mode
-  searchTerm: string = '';  // Store search query
+  searchActive: boolean = false;
+  searchTerm: string = '';
 
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private firestoreService: FirestoreService,
@@ -41,7 +41,8 @@ export class LibraryComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private route: ActivatedRoute,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private cdr: ChangeDetectorRef
 
   ) {}
 
@@ -96,6 +97,144 @@ export class LibraryComponent implements OnInit {
     });
   }
 
+  // async ngOnInit() {
+  //   const user = await this.afAuth.currentUser;
+  //   if (user) {
+  //     this.userId = user.uid;
+  //     console.log('User logged in:', this.userId);
+  //     this.loadFoldersAndFiles();
+  //   } else {
+  //     console.error('No user logged in.');
+  //   }
+  //
+  //   this.searchService.searchTerm$.subscribe(term => {
+  //     this.searchTerm = term;
+  //     this.filterLibrary();
+  //   });
+  //
+  //   this.route.queryParams.subscribe(params => {
+  //     if (params['search']) {
+  //       this.searchTerm = params['search'];
+  //       this.filterLibrary();
+  //     }
+  //   });
+  // }
+
+  // ngOnInit() {
+  //   this.afAuth.currentUser.then(user => {
+  //     if (user) {
+  //       this.userId = user.uid;
+  //       console.log('User logged in:', this.userId);
+  //       this.loadFoldersAndFiles();
+  //     } else {
+  //       console.error('No user logged in.');
+  //     }
+  //   });
+  //
+  //   const searchSub = this.searchService.searchTerm$.subscribe(term => {
+  //     this.searchTerm = term;
+  //     this.filterLibrary();
+  //   });
+  //
+  //   const querySub = this.route.queryParams.subscribe(params => {
+  //     if (params['search']) {
+  //       this.searchTerm = params['search'];
+  //       this.filterLibrary();
+  //     }
+  //   });
+  //
+  //   this.subscriptions.push(searchSub, querySub);
+  // }
+
+
+  // private loadFoldersAndFiles(): void {
+  //   if (!this.userId) return;
+  //
+  //   // Clear existing state
+  //   this.folders = [];
+  //   this.files = [];
+  //
+  //   if (this.currentFolder?.isShared) {
+  //     if (this.currentFolder.id != null) {
+  //       this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
+  //         this.folders = data.folders;
+  //         this.files = data.files;
+  //         this.groupFilesUnderFolders();
+  //         this.cdr.detectChanges();
+  //       });
+  //     }
+  //   } else if (this.currentFolder) {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
+  //       this.folders = data.folders;
+  //       this.files = data.files;
+  //       this.groupFilesUnderFolders();
+  //       this.cdr.detectChanges();
+  //     });
+  //   } else {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, null).subscribe(data => {
+  //       this.folders = data.folders;
+  //       this.files = data.files;
+  //       this.groupFilesUnderFolders();
+  //
+  //       this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
+  //         const sharedFolders = shared.map(folder => ({ ...folder, isShared: true }));
+  //
+  //         // Filter out any shared folders that are already in the list
+  //         const existingIds = new Set(this.folders.map(f => f.id));
+  //         const newSharedFolders = sharedFolders.filter(f => !existingIds.has(f.id));
+  //
+  //         this.folders = [...this.folders, ...newSharedFolders];
+  //         this.cdr.detectChanges();
+  //       });
+  //     });
+  //   }
+  // }
+  //
+
+  private loadFoldersAndFiles(): void {
+    if (!this.userId) return;
+
+    // Reset UI state before loading new data
+    this.folders = [];
+    this.files = [];
+
+    if (this.currentFolder?.isShared) {
+      if (this.currentFolder.id) {
+        this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
+          this.folders = data.folders;
+          this.files = data.files;
+          this.sortFiles();
+          this.groupFilesUnderFolders();
+          this.cdr.detectChanges();
+        });
+      }
+    } else if (this.currentFolder) {
+      this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
+        this.folders = data.folders;
+        this.files = data.files;
+        this.sortFiles();
+        this.groupFilesUnderFolders();
+        this.cdr.detectChanges();
+      });
+    } else {
+      // Combine both observables and wait for both to emit before updating UI
+      combineLatest([
+        this.firestoreService.getFoldersAndFiles(this.userId, null),
+        this.firestoreService.getSharedFolders(this.userId)
+      ]).subscribe(([userData, sharedFolders]) => {
+        const shared = sharedFolders.map(folder => ({ ...folder, isShared: true }));
+        const existingIds = new Set(userData.folders.map((f: Folder) => f.id));
+        const newShared = shared.filter(f => !existingIds.has(f.id));
+
+        this.folders = [...userData.folders, ...newShared];
+        this.files = userData.files;
+        this.sortFiles();
+        this.groupFilesUnderFolders();
+        this.cdr.detectChanges();
+      });
+    }
+  }
+
   /**
    * Adds a newly created folder to the current folder or to the global list of folders.
    * It also saves the folder to Firestore.
@@ -116,7 +255,9 @@ export class LibraryComponent implements OnInit {
    */
   onFileUploaded(fileMetadata: FileMetadata) {
     if (this.currentFolder) {
-      this.currentFolder.files.push(fileMetadata);
+      if (this.currentFolder.files) {
+        this.currentFolder.files.push(fileMetadata);
+      }
     } else {
       this.files.push(fileMetadata);
     }
@@ -126,35 +267,37 @@ export class LibraryComponent implements OnInit {
    * Loads folders and files for the current user.
    * It uses the FirestoreService to retrieve folders and files.
    */
-  private loadFoldersAndFiles(): void {
-    if (!this.userId) return;
-
-    if (this.currentFolder?.isShared) {
-      this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
-        this.folders = data.folders;
-        this.files = data.files;
-        this.groupFilesUnderFolders();
-      });
-
-    } else if (this.currentFolder) {
-      this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
-        this.folders = data.folders;
-        this.files = data.files;
-        this.groupFilesUnderFolders();
-      });
-
-    } else {
-      this.firestoreService.getFoldersAndFiles(this.userId, null).subscribe(data => {
-        this.folders = data.folders;
-        this.files = data.files;
-        this.groupFilesUnderFolders();
-      });
-
-      this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
-        this.folders = [...this.folders, ...shared.map(folder => ({ ...folder, isShared: true }))];
-      });
-    }
-  }
+  // private loadFoldersAndFiles(): void {
+  //   if (!this.userId) return;
+  //
+  //   if (this.currentFolder?.isShared) {
+  //     if (this.currentFolder.id != null) {
+  //       this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
+  //         this.folders = data.folders;
+  //         this.files = data.files;
+  //         this.groupFilesUnderFolders();
+  //       });
+  //     }
+  //
+  //   } else if (this.currentFolder) {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
+  //       this.folders = data.folders;
+  //       this.files = data.files;
+  //       this.groupFilesUnderFolders();
+  //     });
+  //
+  //   } else {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, null).subscribe(data => {
+  //       this.folders = data.folders;
+  //       this.files = data.files;
+  //       this.groupFilesUnderFolders();
+  //     });
+  //
+  //     this.firestoreService.getSharedFolders(this.userId).subscribe(shared => {
+  //       this.folders = [...this.folders, ...shared.map(folder => ({ ...folder, isShared: true }))];
+  //     });
+  //   }
+  // }
 
 
   /**
@@ -400,13 +543,67 @@ export class LibraryComponent implements OnInit {
   getCurrentUserRole(): 'editor' | 'viewer' | null {
     if (!this.userId) return null;
 
-    if (!this.currentFolder?.isShared) {
+    if (!this.currentFolder) {
       return 'editor';
     }
 
-    const sharedUser = this.currentFolder.sharedWith?.find((u: { userId: string; role: string }) => u.userId === this.userId);
+    if (!this.currentFolder.isShared) {
+      return 'editor';
+    }
+
+    if (this.currentFolder.userId === this.userId) {
+      return 'editor';
+    }
+
+    if (!Array.isArray(this.currentFolder.sharedWith)) return null;
+
+    const sharedUser = this.currentFolder.sharedWith.find(
+      (u) => u.userId === this.userId
+    );
+
+    console.log(`Current user role in folder ${this.currentFolder.id}:`, sharedUser?.role);
     return sharedUser?.role || null;
   }
 
+
+
+  onSharingUpdated(updatedFolder: Folder) {
+    this.currentFolder = updatedFolder;
+  }
+
+
+  togglePracticed(file: FileMetadata): void {
+    if (!file.id || !this.userId) return;
+
+    this.firestoreService
+      .updateFilePracticed(this.userId, file.id, file.practiced ?? false, file.isShared, file.parentFolderId ?? undefined)
+      .then(() => {
+        console.log(`File ${file.fileName} marked as ${file.practiced ? 'practiced' : 'not practiced'}`);
+      })
+      .catch((error) => {
+        console.error('Failed to update practiced status:', error);
+      });
+  }
+
+
+  toggleFavorite(file: FileMetadata): void {
+    file.isFavorite = !file.isFavorite;
+    this.firestoreService.saveFileMetadata(file)
+      .then(() => this.sortFiles()) // re-sort after update
+      .catch(err => console.error('Failed to update favorite status:', err));
+  }
+
+  private sortFiles(): void {
+    this.files.sort((a, b) => {
+      const aFav = a.isFavorite ? 1 : 0;
+      const bFav = b.isFavorite ? 1 : 0;
+
+      // Show favorites on top, then alphabetically
+      if (bFav !== aFav) {
+        return bFav - aFav;
+      }
+      return a.fileName.localeCompare(b.fileName);
+    });
+  }
 
 }

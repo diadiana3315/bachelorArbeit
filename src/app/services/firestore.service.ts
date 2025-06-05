@@ -358,7 +358,7 @@ export class FirestoreService {
 
   logUserUsage(userId: string) {
     const today = new Date();
-    const dateString = today.toISOString().split('T')[0]; // Format YYYY-MM-DD
+    const dateString = today.toISOString().split('T')[0];
 
     const usageRef = this.firestore.collection(`users/${userId}/usageRecords`).doc(dateString);
 
@@ -377,7 +377,7 @@ export class FirestoreService {
 
     usageRecords.forEach(doc => {
       if (doc.id) {
-        usedDays.add(doc.id); // Store full date (YYYY-MM-DD)
+        usedDays.add(doc.id);
       }
     });
 
@@ -486,6 +486,48 @@ export class FirestoreService {
     return combineLatest([folders$, files$]).pipe(
       map(([folders, files]) => ({ folders, files }))
     );
+  }
+
+
+  updateUserRoleInFolder(folderId: string, userId: string, role: string): Promise<void> {
+    const folderRef = this.firestore.collection('folders').doc(folderId);
+
+    return folderRef.get().toPromise().then(doc => {
+      if (!doc?.exists) throw new Error('Folder not found');
+      const folderData = doc.data() as Folder;
+
+      const sharedWith = folderData.sharedWith ?? [];
+
+      const updatedSharedWith = sharedWith.map(user =>
+        user.userId === userId ? { ...user, role } : user
+      );
+
+      return folderRef.update({ sharedWith: updatedSharedWith });
+    });
+  }
+
+  // updateUserRoleInFolder(folderId: string, userId: string, newRole: 'viewer' | 'editor'): Promise<void> {
+  //   const folderRef = this.firestore.collection('folders').doc(folderId);
+  //   return folderRef.update({
+  //     sharedWith: firebase.firestore.FieldValue.arrayUnion({ userId, role: newRole })
+  //   });
+  // }
+
+  updateFilePracticed(
+    userId: string,
+    fileId: string,
+    practiced: boolean,
+    isShared?: boolean,
+    parentFolderId?: string
+  ): Promise<void> {
+    const collectionPath = isShared
+      ? `sharedFiles/${parentFolderId}/files`
+      : `users/${userId}/files`;
+
+    return this.firestore
+      .collection(collectionPath)
+      .doc(fileId)
+      .update({ practiced });
   }
 
 }

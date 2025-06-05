@@ -255,3 +255,20 @@ app-add-button {
   align-items: center;
   margin-top: 4px;
 }
+
+.library-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.star-icon {
+  cursor: pointer;
+  color: rgb(128, 128, 128);
+  margin-left: 8px;
+}
+
+.star-icon.favorited {
+  color: gold;
+}
+

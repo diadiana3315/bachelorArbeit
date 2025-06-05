@@ -40,6 +40,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SharedFolderDialogComponent } from './folder-dialog/shared-folder-dialog.component';
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from '@angular/material/select';
+import { ManageSharingComponent } from './manage-sharing/manage-sharing.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -56,6 +59,7 @@ import {MatSelectModule} from '@angular/material/select';
     CustomToolbarComponent,
     StreakCalendarComponent,
     SharedFolderDialogComponent,
+    ManageSharingComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +94,8 @@ import {MatSelectModule} from '@angular/material/select';
     ReactiveFormsModule,
     MatOptionModule,
     MatSelectModule,
+    MatCheckboxModule,
+    MatTooltipModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

@@ -1,8 +1,16 @@
 <div class="library-container">
   <div class="library-header">
+    <div class="library-header-row">
     <button *ngIf="currentFolder" mat-icon-button (click)="navigateToRoot()">
       <mat-icon>arrow_back</mat-icon>
     </button>
+
+    <app-manage-sharing
+      *ngIf="currentFolder?.isShared && getCurrentUserRole() === 'editor'"
+      [folder]="currentFolder!"
+      (sharingUpdated)="onSharingUpdated($event)">
+    </app-manage-sharing>
+    </div>
 
     <div *ngIf="searchActive" class="search-overlay" (click)="clearSearch()">
       <div class="search-results" (click)="$event.stopPropagation()">
@@ -66,6 +74,20 @@
       </div>
     </div>
 
+<!--    <div *ngIf="currentFolder?.isShared && getCurrentUserRole() === 'editor'" class="manage-sharing-section">-->
+<!--      <h3>Manage Folder Sharing</h3>-->
+<!--      <div *ngFor="let user of currentFolder.sharedWith" class="shared-user-entry">-->
+<!--        <span class="shared-user-email">{{ user.email }}</span>-->
+
+<!--        <select [value]="user.role" (change)="updateUserRole(user.userId, $event.target.value)">-->
+<!--          <option value="viewer">Viewer</option>-->
+<!--          <option value="editor">Editor</option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--    </div>-->
+
+
+
   <div class="files-container">
     <h3>Files</h3>
 
@@ -92,12 +114,30 @@
         (dragstart)="onDragStartFile($event, file)">
         {{ file.fileName }}
       </p>
+
+        <mat-icon
+          class="star-icon"
+          [class.favorited]="file.isFavorite"
+          (click)="toggleFavorite(file)"
+          matTooltip="Mark as favorite"
+        >
+          {{ file.isFavorite ? 'star' : 'star_border' }}
+        </mat-icon>
+
+        <mat-checkbox
+          [(ngModel)]="file.practiced"
+          (change)="togglePracticed(file)"
+          matTooltip="Mark as practiced"
+        >
+        </mat-checkbox>
+
+
         <ng-container *ngIf="!currentFolder?.isShared || getCurrentUserRole() === 'editor'">
           <button class="rename-btn" (click)="enableRename(file)">
-            <mat-icon>edit</mat-icon>
+            <mat-icon matTooltip="Rename file">edit</mat-icon>
           </button>
           <button class="delete-btn" (click)="deleteFile(file)">
-            <mat-icon>delete</mat-icon>
+            <mat-icon matTooltip="Delete file">delete</mat-icon>
           </button>
         </ng-container>
       </div>
@@ -116,3 +156,4 @@
 
 </div>
 </div>
+

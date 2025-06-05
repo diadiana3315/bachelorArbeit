@@ -10,4 +10,6 @@ export interface FileMetadata {
   lastAccessedAt?: number;
   isRenaming?: boolean;
   newName?: string;
+  practiced?: boolean;
+  isFavorite?: boolean;
 }
