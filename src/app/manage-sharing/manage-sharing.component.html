@@ -1,0 +1,34 @@
+<!-- Trigger button -->
+<button mat-raised-button class="manage-share-btn" (click)="showModal = true">
+  Manage Sharing
+</button>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-content">
+<!--    <h2>Manage Sharing</h2>-->
+
+    <button mat-icon-button class="close-icon" (click)="showModal = false" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <div *ngIf="folder && folder.sharedWith && folder.sharedWith.length > 0; else noUsers">
+      <div class="shared-user-row" *ngFor="let user of folder.sharedWith">
+        <span class="shared-user-email">{{ user.email }}</span>
+
+        <mat-form-field appearance="fill" class="role-select">
+          <mat-select [(value)]="user.role" (selectionChange)="updateRole(user)">
+            <mat-option value="viewer">Viewer</mat-option>
+            <mat-option value="editor">Editor</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </div>
+
+    <ng-template #noUsers>
+      <p>No users to manage.</p>
+    </ng-template>
+
+  </div>
+</div>
