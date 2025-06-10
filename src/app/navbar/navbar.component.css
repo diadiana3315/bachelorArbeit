@@ -111,7 +111,6 @@
 .logout-btn {
   width: 100%;
   text-align: center;
-  font-weight: bold;
   border-radius: 12px;
   transition: background-color 0.3s ease;
   background-color: #ee331e;

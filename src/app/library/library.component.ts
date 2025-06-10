@@ -7,7 +7,7 @@ import {FirebaseStorageService} from '../services/firebase-storage.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from '../services/search.service';
 import {Folder} from '../models/folder';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Subscription, take} from 'rxjs';
 
 
 /**
@@ -191,6 +191,51 @@ export class LibraryComponent implements OnInit {
   // }
   //
 
+  //buna
+  // private loadFoldersAndFiles(): void {
+  //   if (!this.userId) return;
+  //
+  //   // Reset UI state before loading new data
+  //   this.folders = [];
+  //   this.files = [];
+  //
+  //   if (this.currentFolder?.isShared) {
+  //     if (this.currentFolder.id) {
+  //       this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
+  //         this.folders = data.folders;
+  //         this.files = data.files;
+  //         this.sortFiles();
+  //         this.groupFilesUnderFolders();
+  //         this.cdr.detectChanges();
+  //       });
+  //     }
+  //   } else if (this.currentFolder) {
+  //     this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
+  //       this.folders = data.folders;
+  //       this.files = data.files;
+  //       this.sortFiles();
+  //       this.groupFilesUnderFolders();
+  //       this.cdr.detectChanges();
+  //     });
+  //   } else {
+  //     // Combine both observables and wait for both to emit before updating UI
+  //     combineLatest([
+  //       this.firestoreService.getFoldersAndFiles(this.userId, null),
+  //       this.firestoreService.getSharedFolders(this.userId)
+  //     ]).subscribe(([userData, sharedFolders]) => {
+  //       const shared = sharedFolders.map(folder => ({ ...folder, isShared: true }));
+  //       const existingIds = new Set(userData.folders.map((f: Folder) => f.id));
+  //       const newShared = shared.filter(f => !existingIds.has(f.id));
+  //
+  //       this.folders = [...userData.folders, ...newShared];
+  //       this.files = userData.files;
+  //       this.sortFiles();
+  //       this.groupFilesUnderFolders();
+  //       this.cdr.detectChanges();
+  //     });
+  //   }
+  // }
+
   private loadFoldersAndFiles(): void {
     if (!this.userId) return;
 
@@ -198,26 +243,49 @@ export class LibraryComponent implements OnInit {
     this.folders = [];
     this.files = [];
 
+    // Case 1: Inside a shared folder
     if (this.currentFolder?.isShared) {
       if (this.currentFolder.id) {
         this.firestoreService.getSharedFolderContents(this.currentFolder.id).subscribe(data => {
           this.folders = data.folders;
           this.files = data.files;
-          this.sortFiles();
-          this.groupFilesUnderFolders();
-          this.cdr.detectChanges();
+
+          const fileIds = this.files
+            .map(f => f.id)
+            .filter((id): id is string => typeof id === 'string');
+
+          // Fetch user-specific metadata for these shared files
+          this.firestoreService.getUserMetadataForFiles(fileIds, this.userId).subscribe(userMetadata => {
+            this.files.forEach(file => {
+              if (file.id) {
+                const metadata = userMetadata[file.id];
+                if (metadata) {
+                  file.practiced = metadata.practiced ?? false;
+                  file.isFavorite = metadata.isFavorite ?? false;
+                }
+              }
+            });
+
+            this.sortFiles();
+            this.groupFilesUnderFolders();
+            this.cdr.detectChanges();
+          });
         });
       }
+
+      // Case 2: Inside a personal folder
     } else if (this.currentFolder) {
       this.firestoreService.getFoldersAndFiles(this.userId, this.currentFolder.id).subscribe(data => {
         this.folders = data.folders;
         this.files = data.files;
+
         this.sortFiles();
         this.groupFilesUnderFolders();
         this.cdr.detectChanges();
       });
+
+      // Case 3: At root level (load both private + shared folders)
     } else {
-      // Combine both observables and wait for both to emit before updating UI
       combineLatest([
         this.firestoreService.getFoldersAndFiles(this.userId, null),
         this.firestoreService.getSharedFolders(this.userId)
@@ -228,12 +296,14 @@ export class LibraryComponent implements OnInit {
 
         this.folders = [...userData.folders, ...newShared];
         this.files = userData.files;
+
         this.sortFiles();
         this.groupFilesUnderFolders();
         this.cdr.detectChanges();
       });
     }
   }
+
 
   /**
    * Adds a newly created folder to the current folder or to the global list of folders.
@@ -572,26 +642,161 @@ export class LibraryComponent implements OnInit {
   }
 
 
-  togglePracticed(file: FileMetadata): void {
+  // togglePracticed(file: FileMetadata): void {
+  //   if (!file.id || !this.userId) return;
+  //
+  //   this.firestoreService
+  //     .updateFilePracticed(this.userId, file.id, file.practiced ?? false, file.isShared, file.parentFolderId ?? undefined)
+  //     .then(() => {
+  //       console.log(`File ${file.fileName} marked as ${file.practiced ? 'practiced' : 'not practiced'}`);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Failed to update practiced status:', error);
+  //     });
+  // }
+
+  // togglePracticed(file: FileMetadata) {
+  //   if (!file.id || !this.userId) return;
+  //
+  //   const newValue = !file.practiced;
+  //   file.practiced = newValue;
+  //
+  //   if (file.isShared) {
+  //     // READ existing metadata before writing
+  //     this.firestoreService.getUserMetadataForFiles([file.id], this.userId).subscribe(userMetadata => {
+  //       const existing = userMetadata[file.id] || {};
+  //       const updated = {
+  //         ...existing,
+  //         practiced: newValue
+  //       };
+  //
+  //       this.firestoreService.setFileUserMetadata(file.id!, this.userId!, updated);
+  //     });
+  //   } else {
+  //     this.firestoreService.updateFilePracticed(this.userId, file.id, newValue, false, file.parentFolderId ?? undefined);
+  //   }
+  // }
+
+  // togglePracticed(file: FileMetadata) {
+  //   if (!file.id || !this.userId) return;
+  //
+  //   const newValue = !file.practiced;
+  //   file.practiced = newValue;
+  //
+  //   if (file.isShared) {
+  //     this.firestoreService.getUserMetadataForFiles([file.id], this.userId).subscribe(userMetadata => {
+  //       const existing = userMetadata[file.id! as string] || {};
+  //       const updated = {
+  //         ...existing,
+  //         practiced: newValue
+  //       };
+  //
+  //       this.firestoreService.setFileUserMetadata(file.id!, this.userId!, updated);
+  //     });
+  //   } else {
+  //     this.firestoreService.updateFilePracticed(
+  //       this.userId,
+  //       file.id,
+  //       newValue,
+  //       false,
+  //       file.parentFolderId ?? undefined
+  //     );
+  //   }
+  // }
+
+  async togglePracticed(file: FileMetadata, newValue: boolean) {
+    if (!file.id || !this.userId) {
+      console.error('Missing file ID or user ID');
+      return;
+    }
+
+    try {
+      file.practiced = newValue;
+
+      if (file.isShared) {
+        const existingMetadata = await this.firestoreService
+          .getUserMetadataForFiles([file.id], this.userId)
+          .pipe(take(1))
+          .toPromise();
+
+        const updatedMetadata = {
+          ...(existingMetadata?.[file.id] || {}),
+          practiced: newValue
+        };
+
+        await this.firestoreService.setFileUserMetadata(
+          file.id,
+          this.userId,
+          updatedMetadata
+        );
+      } else {
+        await this.firestoreService.updateFilePracticed(
+          this.userId,
+          file.id,
+          newValue,
+          false,
+          file.parentFolderId
+        );
+      }
+
+      console.log(`Successfully updated practiced status for file ${file.id}`);
+    } catch (error) {
+      console.error('Failed to update practiced status:', error);
+      // Revert UI state if update failed
+      file.practiced = !newValue;
+      this.cdr.detectChanges();
+    }
+  }
+
+
+  // toggleFavorite(file: FileMetadata): void {
+  //   file.isFavorite = !file.isFavorite;
+  //   this.firestoreService.saveFileMetadata(file)
+  //     .then(() => this.sortFiles()) // re-sort after update
+  //     .catch(err => console.error('Failed to update favorite status:', err));
+  // }
+
+  // toggleFavorite(file: FileMetadata) {
+  //   file.isFavorite = !file.isFavorite;
+  //
+  //   if (file.isShared) {
+  //     if (file.id) {
+  //       this.firestoreService.setFileUserMetadata(file.id, this.userId, {
+  //         isFavorite: file.isFavorite
+  //       });
+  //     } else {
+  //       console.warn('Cannot update metadata: file.id is undefined for shared file');
+  //     }
+  //   } else {
+  //     this.firestoreService.saveFileMetadata(file);
+  //   }
+  //
+  //   this.sortFiles();
+  // }
+
+
+  toggleFavorite(file: FileMetadata) {
     if (!file.id || !this.userId) return;
 
-    this.firestoreService
-      .updateFilePracticed(this.userId, file.id, file.practiced ?? false, file.isShared, file.parentFolderId ?? undefined)
-      .then(() => {
-        console.log(`File ${file.fileName} marked as ${file.practiced ? 'practiced' : 'not practiced'}`);
-      })
-      .catch((error) => {
-        console.error('Failed to update practiced status:', error);
-      });
-  }
-
-
-  toggleFavorite(file: FileMetadata): void {
     file.isFavorite = !file.isFavorite;
-    this.firestoreService.saveFileMetadata(file)
-      .then(() => this.sortFiles()) // re-sort after update
-      .catch(err => console.error('Failed to update favorite status:', err));
+
+    if (file.isShared) {
+      this.firestoreService.getUserMetadataForFiles([file.id], this.userId).subscribe(userMetadata => {
+        const existing = userMetadata[file.id! as string] || {};
+        const updated = {
+          ...existing,
+          isFavorite: file.isFavorite
+        };
+
+        this.firestoreService.setFileUserMetadata(file.id!, this.userId!, updated);
+      });
+    } else {
+      this.firestoreService.saveFileMetadata(file);
+    }
+
+    this.sortFiles();
   }
+
 
   private sortFiles(): void {
     this.files.sort((a, b) => {

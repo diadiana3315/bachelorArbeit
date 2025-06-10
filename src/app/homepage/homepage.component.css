@@ -1,209 +1,6 @@
-/*!* Apply gradient background to html and body to cover the entire screen *!*/
-/*!*html, body {*!*/
-/*!*  height: 100%; !* Ensure full viewport height *!*!*/
-/*!*  margin: 0; !* Remove default margin *!*!*/
-/*!*  padding: 0; !* Remove default padding *!*!*/
-/*!*  background: linear-gradient(to bottom, #f5f5f5 66%, #e6d1f2); !* Light gray to pastel lavender gradient *!*!*/
-/*!*  font-family: 'Inter', sans-serif;  !* Using Inter font *!*!*/
-/*!*}*!*/
-
-
-
-/*.goal-input, .recent-files-container, .streak-container, .calendar-container {*/
-/*  height: auto; !* Allow height to be dynamic based on content *!*/
-/*}*/
-
-/*.container{*/
-/*  !*background: linear-gradient(to bottom, #655080 66%, #a280cc); !* Light gray to pastel lavender gradient *!*!*/
-/*  background-image: url("C:/Users/crace/Documents/Diana/FACULTATE/Licenta/finalbachelor/public/pexels-codioful-7130555.jpg");*/
-/*  background-size: cover;*/
-/*  background-position: center center; !* Center the background image *!*/
-/*  height: auto; !* Adjust height based on content *!*/
-/*  min-height: 100vh; !* Ensures it's at least full screen *!*!*/
-/*  width: 100%; !* Ensure full width *!*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center; !* Ensure content is centered *!*/
-/*  !*z-index: 10; !* Higher value ensures it stays above *!*!*/
-/*}*/
-
-/*!*.homepage-container {*!*/
-/*!*  max-width: 1224px;*!*/
-/*!*  !*width: 90%;*!*!*/
-/*!*  padding: 40px 0;*!*/
-/*!*  margin-top: 47px;*!*/
-/*!*  display: flex;*!*/
-/*!*  flex-direction: column;*!*/
-/*!*  justify-content: center;  !* Vertically center the items *!*!*/
-/*!*  align-items: center;      !* Horizontally center the items *!*!*/
-/*!*  height: 100vh;            !* Ensure it takes full viewport height *!*!*/
-/*!*  margin-left: 10vh;*!*/
-/*!*  margin-right: 10vh;*!*/
-/*!*}*!*/
-
-/*.homepage-container {*/
-/*  max-width: 1224px;*/
-/*  !*padding: 40px 0;*!*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  justify-content: center;  !* Vertically center the items *!*/
-/*  align-items: center;      !* Horizontally center the items *!*/
-/*  !*height: 120vh;            !* Ensure it takes full viewport height *!*!*/
-/*  !*height: 100%;*!*/
-/*  margin-left: auto;        !* Auto margin on left *!*/
-/*  margin-right: auto;       !* Auto margin on right *!*/
-/*  position: relative;*/
-/*  top: 12vh; !* Moves it down without affecting the layout flow *!*/
-/*}*/
-
-/*.gallery {*/
-/*  display: flex;*/
-/*  gap: 20px;*/
-/*}*/
-
-/*.column {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  gap: 20px;*/
-/*}*/
-
-/*.goal-input, .recent-files-container, .streak-container, .calendar-container {*/
-/*  width: 100%;*/
-/*  height: 100%;*/
-/*  border-radius: 12px;*/
-/*  object-fit: cover;*/
-/*  background: rgba(255, 255, 255, 0.6); !* Semi-transparent white background *!*/
-/*  backdrop-filter: blur(10px);*/
-/*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);*/
-/*}*/
-
-/*.goal-input {*/
-/*  max-width: 700px;*/
-/*}*/
-
-/*@media(max-width: 768px){*/
-/*  .gallery{*/
-/*    flex-direction: column;*/
-/*  }*/
-/*}*/
-
-/*.goal-input-elements, .streak-container-elements, .files-elements{*/
-/*  margin: 10px;*/
-/*}*/
-
-/*.streak-container h2, h3 {*/
-/*  color: #3b3494;*/
-/*  font-weight: bold;*/
-/*  font-size: 24px; !* Increase font size for better readability on tablet *!*/
-/*}*/
-
-/*.goal-input label {*/
-/*  font-weight: 600;*/
-/*  !*margin-bottom: 10px; !* Increased margin for better separation *!*!*/
-/*  font-size: 18px; !* Larger font size for better readability *!*/
-/*  color: #3b3494;*/
-/*  !*margin: 10px;*!*/
-/*}*/
-
-/*!* Goal input field *!*/
-/*.goal-input input {*/
-/*  padding: 12px;*/
-/*  font-size: 18px; !* Increase font size for easy touch typing *!*/
-/*  border: 2px solid #3b3494;*/
-/*  border-radius: 5px;*/
-/*  text-align: center;*/
-/*  margin-top: 8px; !* Extra spacing for input field *!*/
-/*  width: 100%;*/
-/*  box-sizing: border-box;*/
-/*}*/
-
-/*!* Day selection layout *!*/
-/*.day-selection {*/
-/*  margin-bottom: 20px; !* More space between day selection and other elements *!*/
-/*}*/
-
-/*!* Flex layout for checkboxes *!*/
-/*.checkbox-group {*/
-/*  display: flex;*/
-/*  flex-wrap: wrap;*/
-/*  justify-content: center;*/
-/*  gap: 15px; !* More gap between checkboxes for better touch interaction *!*/
-/*}*/
-
-/*!* Custom checkbox styling *!*/
-/*.checkbox-label {*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  position: relative;*/
-/*  font-size: 18px; !* Larger font size for easier touch *!*/
-/*  cursor: pointer;*/
-/*}*/
-
-/*.checkbox-label input {*/
-/*  position: absolute;*/
-/*  opacity: 0;*/
-/*  cursor: pointer;*/
-/*}*/
-
-/*.custom-checkbox {*/
-/*  width: 25px; !* Larger checkbox for easier touch *!*/
-/*  height: 25px;*/
-/*  border: 2px solid #3b3494;*/
-/*  border-radius: 4px;*/
-/*  margin-right: 12px; !* Larger margin for checkboxes *!*/
-/*  display: inline-block;*/
-/*}*/
-
-/*!* Checked checkbox styling *!*/
-/*.checkbox-label input:checked + .custom-checkbox {*/
-/*  background-color: #3b3494;*/
-/*  border-color: #3b3494;*/
-/*  position: relative;*/
-/*}*/
-
-/*.checkbox-label input:checked + .custom-checkbox::after {*/
-/*  content: "✔";*/
-/*  position: absolute;*/
-/*  left: 6px;*/
-/*  top: -2px;*/
-/*  color: white;*/
-/*  font-size: 16px; !* Bigger checkmark *!*/
-/*}*/
-
-/*!* Button Styling *!*/
-/*button {*/
-/*  padding: 15px 15px; !* Larger padding for easier tapping *!*/
-/*  font-size: 18px; !* Larger font size for buttons *!*/
-/*  background-color: #b5f899;*/
-/*  color: white;*/
-/*  border: none;*/
-/*  border-radius: 5px;*/
-/*  cursor: pointer;*/
-/*  transition: all 0.3s ease;*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  justify-content: center;  !* Vertically center the items *!*/
-/*  align-items: center;      !* Horizontally center the items *!*/
-/*  !*height: 120vh;            !* Ensure it takes full viewport height *!*!*/
-/*  !*height: 100%;*!*/
-/*  margin-left: auto;        !* Auto margin on left *!*/
-/*  margin-right: auto;       !* Auto margin on right *!*/
-/*  position: relative;*/
-
-/*}*/
-
-/*button:hover {*/
-/*  background-color: #45a049;*/
-/*  transform: scale(1.02);*/
-/*}*/
-
-
-/* Main container styles */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', Arial, sans-serif;
-  /*background: linear-gradient(to top, #6a4c93 0%, #ffffff 100%);*/
   background: linear-gradient(135deg, #f5f0ff 0%, #e0d0ff 100%);
   min-height: 100vh;
 }
@@ -219,32 +16,30 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;  /* Vertically center the items */
+  justify-content: center;
   align-items: center;
   position: relative;
   top: 12vh;
   height: auto;
 }
 
-/* Pinterest-style gallery layout */
 .gallery {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-/* Column styling */
 .column {
   display: flex;
   flex-direction: column;
   gap: 20px;
   height: 100%;
+  min-width: 0;
 }
 
-.goal-input, .recent-files-container, .streak-container, .calendar-container {
+.goal-input, .streak-container, .calendar-container {
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.8);
-  /*background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(228, 198, 248, 0.8));*/
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -255,14 +50,15 @@ body {
 
 .streak-container {
   background-color: rgba(255, 255, 255, 0.9);
-  max-height: 165px; /* Limit the height */
-  min-height: 150px; /* Ensure it doesn't get too small */
+  max-height: 165px;
+  min-height: 150px;
 }
 
 .calendar-container {
   padding: 0;
   min-height: 500px;
   flex-grow: 1;
+  color: #6a4c93;
 }
 
 .goal-input-elements, .files-elements, .streak-container-elements {
@@ -287,18 +83,6 @@ body {
   font-weight: 500;
 }
 
-.goal-input input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
-}
-
-.goal-input input[type="checkbox"] {
-  margin-right: 8px;
-}
 
 .goal-input button {
   background-color: #8a5cf8;
@@ -314,53 +98,6 @@ body {
 
 .goal-input button:hover {
   background-color: #7240e0;
-}
-
-/* Recent files styling */
-.recent-files-container h2 {
-  color: #6a4c93;
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.4rem;
-}
-
-.recent-file {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  background-color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.file-icon {
-  color: #8a5cf8;
-  margin-right: 10px;
-}
-
-.recent-file p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-/* Streak container styling */
-.streak-container {
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.streak-container h2 {
-  color: #6a4c93;
-  margin-top: 0;
-  font-size: 1.6rem;
-}
-
-.streak-container p {
-  color: #555;
-  font-size: 1.1rem;
-  line-height: 1.4;
 }
 
 
@@ -391,4 +128,100 @@ body {
   .goal-input button {
     padding: 10px 15px;
   }
+}
+
+.streak-container {
+  background: linear-gradient(135deg, #f8f4ff 0%, #e9ddff 100%);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(106, 76, 147, 0.1);
+}
+
+
+.streak-container h2 {
+  color: #6a4c93;
+  margin: 0 0 10px 0;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak-container p:first-of-type {
+  color: #6a4c93;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+
+.streak-container p:last-of-type {
+  background: rgba(138, 92, 248, 0.1);
+  color: #5a4a72;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #8a5cf8;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.goal-input input[type="number"] {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  border: 2px solid #e0d0ff;
+  border-radius: 8px;
+  /*margin-bottom: 10px;*/
+  box-sizing: border-box;
+  background-color: #f9f5ff;
+  color: #5a4a72;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.goal-input input[type="number"]:focus {
+  outline: none;
+  border-color: #8a5cf8;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(138, 92, 248, 0.2);
+}
+
+.goal-input input::placeholder {
+  color: #b8a9d6;
+  opacity: 0.8;
+}
+
+.goal-input input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d3c1f5;
+  border-radius: 4px;
+  margin-right: 8px;
+  position: relative;
+  top: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.goal-input input[type="checkbox"]:checked {
+  background-color: #8a5cf8;
+  border-color: #8a5cf8;
+}
+
+.goal-input input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  left: 2px;
+  top: -1px;
+}
+
+.goal-input input[type="checkbox"]:disabled {
+  opacity: 0.6;
+  background-color: #f0e9ff;
 }

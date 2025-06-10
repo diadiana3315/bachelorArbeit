@@ -30,7 +30,7 @@ export class ManageSharingComponent {
     });
   }
 
-  close() {
-    this.closeModal();
-  }
+  // close() {
+  //   this.closeModal();
+  // }
 }

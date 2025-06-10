@@ -14,7 +14,7 @@
 .modal-content {
   position: relative;
   background-color: #fff;
-  padding: 32px 24px;
+  padding: 65px 24px 24px;
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
@@ -23,9 +23,11 @@
 
 .close-icon {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 16px;
+  right: 16px;
   color: #5a4a8a;
+  z-index: 1;
+
 }
 
 .shared-user-row {

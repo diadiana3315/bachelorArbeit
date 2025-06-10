@@ -1,14 +1,18 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
 }
 
-body {
+html, body {
   background: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  /*font-weight: 300;*/
 }
 
-html{
-  background: #ffffff;
-
+h1, h2, h3, h4, h5, h6,
+.title, .noto-serif {
+  font-family: 'Noto Serif', serif;
+  font-weight: 700;
 }
-

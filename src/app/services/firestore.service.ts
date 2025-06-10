@@ -530,4 +530,22 @@ export class FirestoreService {
       .update({ practiced });
   }
 
+
+  setFileUserMetadata(fileId: string, userId: string, data: Partial<{ practiced: boolean, isFavorite: boolean }>) {
+    return this.firestore.collection(`files/${fileId}/userMetadata`).doc(userId).set(data, { merge: true });
+  }
+
+  getUserMetadataForFiles(fileIds: string[], userId: string): Observable<{ [fileId: string]: any }> {
+    const metadataObservables = fileIds.map(fileId =>
+      this.firestore.doc(`files/${fileId}/userMetadata/${userId}`).valueChanges().pipe(
+        map(metadata => ({ [fileId]: metadata }))
+      )
+    );
+
+    return combineLatest(metadataObservables).pipe(
+      map(results => Object.assign({}, ...results))
+    );
+  }
+
+
 }

@@ -3,7 +3,7 @@ export interface FileMetadata {
   fileName: string;
   fileURL: string;
   fileType: string;
-  parentFolderId: string | null;
+  parentFolderId: string;
   userId: string;
   isShared:boolean;
   uploadedAt?: number;

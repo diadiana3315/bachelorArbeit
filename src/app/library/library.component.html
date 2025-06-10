@@ -126,7 +126,7 @@
 
         <mat-checkbox
           [(ngModel)]="file.practiced"
-          (change)="togglePracticed(file)"
+          (change)="togglePracticed(file, $event.checked)"
           matTooltip="Mark as practiced"
         >
         </mat-checkbox>
